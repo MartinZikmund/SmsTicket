@@ -37,7 +37,7 @@
   <ItemGroup>
     <ProjectReference Include="..\SmsTicket\SmsTicket.csproj" />
   </ItemGroup>
-  <Import Project="..\SmsTicket.Shared\base.props" />
+  <Import Project="..\SmsTicket\base.props" />
 
   <Target Name="ValidateOverrides" BeforeTargets="Restore;_CheckForUnsupportedTargetFramework" Condition="'$(OverrideTargetFramework)' != ''">
     <Error

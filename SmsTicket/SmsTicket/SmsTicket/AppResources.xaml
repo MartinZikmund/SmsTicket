@@ -1,11 +1,19 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:localizer="using:SmsTicket.Services.Localizer"
+    xmlns:converters="using:SmsTicket.Converters">
 
-  <ResourceDictionary.MergedDictionaries>
-    <!-- Load WinUI resources -->
-    <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
-
-  </ResourceDictionary.MergedDictionaries>
-  <!-- Add resources here -->
-
+    <ResourceDictionary.MergedDictionaries>
+        <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
+    </ResourceDictionary.MergedDictionaries>
+    <localizer:LocalizationService x:Key="Localizer" />
+    <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+    <converters:BoolToVisibilityConverter Invert="True" x:Key="InvertedBoolToVisibilityConverter" />
+    <converters:StringNotEmptyVisibilityConverter x:Key="StringNotEmptyVisibilityConverter" />
+    <converters:StringEmptyVisibilityConverter x:Key="StringEmptyVisibilityConverter" />
+    <converters:StringToUpperConverter x:Key="StringToUpperConverter" />
+    <Color x:Key="SystemAccentColor">#0472d8</Color>
+    <SolidColorBrush x:Key="DarkAppAccentBrush" Color="#0b66c7" />
+    <SolidColorBrush x:Key="LightAppAccentBrush" Color="#0472d8" />
 </ResourceDictionary>
