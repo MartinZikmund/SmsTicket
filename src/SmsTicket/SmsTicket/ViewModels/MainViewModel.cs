@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using SmsTicket.Annotations;
 using SmsTicket;
 using SmsTicket.Data;
 using SmsTicket.Data.Models;
@@ -18,7 +17,7 @@ using SmsTicket.Services.AppSettings;
 
 namespace SmsTicket.ViewModels;
 
-public class MainViewModel : INotifyPropertyChanged
+public class MainViewModel : ObservableObject
 {
     private readonly ISettingsService _settings;
     private readonly ISmsService _smsService;
@@ -35,7 +34,7 @@ public class MainViewModel : INotifyPropertyChanged
 
     public async void Init()
     {
-        Cities = new ObservableCollection<City>(DataSource.GetCities());
+        Cities = new ObservableCollection<City>(DataSource.Cities);
         var lastCitySelected = _settings.GetSetting("LastCitySelected", () => "PHA", false);
         var targetCity = (from c in Cities where c.Id == lastCitySelected select c).SingleOrDefault();
         if (targetCity != null)
@@ -138,13 +137,13 @@ public class MainViewModel : INotifyPropertyChanged
 
     #region Prepare for send command
 
-    private DelegateCommand _prepareForSendCommand;
+    private RelayCommand _prepareForSendCommand;
 
     public ICommand PrepareForSendCommand
     {
         get
         {
-            _prepareForSendCommand = _prepareForSendCommand ?? new DelegateCommand(DoPrepareForSendCommand);
+            _prepareForSendCommand = _prepareForSendCommand ?? new RelayCommand(DoPrepareForSendCommand);
             return _prepareForSendCommand;
         }
     }
@@ -184,7 +183,7 @@ public class MainViewModel : INotifyPropertyChanged
 
     private ICommand _togglePinCommand;
 
-    public ICommand TogglePinCommand => _togglePinCommand ?? (_togglePinCommand = new DelegateCommand(DoTogglePin));
+    public ICommand TogglePinCommand => _togglePinCommand ?? (_togglePinCommand = new RelayCommand(DoTogglePin));
 
     private async void DoTogglePin()
     {
@@ -224,13 +223,5 @@ public class MainViewModel : INotifyPropertyChanged
             MessageDialog dlg = new MessageDialog(localizer.PinnedDescription, localizer.PinnedTitle);
             await dlg.ShowAsync();
         }
-    }
-
-    public event PropertyChangedEventHandler PropertyChanged;
-
-    [NotifyPropertyChangedInvocator]
-    protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }
