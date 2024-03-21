@@ -147,7 +147,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <Image Source="/Assets/tramvaj.jpg" Stretch="UniformToFill" Grid.RowSpan="2" />
+        <Image Source="/Assets/tram.jpg" Stretch="UniformToFill" Grid.RowSpan="2" />
         <Border Style="{ThemeResource BackgroundCurtainStyle}" Grid.RowSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" />
 
         <ScrollViewer VerticalScrollBarVisibility="Auto" VerticalScrollMode="Auto" HorizontalScrollMode="Disabled" HorizontalScrollBarVisibility="Disabled">
