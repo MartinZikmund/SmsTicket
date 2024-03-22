@@ -1,18 +1,10 @@
-using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Windows.Input;
-using SmsTicket;
 using SmsTicket.Data;
 using SmsTicket.Data.Models;
 using SmsTicket.Services.Localizer;
 using SmsTicket.Services.Settings;
 using SmsTicket.Services.Sms;
-using Windows.UI.Popups;
 using Windows.UI.StartScreen;
-using Microsoft.UI.Xaml.Controls;
 using SmsTicket.Services.AppSettings;
 
 namespace SmsTicket.ViewModels;
@@ -24,24 +16,27 @@ public class MainViewModel : ObservableObject
     private readonly IAppSettings _appSettings;
     private readonly LocalizationService _localizer;
     private JumpList _jumpList;
+    private City _selectedCity;
+
     public MainViewModel(ISettingsService settings, ISmsService smsService)
     {
         _settings = settings;
         _localizer = new LocalizationService();
         _smsService = smsService;
         _appSettings = new AppSettings(_settings);
-    }
 
-    public async void Init()
-    {
         Cities = new ObservableCollection<City>(DataSource.Cities);
+
         var lastCitySelected = _settings.GetSetting("LastCitySelected", () => "PHA", false);
         var targetCity = (from c in Cities where c.Id == lastCitySelected select c).SingleOrDefault();
         if (targetCity != null)
         {
             SelectedCity = targetCity;
         }
+    }
 
+    public async void Init()
+    {
         if (JumpList.IsSupported())
         {
             _jumpList = await JumpList.LoadCurrentAsync();
@@ -50,29 +45,12 @@ public class MainViewModel : ObservableObject
         }
     }
 
-    #region Cities
+    public ObservableCollection<City> Cities { get; } = new();
 
-    private ObservableCollection<City> _cities;
-
-    public ObservableCollection<City> Cities
-    {
-        get { return _cities; }
-        set
-        {
-            _cities = value;
-            OnPropertyChanged(nameof(Cities));
-        }
-    }
-
-    #endregion
-
-    #region Selected city
-
-    private City _selectedCity;
 
     public City SelectedCity
     {
-        get { return _selectedCity; }
+        get => _selectedCity;
         set
         {
             _selectedCity = value;
@@ -100,15 +78,11 @@ public class MainViewModel : ObservableObject
         }
     }
 
-    #endregion
-
-    #region Selected ticket type
-
     private TicketType _selectedTicketType;
 
     public TicketType SelectedTicketType
     {
-        get { return _selectedTicketType; }
+        get => _selectedTicketType;
         set
         {
             _selectedTicketType = value;
@@ -133,10 +107,6 @@ public class MainViewModel : ObservableObject
         }
     }
 
-    #endregion
-
-    #region Prepare for send command
-
     private RelayCommand _prepareForSendCommand;
 
     public ICommand PrepareForSendCommand
@@ -157,7 +127,8 @@ public class MainViewModel : ObservableObject
                 var dialog = new ContentDialog
                 {
                     Content = _localizer.PrepareSmsNote,
-                    Title = _localizer.PrepareSmsNoteTitle
+                    Title = _localizer.PrepareSmsNoteTitle,
+                    XamlRoot = XamlRoot
                 };
                 dialog.CloseButtonText = "OK";
                 await dialog.ShowAsync();
@@ -166,8 +137,6 @@ public class MainViewModel : ObservableObject
             await _smsService.PrepareSmsAsync(SelectedTicketType.PhoneNumber, SelectedTicketType.SmsText);
         }
     }
-
-    #endregion
 
     private bool _useGps = false;
 
@@ -185,6 +154,8 @@ public class MainViewModel : ObservableObject
 
     public ICommand TogglePinCommand => _togglePinCommand ?? (_togglePinCommand = new RelayCommand(DoTogglePin));
 
+    public XamlRoot? XamlRoot { get; internal set; }
+
     private async void DoTogglePin()
     {
         var localizer = new LocalizationService();
@@ -194,12 +165,12 @@ public class MainViewModel : ObservableObject
             if (SelectedTicketType.TimeText == String.Empty)
             {
                 newItem = JumpListItem.CreateWithArguments(SelectedTicketType.Id, $"{SelectedCity.Name} - duplicate");
-                newItem.Logo = new Uri("ms-appx:///Assets/ticket_dupe.png");
+                newItem.Logo = new Uri("ms-appx:///SmsTicket/Assets/ticket_dupe.png");
             }
             else
             {
                 newItem = JumpListItem.CreateWithArguments(SelectedTicketType.Id, $"{SelectedCity.Name} - {SelectedTicketType.TimeText}");
-                newItem.Logo = new Uri("ms-appx:///Assets/ticket.png");
+                newItem.Logo = new Uri("ms-appx:///SmsTicket/Assets/ticket.png");
             }
             newItem.Description = string.Format(localizer.QuickActionDescriptionFormatString, SelectedTicketType.Price);
             _jumpList.Items.Add(newItem);
@@ -220,7 +191,12 @@ public class MainViewModel : ObservableObject
 
         if (IsPinned)
         {
-            MessageDialog dlg = new MessageDialog(localizer.PinnedDescription, localizer.PinnedTitle);
+            ContentDialog dlg = new()
+            {
+                Title = localizer.PinnedTitle,
+                Content = localizer.PinnedDescription,
+                XamlRoot = XamlRoot
+            };
             await dlg.ShowAsync();
         }
     }

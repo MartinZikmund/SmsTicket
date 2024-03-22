@@ -1,5 +1,6 @@
-﻿using Windows.ApplicationModel.Resources;
+using Windows.ApplicationModel.Resources;
 using Microsoft.UI.Xaml.Data;
+using Windows.ApplicationModel.Resources.Core;
 
 namespace SmsTicket.Services.Localizer;
 
@@ -23,7 +24,8 @@ public class LocalizationService : ILocalizerService
                 {
                     if (_resourceLoader == null)
                     {
-                        _resourceLoader = new ResourceLoader();
+                        var mainResourceMap = ResourceManager.Current.MainResourceMap;
+                        _resourceLoader = ResourceLoader.GetForViewIndependentUse("SmsTicket/Resources");
                     }
                     var translation = _resourceLoader.GetString(key);
                     if (!string.IsNullOrEmpty(translation))

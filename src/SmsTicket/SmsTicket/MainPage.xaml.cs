@@ -16,7 +16,7 @@ public sealed partial class MainPage : Page
     {
         this.InitializeComponent();
         this.DataContextChanged += MainPage_DataContextChanged;
-        DataContext = new MainViewModel(new SettingsService(), new SmsService());
+        DataContext = ViewModel = new MainViewModel(new SettingsService(), new SmsService());
 
         this.Loaded += MainPage_Loaded;
         //if (AnalyticsInfo.VersionInfo.DeviceFamily.ToLowerInvariant().Contains("mobile"))
@@ -30,8 +30,11 @@ public sealed partial class MainPage : Page
         //(App.Current as App).UpdateTheme();
     }
 
+    public MainViewModel ViewModel { get; }
+
     private void MainPage_Loaded(object sender, RoutedEventArgs e)
     {
+        ViewModel.XamlRoot = XamlRoot;
 //#if __ANDROID__ || __IOS__
 //            if (!_adControlLoaded)
 //            {
@@ -120,6 +123,6 @@ public sealed partial class MainPage : Page
 
     private async void LearnMoreClick(object sender, RoutedEventArgs e)
     {
-        await Launcher.LaunchUriAsync(new Uri("http://sphereline.com/", UriKind.Absolute));
+        await Launcher.LaunchUriAsync(new Uri("https://mzikmund.dev/", UriKind.Absolute));
     }
 }

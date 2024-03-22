@@ -147,7 +147,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <Image Source="/Assets/tram.jpg" Stretch="UniformToFill" Grid.RowSpan="2" />
+        <Image Source="ms-appx:///SmsTicket/Assets/tram.jpg" Stretch="UniformToFill" Grid.RowSpan="2" />
         <Border Style="{ThemeResource BackgroundCurtainStyle}" Grid.RowSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" />
 
         <ScrollViewer VerticalScrollBarVisibility="Auto" VerticalScrollMode="Auto" HorizontalScrollMode="Disabled" HorizontalScrollBarVisibility="Disabled">
@@ -188,7 +188,7 @@
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
                                     <Grid Background="{ThemeResource LightAppAccentBrush}" Padding="8" Margin="0,0,8,0" CornerRadius="2">
-                                        <Image Source="/Assets/ticket_dupe_light.png" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="{x:Bind TimeText, Converter={StaticResource StringEmptyVisibilityConverter}}" />
+                                        <Image Source="ms-appx:///SmsTicket/Assets/ticket_dupe_light.png" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="{x:Bind TimeText, Converter={StaticResource StringEmptyVisibilityConverter}}" />
                                         <TextBlock Grid.Column="0" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{x:Bind TimeText}" Visibility="{x:Bind TimeText, Converter={StaticResource StringNotEmptyVisibilityConverter}}" FontWeight="Bold" Foreground="White" />
                                     </Grid>
                                     <Grid Grid.Column="1" VerticalAlignment="Center">
