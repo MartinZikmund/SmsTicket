@@ -48,7 +48,7 @@ public sealed partial class MainPage : Page
 
     private void MainPage_DataContextChanged(DependencyObject sender, DataContextChangedEventArgs args)
     {
-        Model = args.NewValue as MainViewModel;
+        Model = (MainViewModel)args.NewValue;
     }
 
     protected override void OnNavigatedTo(NavigationEventArgs e)

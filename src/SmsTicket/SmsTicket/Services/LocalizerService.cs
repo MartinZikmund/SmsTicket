@@ -24,8 +24,11 @@ public class LocalizationService : ILocalizerService
                 {
                     if (_resourceLoader == null)
                     {
-                        var mainResourceMap = ResourceManager.Current.MainResourceMap;
+#if !HAS_UNO
                         _resourceLoader = ResourceLoader.GetForViewIndependentUse("SmsTicket/Resources");
+#else
+                        _resourceLoader = new ResourceLoader($"SmsTicket/Resources");
+#endif
                     }
                     var translation = _resourceLoader.GetString(key);
                     if (!string.IsNullOrEmpty(translation))

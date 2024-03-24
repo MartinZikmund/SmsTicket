@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -217,7 +217,7 @@
     <value>Carlsbad</value>
   </data>
   <data name="PinnedDescription" xml:space="preserve">
-    <value>You can find pinned tickets in the app icon menu on supported devices (force-touch the icon)</value>
+    <value>You can find pinned tickets in the app icon menu on supported devices (long press the icon)</value>
   </data>
   <data name="PinnedTitle" xml:space="preserve">
     <value>Ticket was pinned</value>

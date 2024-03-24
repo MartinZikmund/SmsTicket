@@ -16,6 +16,9 @@ public class App : Application
         MainWindow.EnableHotReload();
 #endif
 
+#if __ANDROID__
+        Android.Gms.Ads.MobileAds.Initialize(Android.App.Application.Context);
+#endif
 
         // Do not repeat app initialization when the Window already has content,
         // just ensure that the window is active
