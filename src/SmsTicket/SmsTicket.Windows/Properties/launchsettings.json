@@ -1,0 +1,11 @@
+{
+  "profiles": {
+
+    "SmsTicket.Windows (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "SmsTicket.Windows (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
