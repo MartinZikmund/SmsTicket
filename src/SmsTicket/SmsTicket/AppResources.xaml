@@ -1,15 +1,15 @@
 ﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:localizer="using:SmsTicket.Services.Localizer"
-    xmlns:converters="using:SmsTicket.Converters">
+    xmlns:converters="using:SmsTicket.Converters"
+    xmlns:localizer="using:SmsTicket.Services.Localizer">
 
     <ResourceDictionary.MergedDictionaries>
         <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
     </ResourceDictionary.MergedDictionaries>
     <localizer:LocalizationService x:Key="Localizer" />
     <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
-    <converters:BoolToVisibilityConverter Invert="True" x:Key="InvertedBoolToVisibilityConverter" />
+    <converters:BoolToVisibilityConverter x:Key="InvertedBoolToVisibilityConverter" Invert="True" />
     <converters:StringNotEmptyVisibilityConverter x:Key="StringNotEmptyVisibilityConverter" />
     <converters:StringEmptyVisibilityConverter x:Key="StringEmptyVisibilityConverter" />
     <converters:StringToUpperConverter x:Key="StringToUpperConverter" />

@@ -29,6 +29,7 @@
     <PackageReference Include="Uno.Extensions.Logging.OSLog" />
     <PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" />
     <PackageReference Include="Uno.WinUI.DevServer" Condition="'$(Configuration)'=='Debug'" />
+    <PackageReference Include="Xamarin.Build.Download" />
   </ItemGroup>
   <Choose>
     <When Condition="$(IsAndroid)">

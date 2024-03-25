@@ -23,6 +23,7 @@
     <PackageVersion Include="Uno.WinUI.WebAssembly" Version="5.2.0-dev.2065" />
     <PackageVersion Include="Xamarin.AndroidX.Lifecycle.Runtime" Version="2.6.2.3" />
     <PackageVersion Include="Xamarin.AndroidX.SwipeRefreshLayout" Version="1.1.0.17" />
+    <PackageVersion Include="Xamarin.Build.Download" Version="0.11.4" />
     <PackageVersion Include="Xamarin.Google.Android.Material" Version="1.10.0.1" />
     <PackageVersion Include="Xamarin.Google.iOS.MobileAds" Version="8.13.0.3" />
     <PackageVersion Include="Xamarin.GooglePlayServices.Ads" Version="122.3.0.2" />
