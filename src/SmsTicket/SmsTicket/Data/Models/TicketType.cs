@@ -2,10 +2,16 @@ namespace SmsTicket.Data.Models;
 
 public class TicketType
 {
-    public TicketType( string id, string description, string price, string timeText,
-        string phoneNumber, string smsText, bool smsPriceAdditional )
+    public TicketType(
+        string id,
+        string description,
+        string price,
+        string timeText,
+        string phoneNumber,
+        string smsText,
+        bool smsPriceAdditional)
     {
-        Id = id;           
+        Id = id;
         Description = description;
         Price = price;
         TimeText = timeText;
@@ -16,7 +22,7 @@ public class TicketType
 
     public string Id { get; set; }
     public string Price { get; set; }
-    public string TimeText { get; set; }        
+    public string TimeText { get; set; }
 
     public bool SmsPriceAdditional { get; set; }
 
