@@ -8,6 +8,10 @@ public class BoolToVisibilityConverter : IValueConverter
 
     public object Convert(object value, Type targetType, object parameter, string language)
     {
+        if (value is null)
+        {
+            return !Invert ? Visibility.Collapsed : Visibility.Visible;
+        }
         var boolValue = (bool)value;
         if (!Invert)
         {
