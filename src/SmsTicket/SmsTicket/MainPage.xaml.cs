@@ -1,8 +1,10 @@
+using SmsTicket.Controls;
 using SmsTicket.Services.Localizer;
 using SmsTicket.Services.Settings;
 using SmsTicket.Services.Sms;
 using SmsTicket.ViewModels;
 using Windows.System;
+using Windows.System.Profile;
 
 namespace SmsTicket;
 
@@ -20,15 +22,14 @@ public sealed partial class MainPage : Page
         DataContext = ViewModel = new MainViewModel(new SettingsService(), new SmsService());
 
         this.Loaded += MainPage_Loaded;
-        //if (AnalyticsInfo.VersionInfo.DeviceFamily.ToLowerInvariant().Contains("mobile"))
-        //{
-        //    MobileAd.Visibility = Visibility.Visible;
-        //}
-        //else
-        //{
-        //    DesktopAd.Visibility = Visibility.Visible;
-        //}
-        //(App.Current as App).UpdateTheme();
+        if (AnalyticsInfo.VersionInfo.DeviceFamily.ToLowerInvariant().Contains("mobile"))
+        {
+            MobileAd.Visibility = Visibility.Visible;
+        }
+        else
+        {
+            DesktopAd.Visibility = Visibility.Visible;
+        }
     }
 
     public MainViewModel ViewModel { get; }
@@ -36,15 +37,19 @@ public sealed partial class MainPage : Page
     private void MainPage_Loaded(object sender, RoutedEventArgs e)
     {
         ViewModel.XamlRoot = XamlRoot;
-        //#if __ANDROID__ || __IOS__
-        //            if (!_adControlLoaded)
-        //            {
-        //                _adControlLoaded = true;
-        //                var adControl = new AdControl() { HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Bottom };
-        //                ContentRoot.Children.Add(adControl);
-        //                adControl.SetValue(Grid.RowProperty, 2);
-        //            }
-        //#endif
+#if __ANDROID__ || __IOS__
+        if (!_adControlLoaded)
+        {
+            _adControlLoaded = true;
+            var adControl = new AdControl()
+            {
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Bottom
+            };
+            ContentRoot.Children.Add(adControl);
+            adControl.SetValue(Grid.RowProperty, 2);
+        }
+#endif
     }
 
     private void MainPage_DataContextChanged(DependencyObject sender, DataContextChangedEventArgs args)
@@ -59,5 +64,5 @@ public sealed partial class MainPage : Page
         Model.Init();
     }
 
-    public MainViewModel Model { get; private set; }        
+    public MainViewModel Model { get; private set; }
 }

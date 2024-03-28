@@ -24,7 +24,6 @@ public class MainViewModel : ObservableObject
     private TicketType _selectedTicketType;
     private JumpList _jumpList;
     private City _selectedCity;
-    private bool _useGps = false;
 
     public MainViewModel(ISettingsService settings, ISmsService smsService)
     {
@@ -143,16 +142,6 @@ public class MainViewModel : ObservableObject
                 _appSettings.FirstTimeUse = false;
             }
             await _smsService.PrepareSmsAsync(SelectedTicketType.PhoneNumber, SelectedTicketType.SmsText);
-        }
-    }
-
-    public bool UseGps
-    {
-        get => _useGps;
-        set
-        {
-            _useGps = value;
-            OnPropertyChanged();
         }
     }
 
