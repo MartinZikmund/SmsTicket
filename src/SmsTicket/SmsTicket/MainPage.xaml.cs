@@ -22,14 +22,6 @@ public sealed partial class MainPage : Page
         DataContext = ViewModel = new MainViewModel(new SettingsService(), new SmsService());
 
         this.Loaded += MainPage_Loaded;
-        if (AnalyticsInfo.VersionInfo.DeviceFamily.ToLowerInvariant().Contains("mobile"))
-        {
-            MobileAd.Visibility = Visibility.Visible;
-        }
-        else
-        {
-            DesktopAd.Visibility = Visibility.Visible;
-        }
     }
 
     public MainViewModel ViewModel { get; }
