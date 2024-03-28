@@ -6,6 +6,7 @@ using SmsTicket.Services.Settings;
 using SmsTicket.Services.Sms;
 using Windows.UI.StartScreen;
 using SmsTicket.Services.AppSettings;
+using Windows.System;
 
 namespace SmsTicket.ViewModels;
 
@@ -15,8 +16,15 @@ public class MainViewModel : ObservableObject
     private readonly ISmsService _smsService;
     private readonly IAppSettings _appSettings;
     private readonly LocalizationService _localizer;
+
+    private ICommand _prepareForSendCommand;
+    private ICommand _learnMoreCommand;
+    private ICommand _togglePinCommand;
+
+    private TicketType _selectedTicketType;
     private JumpList _jumpList;
     private City _selectedCity;
+    private bool _useGps = false;
 
     public MainViewModel(ISettingsService settings, ISmsService smsService)
     {
@@ -39,14 +47,26 @@ public class MainViewModel : ObservableObject
     {
         if (JumpList.IsSupported())
         {
+            IsPinningSupported = true;
             _jumpList = await JumpList.LoadCurrentAsync();
             _jumpList.SystemGroupKind = JumpListSystemGroupKind.None;
+            OnPropertyChanged(nameof(IsPinningSupported));
             OnPropertyChanged(nameof(IsPinned));
         }
     }
 
+    public ICommand PrepareForSendCommand => _prepareForSendCommand ??= new AsyncRelayCommand(PrepareForSendAsync);
+
+    public ICommand TogglePinCommand => _togglePinCommand ??= new AsyncRelayCommand(TogglePinAsync);
+
+    public ICommand LearnMoreCommand => _learnMoreCommand ??= new AsyncRelayCommand(async () =>
+        await Launcher.LaunchUriAsync(new Uri("https://mzikmund.dev")));
+
     public ObservableCollection<City> Cities { get; } = new();
 
+    public bool IsPinningSupported { get; private set; } = false;
+    
+    public XamlRoot? XamlRoot { get; internal set; }
 
     public City SelectedCity
     {
@@ -78,8 +98,6 @@ public class MainViewModel : ObservableObject
         }
     }
 
-    private TicketType _selectedTicketType;
-
     public TicketType SelectedTicketType
     {
         get => _selectedTicketType;
@@ -107,18 +125,8 @@ public class MainViewModel : ObservableObject
         }
     }
 
-    private RelayCommand _prepareForSendCommand;
 
-    public ICommand PrepareForSendCommand
-    {
-        get
-        {
-            _prepareForSendCommand = _prepareForSendCommand ?? new RelayCommand(DoPrepareForSendCommand);
-            return _prepareForSendCommand;
-        }
-    }
-
-    private async void DoPrepareForSendCommand()
+    private async Task PrepareForSendAsync()
     {
         if (SelectedTicketType != null)
         {
@@ -130,15 +138,13 @@ public class MainViewModel : ObservableObject
                     Title = _localizer.PrepareSmsNoteTitle,
                     XamlRoot = XamlRoot
                 };
-                dialog.CloseButtonText = "OK";
+                dialog.CloseButtonText = "Ok";
                 await dialog.ShowAsync();
                 _appSettings.FirstTimeUse = false;
             }
             await _smsService.PrepareSmsAsync(SelectedTicketType.PhoneNumber, SelectedTicketType.SmsText);
         }
     }
-
-    private bool _useGps = false;
 
     public bool UseGps
     {
@@ -150,13 +156,7 @@ public class MainViewModel : ObservableObject
         }
     }
 
-    private ICommand _togglePinCommand;
-
-    public ICommand TogglePinCommand => _togglePinCommand ?? (_togglePinCommand = new RelayCommand(DoTogglePin));
-
-    public XamlRoot? XamlRoot { get; internal set; }
-
-    private async void DoTogglePin()
+    private async Task TogglePinAsync()
     {
         var localizer = new LocalizationService();
         if (!IsPinned)
@@ -188,16 +188,17 @@ public class MainViewModel : ObservableObject
 
         OnPropertyChanged(nameof(IsPinned));
 
-
         if (IsPinned)
         {
             ContentDialog dlg = new()
             {
                 Title = localizer.PinnedTitle,
                 Content = localizer.PinnedDescription,
-                XamlRoot = XamlRoot
+                XamlRoot = XamlRoot,
+                PrimaryButtonText = "Ok"
             };
             await dlg.ShowAsync();
         }
     }
+
 }
