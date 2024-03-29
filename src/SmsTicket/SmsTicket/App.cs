@@ -1,20 +1,24 @@
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
+using SmsTicket.Configuration;
+
 namespace SmsTicket;
 
 public class App : Application
 {
     protected Window? MainWindow { get; private set; }
 
+    public static AppConfig AppConfig { get; private set; }
+
+    public App()
+    {
+    }
+
     protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
-#if NET6_0_OR_GREATER && WINDOWS && !HAS_UNO
-        MainWindow = new Window();
-#else
-        MainWindow = Microsoft.UI.Xaml.Window.Current;
-#endif
+        (var host, MainWindow) = BuildHost();
 
-#if DEBUG
-        MainWindow.EnableHotReload();
-#endif
+        AppConfig = host.Services.GetRequiredService<IConfiguration>().Get<AppConfig>()!;
 
 #if __ANDROID__
         Android.Gms.Ads.MobileAds.Initialize(Android.App.Application.Context);
@@ -43,6 +47,25 @@ public class App : Application
 
         // Ensure the current window is active
         MainWindow.Activate();
+    }
+
+    private (IHost host, Window window) BuildHost()
+    {
+        var builder = this
+            .CreateBuilder(null!)
+            .Configure(host => host
+#if DEBUG
+                                // Switch to Development environment when running in DEBUG
+                                .UseEnvironment(Environments.Development)
+#endif
+                .UseConfiguration(configure: configBuilder =>
+                    configBuilder
+                        .EmbeddedSource<App>()
+                        .Section<AppConfig>()
+                )
+            );
+        
+        return (builder.Build(), builder.Window);
     }
 
     /// <summary>

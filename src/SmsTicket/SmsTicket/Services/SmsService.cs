@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 using Windows.UI.Popups;
 
 namespace SmsTicket.Services.Sms;
@@ -13,7 +9,10 @@ public class SmsService : ISmsService
 #if __IOS__
         if (!UIKit.UIApplication.SharedApplication.CanOpenUrl(new Foundation.NSUrl("tel://")))
         {
-            MessageDialog dlg = new MessageDialog("Your device does not support telephony");
+            ContentDialog dlg = new ContentDialog();
+            dlg.Title = "Not supported";
+            dlg.Content = "Your device does not support telephony";
+            dlg.PrimaryButtonText = "Ok";
             await dlg.ShowAsync();
             return;
         }
