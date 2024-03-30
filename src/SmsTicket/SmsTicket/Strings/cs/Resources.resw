@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AboutApp" xml:space="preserve">
+    <value>O aplikaci</value>
+  </data>
+  <data name="AppName" xml:space="preserve">
+    <value>Jízdenka MHD</value>
+  </data>
+  <data name="City" xml:space="preserve">
+    <value>Město</value>
+  </data>
+  <data name="CzechPriceTag" xml:space="preserve">
+    <value>Kč</value>
+  </data>
+  <data name="DarkTheme" xml:space="preserve">
+    <value>Tmavý motiv</value>
+  </data>
+  <data name="HelpText" xml:space="preserve">
+    <value>Vyberte si město a následně požadovaný typ jízdenky. Kliknutím na tlačítko "Připravit k odeslání" bude spuštěna aplikace pro odesílání zpráv s připravenou SMS ve správném formátu.</value>
+  </data>
+  <data name="HKDurationDetail" xml:space="preserve">
+    <value>60 minut v SO, NE, státní svátky a mezi 19:00 a 4:00</value>
+  </data>
+  <data name="LightTheme" xml:space="preserve">
+    <value>Světlý motiv</value>
+  </data>
+  <data name="OLDurationDetail" xml:space="preserve">
+    <value>70 minut mimo pracovní dny</value>
+  </data>
+  <data name="PARDurationDetail" xml:space="preserve">
+    <value>60 minut v SO, NE a státní svátky</value>
+  </data>
+  <data name="PILAbbreviation" xml:space="preserve">
+    <value>PL</value>
+  </data>
+  <data name="PILName" xml:space="preserve">
+    <value>Plzeň</value>
+  </data>
+  <data name="PlusPriceOfSms" xml:space="preserve">
+    <value>+ cena SMS</value>
+  </data>
+  <data name="PragueAbbreviation" xml:space="preserve">
+    <value>PHA</value>
+  </data>
+  <data name="PragueName" xml:space="preserve">
+    <value>Praha</value>
+  </data>
+  <data name="PragueRequiresConfirmationSms" xml:space="preserve">
+    <value>Vyžaduje potvrzující SMS "Ano" na 90206</value>
+  </data>
+  <data name="PrepareToSend" xml:space="preserve">
+    <value>Připravit k odeslání</value>
+  </data>
+  <data name="ReducedFare" xml:space="preserve">
+    <value>Zlevněné jízdné</value>
+  </data>
+  <data name="SMSTicket" xml:space="preserve">
+    <value>SMS jízdenka</value>
+  </data>
+  <data name="SystemTheme" xml:space="preserve">
+    <value>Motiv systému</value>
+  </data>
+  <data name="TicketType" xml:space="preserve">
+    <value>Typ jízdenky</value>
+  </data>
+  <data name="PILInnerAndOuterZones" xml:space="preserve">
+    <value>Vnitřní + vnější zóny (P+V)</value>
+  </data>
+  <data name="PILInnerZone" xml:space="preserve">
+    <value>Vnitřní zóna 001 Plzeň (P)</value>
+  </data>
+  <data name="PILOuterZones" xml:space="preserve">
+    <value>Vnější zóny (V)</value>
+  </data>
+  <data name="SOKDurationDetail" xml:space="preserve">
+    <value>Platná mezi 3:00 a 23:59</value>
+  </data>
+  <data name="DuplicateBud24SmsDetail" xml:space="preserve">
+    <value>Získání duplikátu platných 24 h jízdenek v případě smazání</value>
+  </data>
+  <data name="DuplicateBud60SmsDetail" xml:space="preserve">
+    <value>Získání duplikátu platných 60 min jízdenek v případě smazání</value>
+  </data>
+  <data name="DuplicateSmsDetail" xml:space="preserve">
+    <value>Získání duplikátu platných jízdenek v případě smazání</value>
+  </data>
+  <data name="Lib36Detail" xml:space="preserve">
+    <value>Pro linku č.11 (Liberec - Jablonec nad Nisou)</value>
+  </data>
+  <data name="ReducedFareUL" xml:space="preserve">
+    <value>Cestující ve věku od 6 do 18 let, žáci a studenti, od 65 do 70 let</value>
+  </data>
+  <data name="ReducedFareUL2" xml:space="preserve">
+    <value>hodněné - osoba s dítětem do 3 let, invalidní důchod, 62 - 65 let</value>
+  </data>
+  <data name="QuickActionDescriptionFormatString" xml:space="preserve">
+    <value>Cena {0} CZK</value>
+  </data>
+  <data name="CarlsbadName" xml:space="preserve">
+    <value>Karlovy Vary</value>
+  </data>
+  <data name="PinnedDescription" xml:space="preserve">
+    <value>Připnuté jízdenky najdete v menu ikony aplikace na podporovaných zařízeních (dlouze stiskněte ikonu)</value>
+  </data>
+  <data name="PinnedTitle" xml:space="preserve">
+    <value>Jízdenka byla připnuta</value>
+  </data>
+  <data name="PrepareSmsNote" xml:space="preserve">
+    <value>Tímto bude SMS jízdenka připravena ve vaší SMS aplikaci. Pro zakoupení jízdenky prosím SMS odešlete.</value>
+  </data>
+  <data name="PrepareSmsNoteTitle" xml:space="preserve">
+    <value>Připravení SMS</value>
+  </data>
+</root>

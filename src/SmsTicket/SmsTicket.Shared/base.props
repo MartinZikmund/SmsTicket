@@ -1,0 +1,26 @@
+<Project>
+  <ItemGroup>
+    <PackageReference Include="Uno.Resizetizer" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)AppHead.xaml" />
+    <ApplicationDefinition Include="$(MSBuildThisFileDirectory)AppHead.xaml"
+                SubType="Designer"
+                XamlRuntime="WinUI"
+                Generator="MSBuild:Compile"
+                Link="AppHead.xaml" />
+    <Compile Include="$(MSBuildThisFileDirectory)AppHead.xaml.cs"
+        XamlRuntime="WinUI"
+        DependentUpon="AppHead.xaml"
+        Link="AppHead.xaml.cs" />
+    <UnoIcon Include="$(MSBuildThisFileDirectory)Icons\icon.svg"
+        ForegroundFile="$(MSBuildThisFileDirectory)Icons\icon_foreground.svg"
+        ForegroundScale="0.5"
+        Color="#00000000" />
+    <UnoSplashScreen
+      Include="$(MSBuildThisFileDirectory)Splash\splash_screen.svg"
+      BaseSize="108,108"
+      Color="#FFFFFF" />
+  </ItemGroup>
+</Project>
