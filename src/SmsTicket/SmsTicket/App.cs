@@ -1,6 +1,9 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using SmsTicket.Configuration;
+using SmsTicket.Data;
+using SmsTicket.Data.Models;
+using SmsTicket.Services.Sms;
 
 namespace SmsTicket;
 
@@ -14,7 +17,7 @@ public class App : Application
     {
     }
 
-    protected override void OnLaunched(LaunchActivatedEventArgs args)
+    protected override async void OnLaunched(LaunchActivatedEventArgs args)
     {
         (var host, MainWindow) = BuildHost();
 
@@ -47,7 +50,25 @@ public class App : Application
 
         // Ensure the current window is active
         MainWindow.Activate();
+
+        if (!String.IsNullOrEmpty(args.Arguments))
+        {
+            var cities = DataSource.Cities;
+            var ticket = cities.SelectMany(c => c.TicketTypes).FirstOrDefault(tt => tt.Id == args.Arguments);
+            if (ticket != null)
+            {
+                var smsService = new SmsService();
+                await smsService.PrepareSmsAsync(ticket.PhoneNumber, ticket.SmsText);
+            }
+        }
     }
+
+#if HAS_UNO
+    protected override void OnActivated(Windows.ApplicationModel.Activation.IActivatedEventArgs args)
+    {
+        base.OnActivated(args);
+    }
+#endif
 
     private (IHost host, Window window) BuildHost()
     {
