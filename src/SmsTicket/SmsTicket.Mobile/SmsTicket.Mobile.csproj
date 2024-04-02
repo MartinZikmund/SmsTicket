@@ -7,11 +7,11 @@
     <!-- Display name -->
     <ApplicationTitle>SmsTicket</ApplicationTitle>
     <!-- App Identifier -->
-    <ApplicationId>dev.mzikmund.SmsTicket</ApplicationId>
+    <ApplicationId>com.sphereline.smsticketandroid</ApplicationId>
     <ApplicationIdGuid>84F0DC6E-6880-4530-8223-B959C7F08D78</ApplicationIdGuid>
     <!-- Versions -->
-    <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
-    <ApplicationVersion>1</ApplicationVersion>
+    <ApplicationDisplayVersion>3.0.2</ApplicationDisplayVersion>
+    <ApplicationVersion>400072</ApplicationVersion>
 
     <AndroidManifest>Android\AndroidManifest.xml</AndroidManifest>
 
@@ -20,6 +20,9 @@
     <!-- Required for C# Hot Reload -->
     <UseInterpreter Condition="'$(Configuration)' == 'Debug' and $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'maccatalyst'">True</UseInterpreter>
     <IsUnoHead>true</IsUnoHead>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android|AnyCPU'">
+    <EnableLLVM>True</EnableLLVM>
   </PropertyGroup>
 
   <ItemGroup>
