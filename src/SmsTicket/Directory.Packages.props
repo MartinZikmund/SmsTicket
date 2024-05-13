@@ -19,10 +19,10 @@
     <PackageVersion Include="Uno.Wasm.Bootstrap" Version="9.0.0-dev.39" />
     <PackageVersion Include="Uno.Wasm.Bootstrap.DevServer" Version="9.0.0-dev.39" />
     <PackageVersion Include="Uno.Wasm.Bootstrap.Server" Version="9.0.0-dev.39" />
-    <PackageVersion Include="Uno.WinUI" Version="5.2.0-dev.2065" />
+    <PackageVersion Include="Uno.WinUI" Version="5.2.121" />
     <PackageVersion Include="Uno.WinUI.Lottie" Version="5.2.0-dev.2065" />
     <PackageVersion Include="Uno.WinUI.DevServer" Version="5.2.0-dev.2065" />
-    <PackageVersion Include="Uno.WinUI.Skia.Wpf" Version="5.2.0-dev.2065" />
+    <PackageVersion Include="Uno.WinUI.Skia.Wpf" Version="5.2.121" />
     <PackageVersion Include="Uno.WinUI.WebAssembly" Version="5.2.0-dev.2065" />
     <PackageVersion Include="Xamarin.AndroidX.Lifecycle.Runtime" Version="2.6.2.3" />
     <PackageVersion Include="Xamarin.AndroidX.SwipeRefreshLayout" Version="1.1.0.17" />
