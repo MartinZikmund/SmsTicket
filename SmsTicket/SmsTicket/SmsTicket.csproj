@@ -1,4 +1,4 @@
-<Project Sdk="Uno.Sdk">
+﻿<Project Sdk="Uno.Sdk">
   <PropertyGroup>
     <TargetFrameworks>net9.0-android;net9.0-ios;net9.0-windows10.0.26100;net9.0-browserwasm;net9.0-desktop</TargetFrameworks>
 
@@ -8,10 +8,10 @@
     <!-- Display name -->
     <ApplicationTitle>SmsTicket</ApplicationTitle>
     <!-- App Identifier -->
-    <ApplicationId>com.companyname.SmsTicket</ApplicationId>
+    <ApplicationId>com.sphereline.smsticketandroid</ApplicationId>
     <!-- Versions -->
-    <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
-    <ApplicationVersion>1</ApplicationVersion>
+    <ApplicationDisplayVersion>5.0.1</ApplicationDisplayVersion>
+    <ApplicationVersion>500001</ApplicationVersion>
     <!-- Package Publisher -->
     <ApplicationPublisher>Martin</ApplicationPublisher>
     <!-- Package Description -->
@@ -34,6 +34,9 @@
     -->
     <UnoFeatures>
       SkiaRenderer;
+      Mvvm;
+      Configuration;
+      Hosting;
     </UnoFeatures>
   </PropertyGroup>
 

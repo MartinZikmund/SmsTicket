@@ -1,5 +1,10 @@
 using System;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using SmsTicket.Configuration;
+using SmsTicket.Data;
+using SmsTicket.Services.Sms;
 using Uno.Resizetizer;
 
 namespace SmsTicket;
@@ -14,16 +19,20 @@ public partial class App : Application
     {
         this.InitializeComponent();
     }
+    
+    public static AppConfig AppConfig { get; private set; }
 
     protected Window? MainWindow { get; private set; }
 
-    protected override void OnLaunched(LaunchActivatedEventArgs args)
+    protected override async void OnLaunched(LaunchActivatedEventArgs args)
     {
-        MainWindow = new Window();
-#if DEBUG
-        MainWindow.UseStudio();
-#endif
+        (var host, MainWindow) = BuildHost();
 
+        AppConfig = host.Services.GetRequiredService<IConfiguration>().Get<AppConfig>()!;
+
+#if __ANDROID__
+        Android.Gms.Ads.MobileAds.Initialize(Android.App.Application.Context);
+#endif
 
         // Do not repeat app initialization when the Window already has content,
         // just ensure that the window is active
@@ -46,9 +55,19 @@ public partial class App : Application
             rootFrame.Navigate(typeof(MainPage), args.Arguments);
         }
 
-        MainWindow.SetWindowIcon();
         // Ensure the current window is active
         MainWindow.Activate();
+
+        if (!String.IsNullOrEmpty(args.Arguments))
+        {
+            var cities = DataSource.Cities;
+            var ticket = cities.SelectMany(c => c.TicketTypes).FirstOrDefault(tt => tt.Id == args.Arguments);
+            if (ticket != null)
+            {
+                var smsService = new SmsService();
+                await smsService.PrepareSmsAsync(ticket.PhoneNumber, ticket.SmsText);
+            }
+        }
     }
 
     /// <summary>
@@ -59,6 +78,25 @@ public partial class App : Application
     void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
     {
         throw new InvalidOperationException($"Failed to load {e.SourcePageType.FullName}: {e.Exception}");
+    }
+
+    private (IHost host, Window window) BuildHost()
+    {
+        var builder = this
+            .CreateBuilder(null!)
+            .Configure(host => host
+#if DEBUG
+                                // Switch to Development environment when running in DEBUG
+                                .UseEnvironment(Environments.Development)
+#endif
+                .UseConfiguration(configure: configBuilder =>
+                    configBuilder
+                        .EmbeddedSource<App>()
+                        .Section<AppConfig>()
+                )
+            );
+
+        return (builder.Build(), builder.Window);
     }
 
     /// <summary>
