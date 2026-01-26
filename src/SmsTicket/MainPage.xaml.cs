@@ -35,7 +35,6 @@ public sealed partial class MainPage : Page
             _adControlLoaded = true;
             var adControl = new AdControl()
             {
-                Margin = new Thickness(4),
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Bottom
             };

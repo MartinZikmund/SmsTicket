@@ -35,9 +35,4 @@
         <PackageReference Include="Xamarin.Google.iOS.MobileAds" />
     </ItemGroup>
 
-    <!-- Embedded resource configuration (files are auto-included by SDK, just add DependentUpon) -->
-    <ItemGroup>
-        <EmbeddedResource Update="appsettings.*.json" DependentUpon="appsettings.json" />
-    </ItemGroup>
-
 </Project>

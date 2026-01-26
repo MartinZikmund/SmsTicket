@@ -2,6 +2,7 @@ using System;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using SmsTicket.Configuration;
 using SmsTicket.Data;
 using SmsTicket.Services.Sms;
@@ -28,7 +29,7 @@ public partial class App : Application
     {
         (var host, MainWindow) = BuildHost();
 
-        AppConfig = host.Services.GetRequiredService<IConfiguration>().Get<AppConfig>()!;
+        AppConfig = host.Services.GetRequiredService<IOptions<AppConfig>>().Value;
 
 #if __ANDROID__
         Google.Android.Gms.Ads.MobileAds.Initialize(Android.App.Application.Context);
@@ -93,15 +94,13 @@ public partial class App : Application
             .CreateBuilder(null!)
             .Configure(host => host
 #if DEBUG
-                                // Switch to Development environment when running in DEBUG
-                                .UseEnvironment(Environments.Development)
+            // Switch to Development environment when running in DEBUG
+            .UseEnvironment(Environments.Development)
 #endif
-                .UseConfiguration(configure: configBuilder =>
-                    configBuilder
-                        .EmbeddedSource<App>()
-                        .Section<AppConfig>()
-                )
-            );
+            .UseConfiguration(configure: configBuilder =>
+                configBuilder
+                    .EmbeddedSource<App>()
+                    .Section<AppConfig>()));
 
         return (builder.Build(), builder.Window);
     }
