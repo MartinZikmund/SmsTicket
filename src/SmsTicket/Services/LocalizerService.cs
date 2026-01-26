@@ -27,7 +27,7 @@ public class LocalizationService : ILocalizerService
 #if !HAS_UNO
                         _resourceLoader = ResourceLoader.GetForViewIndependentUse("SmsTicket/Resources");
 #else
-                        _resourceLoader = new ResourceLoader($"SmsTicket/Resources");
+                        _resourceLoader = new ResourceLoader();
 #endif
                     }
                     var translation = _resourceLoader.GetString(key);

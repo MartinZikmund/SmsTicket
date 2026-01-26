@@ -154,12 +154,12 @@ public class MainViewModel : ObservableObject
             if (SelectedTicketType.TimeText == String.Empty)
             {
                 newItem = JumpListItem.CreateWithArguments(SelectedTicketType.Id, $"{SelectedCity.Name} - duplicate");
-                newItem.Logo = new Uri("ms-appx:///SmsTicket/Assets/ticket_dupe.png");
+                newItem.Logo = new Uri("ms-appx:///Assets/ticket_dupe.png");
             }
             else
             {
                 newItem = JumpListItem.CreateWithArguments(SelectedTicketType.Id, $"{SelectedCity.Name} - {SelectedTicketType.TimeText}");
-                newItem.Logo = new Uri("ms-appx:///SmsTicket/Assets/ticket.png");
+                newItem.Logo = new Uri("ms-appx:///Assets/ticket.png");
             }
             newItem.Description = string.Format(localizer.QuickActionDescriptionFormatString, SelectedTicketType.Price);
             _jumpList.Items.Add(newItem);

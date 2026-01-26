@@ -1,41 +1,43 @@
 ﻿<Project Sdk="Uno.Sdk">
-  <PropertyGroup>
-    <TargetFrameworks>net10.0-android;net10.0-ios;net10.0-windows10.0.26100;net10.0-browserwasm;net10.0-desktop</TargetFrameworks>
+    <PropertyGroup>
+        <TargetFrameworks>net10.0-android;net10.0-ios;net10.0-windows10.0.26100;net10.0-browserwasm;net10.0-desktop</TargetFrameworks>
 
-    <OutputType>Exe</OutputType>
-    <UnoSingleProject>true</UnoSingleProject>
+        <OutputType>Exe</OutputType>
+        <UnoSingleProject>true</UnoSingleProject>
 
-    <!-- Display name -->
-    <ApplicationTitle>SmsTicket</ApplicationTitle>
-    <!-- App Identifier -->
-    <ApplicationId>com.sphereline.smsticketandroid</ApplicationId>
-    <!-- Versions -->
-    <ApplicationDisplayVersion>5.0.1</ApplicationDisplayVersion>
-    <ApplicationVersion>500001</ApplicationVersion>
-    <!-- Package Publisher -->
-    <ApplicationPublisher>Martin Zikmund</ApplicationPublisher>
-    <!-- Package Description -->
-    <Description>SmsTicket powered by Uno Platform.</Description>
+        <!-- Display name -->
+        <ApplicationTitle>SmsTicket</ApplicationTitle>
+        <!-- App Identifier -->
+        <ApplicationId>com.sphereline.smsticketandroid</ApplicationId>
+        <!-- Versions -->
+        <ApplicationDisplayVersion>5.0.1</ApplicationDisplayVersion>
+        <ApplicationVersion>500001</ApplicationVersion>
+        <!-- Package Publisher -->
+        <ApplicationPublisher>Martin Zikmund</ApplicationPublisher>
+        <!-- Package Description -->
+        <Description>SmsTicket powered by Uno Platform.</Description>
 
-    <UnoFeatures>
-      SkiaRenderer;
-      Mvvm;
-      Configuration;
-      Hosting;
-    </UnoFeatures>
-  </PropertyGroup>
+        <UnoFeatures>
+            SkiaRenderer;
+            Mvvm;
+            Configuration;
+            Hosting;
+        </UnoFeatures>
 
-  <!-- Ad packages for mobile platforms -->
-  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-android'">
-    <PackageReference Include="Xamarin.GooglePlayServices.Ads" />
-  </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-ios'">
-    <PackageReference Include="Xamarin.Google.iOS.MobileAds" />
-  </ItemGroup>
+        <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) =='android'">23</SupportedOSPlatformVersion>
+    </PropertyGroup>
 
-  <!-- Embedded resource configuration (files are auto-included by SDK, just add DependentUpon) -->
-  <ItemGroup>
-    <EmbeddedResource Update="appsettings.*.json" DependentUpon="appsettings.json" />
-  </ItemGroup>
+    <!-- Ad packages for mobile platforms -->
+    <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-android'">
+        <PackageReference Include="Xamarin.GooglePlayServices.Ads" />
+    </ItemGroup>
+    <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-ios'">
+        <PackageReference Include="Xamarin.Google.iOS.MobileAds" />
+    </ItemGroup>
+
+    <!-- Embedded resource configuration (files are auto-included by SDK, just add DependentUpon) -->
+    <ItemGroup>
+        <EmbeddedResource Update="appsettings.*.json" DependentUpon="appsettings.json" />
+    </ItemGroup>
 
 </Project>
