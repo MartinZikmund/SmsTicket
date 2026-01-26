@@ -63,6 +63,11 @@ jobs:
         run: |
           echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > "$GITHUB_WORKSPACE/android-upload.keystore"
 
+      - name: Replace appsettings.json with production config
+        env:
+          APPSETTINGS_CONTENT: ${{ secrets.APPSETTINGSPROD }}
+        run: printenv APPSETTINGS_CONTENT > "${{ env.PROJECT_PATH }}/appsettings.json"
+
       # --- Build Google Play bundle (AAB) ---
       - name: Publish AAB (signed with Upload Key)
         run: |
