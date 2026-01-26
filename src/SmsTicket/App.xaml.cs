@@ -31,7 +31,7 @@ public partial class App : Application
         AppConfig = host.Services.GetRequiredService<IConfiguration>().Get<AppConfig>()!;
 
 #if __ANDROID__
-        Android.Gms.Ads.MobileAds.Initialize(Android.App.Application.Context);
+        Google.Android.Gms.Ads.MobileAds.Initialize(Android.App.Application.Context);
 #endif
 
         // Do not repeat app initialization when the Window already has content,
