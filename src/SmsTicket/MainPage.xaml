@@ -108,7 +108,8 @@
     <Grid
         x:Name="ContentRoot"
         toolkit:VisibleBoundsPadding.PaddingMask="All"
-        Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+        RowSpacing="4">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
