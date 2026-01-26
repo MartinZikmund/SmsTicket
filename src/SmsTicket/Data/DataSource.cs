@@ -20,12 +20,12 @@ public static class DataSource
                     DefaultTicketId = "PHA42",
                     TicketTypes = new()
                     {
-                        new PragueTicketType("PHA31", "", "31", "30 min", "DPT31"),
-                        new PragueTicketType("PHA42", "", "42", "90 min", "DPT42"),
-                        new PragueTicketType("PHA120", localizerService["PragueRequiresConfirmationSms"], "120",
-                            "24 h", "DPT120"),
-                        new PragueTicketType("PHA330", localizerService["PragueRequiresConfirmationSms"], "330",
-                            "72 h", "DPT330"),
+                        new PragueTicketType("PHA30min", "", "42", "30 min", "DPT42"),
+                        new PragueTicketType("PHA90min", "", "55", "90 min", "DPT55"),
+                        new PragueTicketType("PHA24h", localizerService["PragueRequiresConfirmationSms"], "150",
+                            "24 h", "DPT150"),
+                        new PragueTicketType("PHA72h", localizerService["PragueRequiresConfirmationSms"], "350",
+                            "72 h", "DPT350"),
                         new("PHADPTA", localizerService["DuplicateSmsDetail"], "3", "", "9000603", "DPTA", true)
                     }
                 },
@@ -49,8 +49,8 @@ public static class DataSource
                     DefaultTicketId = "BUD25",
                     TicketTypes = new()
                     {
-                        new("BUD25", "", "20", "60 min", "90206", "BUD", true),
-                        new("BUD70", "", "75", "24 h", "90206", "BUD24", true),
+                        new("BUD25", "", "30", "60 min", "90206", "BUD", true),
+                        new("BUD70", "", "115", "24 h", "90206", "BUD24", true),
                         new("BUDDupe60", localizerService["DuplicateBud60SmsDetail"], "3", "", "9000603", "BUD", true),
                         new("BUDDupe24", localizerService["DuplicateBud24SmsDetail"], "3", "", "9000603", "BUD24", true)
                     }
@@ -91,7 +91,7 @@ public static class DataSource
                     DefaultTicketId = "DPMO",
                     TicketTypes = new()
                     {
-                        new("DPMO", localizerService["OLDurationDetail"], "22", "50 min", "90206", "DPMO", true),
+                        new("DPMO", localizerService["OLDurationDetail"], "27", "50 min", "90206", "DPMO", true),
                         new("DPMODupe", localizerService["DuplicateSmsDetail"], "3", "", "9000603", "DPMO", true),
                     }
                 },
@@ -103,9 +103,9 @@ public static class DataSource
                     DefaultTicketId = "DPO70",
                     TicketTypes = new()
                     {
-                        new("DPO70", "", "35", "70 min", "90206", "DPO70", true),
+                        new("DPO70", "", "38", "70 min", "90206", "DPO70", true),
                         new("DPO24", "", "100", "24 h", "90206", "DPO24", true),
-                        new("DPO70Z", localizerService["ReducedFare"], "17", "70 min", "90206", "DPO70Z", true),
+                        new("DPO70Z", localizerService["ReducedFare"], "19", "70 min", "90206", "DPO70Z", true),
                         new("DPO24Z", localizerService["ReducedFare"], "50", "24 h", "90206", "DPO24Z", true),
                         new("DPODupe", localizerService["DuplicateSmsDetail"], "3", "", "9000603", "DPOD", true),
                     }
@@ -119,8 +119,8 @@ public static class DataSource
                     DefaultTicketId = "DPMP",
                     TicketTypes = new()
                     {
-                        new("DPMP", localizerService["PARDurationDetail"], "35", "45 min", "90206", "DPMP", true),
-                        new("DPMP24", "", "60", "24 h", "90206", "DPMP24", true),
+                        new("DPMP", localizerService["PARDurationDetail"], "40", "45 min", "90206", "DPMP", true),
+                        new("DPMP24", "", "65", "24 h", "90206", "DPMP24", true),
                         new("DPMPDUPE", localizerService["DuplicateSmsDetail"], "3", "", "9000603", "DPMP", true),
                     }
                 },
