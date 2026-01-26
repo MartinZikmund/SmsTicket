@@ -70,6 +70,13 @@ public partial class App : Application
         }
     }
 
+#if HAS_UNO
+    protected override void OnActivated(Windows.ApplicationModel.Activation.IActivatedEventArgs args)
+    {
+        base.OnActivated(args);
+    }
+#endif
+
     /// <summary>
     /// Invoked when Navigation to a certain page fails
     /// </summary>
