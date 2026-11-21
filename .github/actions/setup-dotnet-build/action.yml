@@ -1,0 +1,36 @@
+name: Set up .NET build environment
+description: >
+  Installs the SDK pinned in src/global.json, restores the NuGet cache and the local
+  dotnet tools (nbgv), and optionally restores workloads.
+
+inputs:
+  workloads:
+    description: "Project or solution to restore workloads for. Empty = skip."
+    required: false
+    default: ""
+
+runs:
+  using: composite
+  steps:
+    - name: Set up .NET
+      uses: actions/setup-dotnet@v6
+      with:
+        # THE single source of the SDK version. Do not add dotnet-version here.
+        global-json-file: src/global.json
+
+    - name: Restore NuGet cache
+      uses: actions/cache@v6
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.slnx', '**/*.csproj', 'src/Directory.Packages.props', 'src/global.json') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+
+    - name: Restore local dotnet tools
+      shell: bash
+      run: dotnet tool restore
+
+    - name: Restore workloads
+      if: inputs.workloads != ''
+      shell: bash
+      run: dotnet workload restore "${{ inputs.workloads }}"

@@ -1,0 +1,71 @@
+name: Publish once
+description: >
+  Skips a publish step when this commit has already reached that environment's store, and
+  records it when it does. The marker is a commit status written only after a real upload,
+  so a publish skipped for a missing secret leaves no mark and a re-run publishes for real.
+  IMPORTANT: this records that a store RECEIVED the upload, not that it ACCEPTED it.
+  A deliberate re-push is a release.yml dispatch with force: true.
+
+inputs:
+  mode:
+    description: "'check' sets the skip output. 'record' marks the commit as published."
+    required: false
+    default: "check"
+  environment:
+    description: "Environment name the publish belongs to"
+    required: true
+  sha:
+    description: "Commit SHA"
+    required: true
+  github-token:
+    description: "Token with statuses:write"
+    required: true
+  force:
+    description: "Set to 'true' to ignore a prior publish"
+    required: false
+    default: "false"
+
+outputs:
+  skip:
+    description: "'true' when this publish should be skipped"
+    value: ${{ steps.run.outputs.skip }}
+
+runs:
+  using: composite
+  steps:
+    - name: Check or record the publish
+      id: run
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github-token }}
+        MODE: ${{ inputs.mode }}
+        ENVIRONMENT: ${{ inputs.environment }}
+        SHA: ${{ inputs.sha }}
+        FORCE: ${{ inputs.force }}
+      run: |
+        set -euo pipefail
+        context="publish-once/$ENVIRONMENT"
+
+        if [ "$MODE" = "record" ]; then
+          # The upload already succeeded, so losing the marker must not redden the job: it only
+          # costs the guard on a later re-run.
+          gh api -X POST "repos/$GITHUB_REPOSITORY/statuses/$SHA" \
+            -f state=success -f context="$context" -f description="Published to $ENVIRONMENT" >/dev/null \
+            || echo "::warning::Could not record the publish to $ENVIRONMENT. A re-run of this job would publish again."
+          exit 0
+        fi
+
+        echo "skip=false" >> "$GITHUB_OUTPUT"
+
+        if [ "$FORCE" = "true" ]; then
+          echo "::notice::force=true - ignoring any prior publish to $ENVIRONMENT."
+          exit 0
+        fi
+
+        published="$(gh api "repos/$GITHUB_REPOSITORY/commits/$SHA/status?per_page=100" \
+                       --jq ".statuses[] | select(.context == \"$context\" and .state == \"success\") | .context")"
+
+        if [ -n "$published" ]; then
+          echo "::notice::$ENVIRONMENT already published this commit. Skipping. To push again: dispatch release.yml on this branch with force=true."
+          echo "skip=true" >> "$GITHUB_OUTPUT"
+        fi

@@ -1,0 +1,192 @@
+name: Cut release branch
+
+# Creates release/vX.Y from the current state of main and moves main to the next minor.
+# Both halves are done by `nbgv prepare-release`; this workflow adds the preflight,
+# the push, the failure cleanup and the "what happens next" summary.
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Print the plan and stop"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: write        # needed by the GITHUB_TOKEN fallback path (gh workflow run)
+
+jobs:
+  cut:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      # A GITHUB_TOKEN push creates NO workflow run - that is why the previous release
+      # chain was dead on arrival. A GitHub App push does trigger workflows. When no App
+      # is configured (every fresh fork), we push with GITHUB_TOKEN and then start the
+      # release with ONE `gh workflow run`, which is the documented exception that
+      # always creates a run.
+      - name: Mint a GitHub App token (optional)
+        id: app-token
+        if: vars.RELEASE_APP_ID != ''
+        uses: actions/create-github-app-token@v3
+        with:
+          app-id: ${{ vars.RELEASE_APP_ID }}
+          private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+
+      - name: Report which token path is in use
+        run: |
+          if [ -n "${{ vars.RELEASE_APP_ID }}" ]; then
+            echo "::notice::Using the release GitHub App token. The release build will start from the branch push."
+          else
+            echo "::warning::vars.RELEASE_APP_ID is not set. Falling back to GITHUB_TOKEN, which does NOT trigger workflows - the Release workflow will be started with an explicit dispatch. Configure a GitHub App to remove this step. See docs/CI.md."
+          fi
+
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+          fetch-depth: 0
+          token: ${{ steps.app-token.outputs.token || secrets.GITHUB_TOKEN }}
+
+      - uses: ./.github/actions/setup-dotnet-build
+
+      - name: Preflight
+        id: pre
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token || secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          simple="$(dotnet nbgv get-version -v SimpleVersion)"
+          [ "$simple" != "0.0.0" ] || { echo "::error::nbgv reports 0.0.0 - version.json is malformed."; exit 1; }
+
+          # `nbgv prepare-release` refuses a dirty tree, so --what-if is a genuine rehearsal.
+          dotnet nbgv prepare-release --what-if --format json > "$RUNNER_TEMP/plan.json"
+          cat "$RUNNER_TEMP/plan.json"
+
+          branch="$(jq -r '.NewBranch.Name // ""' "$RUNNER_TEMP/plan.json")"
+          if [ -z "$branch" ]; then
+            # This is what a version.json with NO prerelease tag does: nbgv considers main
+            # to already BE a release version, so it has nothing to cut and returns
+            # "NewBranch": null. version.json needs e.g. "0.2-dev", not "0.2".
+            echo "::error::nbgv has no release branch to create (NewBranch is null). version.json's \"version\" must carry a prerelease tag - e.g. \"$(dotnet nbgv get-version -v MajorMinorVersion)-dev\" - so that main is a prerelease of the next version. See docs/CI.md."
+            exit 1
+          fi
+          echo "branch=$branch" >> "$GITHUB_OUTPUT"
+          echo "next=$(jq -r '.CurrentBranch.Version' "$RUNNER_TEMP/plan.json")" >> "$GITHUB_OUTPUT"
+
+          # nbgv prepare-release is NOT atomic: it creates the branch and can then fail
+          # writing version.json, leaving a half-cut repo. Fail before it starts.
+          if git ls-remote --exit-code --heads origin "$branch" >/dev/null 2>&1; then
+            echo "::error::$branch already exists on origin. Delete it or cut a different version."
+            exit 1
+          fi
+
+          conc="$(gh run list --workflow CI --branch main --limit 1 --json conclusion --jq '.[0].conclusion // "none"')"
+          if [ "$conc" != "success" ]; then
+            echo "::error::The latest CI run on main is '$conc'. Fix main before cutting."
+            exit 1
+          fi
+
+      - name: Stop here (dry run)
+        if: inputs.dry_run
+        run: |
+          {
+            echo "## Dry run"
+            echo ""
+            echo '```json'
+            cat "$RUNNER_TEMP/plan.json"
+            echo '```'
+            echo ""
+            echo "Would cut \`${{ steps.pre.outputs.branch }}\` and move main to \`${{ steps.pre.outputs.next }}\`. Nothing was pushed."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Cut
+        if: ${{ !inputs.dry_run }}
+        run: |
+          set -euo pipefail
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          dotnet nbgv prepare-release --format json | tee "$RUNNER_TEMP/cut.json"
+
+      - name: Push the release branch
+        if: ${{ !inputs.dry_run }}
+        run: |
+          set -euo pipefail
+          rel="$(jq -r '.NewBranch.Name' "$RUNNER_TEMP/cut.json")"
+          [ -n "$rel" ] && [ "$rel" != "null" ] || { echo "::error::nbgv did not create a release branch."; exit 1; }
+          git push origin "$rel"
+          echo "RELEASE_BRANCH=$rel" >> "$GITHUB_ENV"
+          # Consumed by the failure handler: until main's bump lands, deleting the branch is
+          # a clean rollback. After it lands, deleting would strand main on the NEXT version
+          # with no release branch to match - far worse than a half-finished cut.
+          echo "CUT_ROLLBACK_SAFE=1" >> "$GITHUB_ENV"
+
+      - name: Push main's version bump
+        if: ${{ !inputs.dry_run }}
+        id: bump
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token || secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          git checkout main
+          # Direct push keeps the cut atomic: a release branch that exists while main
+          # still claims the old version is the one state that actually hurts.
+          echo "CUT_ROLLBACK_SAFE=0" >> "$GITHUB_ENV"
+          if git push origin main 2>/dev/null; then
+            echo "mode=direct push" >> "$GITHUB_OUTPUT"
+          else
+            echo "::warning::Could not push main directly (branch protection). Opening a PR instead - MERGE IT before the next cut."
+            b="chore/bump-version-after-$(basename "$RELEASE_BRANCH")"
+            git checkout -b "$b"
+            git push origin "$b"
+            gh pr create --base main --head "$b" \
+              --title "chore: bump main after cutting $RELEASE_BRANCH" \
+              --body "Opened by the **Cut release branch** workflow. See docs/CI.md."
+            echo "mode=pull request" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Start the release build (fallback path only)
+        if: ${{ !inputs.dry_run && vars.RELEASE_APP_ID == '' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          # ONE dispatch of ONE workflow, and release.yml declares workflow_dispatch.
+          gh workflow run "Release" --ref "$RELEASE_BRANCH" \
+            || { echo "::error::Could not dispatch the Release workflow on $RELEASE_BRANCH. Start it manually from the Actions tab."; exit 1; }
+          echo "::notice::Dispatched the Release workflow on $RELEASE_BRANCH."
+
+      - name: Clean up a half-cut release
+        if: failure() && !inputs.dry_run
+        run: |
+          if [ -z "${RELEASE_BRANCH:-}" ]; then
+            echo "::error::Cut failed before anything was pushed. main is unchanged."
+          elif [ "${CUT_ROLLBACK_SAFE:-0}" = "1" ]; then
+            git push origin --delete "$RELEASE_BRANCH" || true
+            echo "::error::Cut failed; $RELEASE_BRANCH was removed. Re-run after fixing the cause."
+          else
+            # main has already moved to the next version. Deleting the release branch now
+            # would leave the previous version with nowhere to ship from.
+            echo "::error::Cut failed AFTER main was bumped. $RELEASE_BRANCH has been KEPT deliberately - deleting it would strand the released version. Start the Release workflow on $RELEASE_BRANCH manually, and check whether main's bump landed."
+          fi
+
+      - name: Summary
+        if: ${{ !inputs.dry_run }}
+        run: |
+          {
+            echo "## Cut \`$RELEASE_BRANCH\`"
+            echo ""
+            echo "| | |"
+            echo "|---|---|"
+            echo "| Release branch | \`$RELEASE_BRANCH\` |"
+            echo "| main now tracks | \`$(jq -r '.CurrentBranch.Version' "$RUNNER_TEMP/cut.json")\` (${{ steps.bump.outputs.mode }}) |"
+            echo "| Build | [Release runs](${{ github.server_url }}/${{ github.repository }}/actions/workflows/release.yml) |"
+            echo ""
+            echo "**Automatic:** a *draft* release on the Play *internal* track, and TestFlight (once the iOS secrets exist)."
+            echo ""
+            echo "**Waiting for you:** roll the Play draft out and promote it in the Play Console; submit the TestFlight build for review in App Store Connect."
+            echo ""
+            echo "Docs: \`docs/CI.md\`"
+          } >> "$GITHUB_STEP_SUMMARY"

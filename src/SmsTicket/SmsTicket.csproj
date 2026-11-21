@@ -9,9 +9,6 @@
         <ApplicationTitle>SmsTicket</ApplicationTitle>
         <!-- App Identifier -->
         <ApplicationId>com.sphereline.smsticketandroid</ApplicationId>
-        <!-- Versions -->
-        <ApplicationDisplayVersion>5.0.1</ApplicationDisplayVersion>
-        <ApplicationVersion>500001</ApplicationVersion>
         <!-- Package Publisher -->
         <ApplicationPublisher>Martin Zikmund</ApplicationPublisher>
         <!-- Package Description -->

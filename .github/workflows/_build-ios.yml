@@ -1,0 +1,148 @@
+name: Build iOS
+
+# Reusable: builds a signed device .ipa when Apple signing material is configured,
+# and an unsigned simulator .app otherwise (a device .ipa is by definition a signed,
+# provisioned archive - there is no supported "unsigned device ipa").
+# Publishing lives in release.yml - this workflow never talks to a store.
+
+on:
+  workflow_call:
+    inputs:
+      channel:        { type: string, required: true }
+      version_simple: { type: string, required: true }
+      artifact_name:  { type: string, required: true }
+    secrets:
+      APPLE_DISTRIBUTION_P12_BASE64:     { required: false }
+      APPLE_P12_PASSWORD:                { required: false }
+      APPLE_PROVISIONING_PROFILE_BASE64: { required: false }
+      APPLE_CODESIGN_KEY:                { required: false }
+      APPLE_TEAM_ID:                     { required: false }
+      KEYCHAIN_PASSWORD:                 { required: false }
+      APPSETTINGSPROD:                   { required: false }
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    # The iOS SDK pack (27.2) hard-requires Xcode 27.2
+    runs-on: xcode-27
+    timeout-minutes: 90
+    env:
+      DOTNET_NOLOGO: 1
+      DOTNET_CLI_TELEMETRY_OPTOUT: 1
+      ContinuousIntegrationBuild: true
+      APP_NAME: SmsTicket
+      PROJECT_PATH: src/SmsTicket
+      PROJECT_FILE: src/SmsTicket/SmsTicket.csproj
+      TFM: net11.0-ios
+      # All of them or it is treated as not configured. KEYCHAIN_PASSWORD is the exception:
+      # import-codesign-certs generates one when it is absent.
+      HAS_SIGNING: ${{ secrets.APPLE_DISTRIBUTION_P12_BASE64 != '' && secrets.APPLE_P12_PASSWORD != '' && secrets.APPLE_PROVISIONING_PROFILE_BASE64 != '' && secrets.APPLE_CODESIGN_KEY != '' && secrets.APPLE_TEAM_ID != '' && vars.APPLE_PROVISIONING_PROFILE_NAME != '' }}
+      # Ads stay off without an app ID, so only Prod gets the real one.
+      ADMOB_IOS_APP_ID: ${{ inputs.channel == 'Prod' && vars.ADMOB_IOS_APP_ID || '' }}
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - uses: ./.github/actions/setup-dotnet-build
+        with:
+          workloads: src/SmsTicket.slnx
+
+      - name: Select Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: "27.2"
+
+      - name: Download iOS platform
+        # https://github.com/actions/runner-images/issues/13275
+        run: xcodebuild -downloadPlatform iOS
+
+      - name: Import signing certificate
+        if: env.HAS_SIGNING == 'true'
+        uses: Apple-Actions/import-codesign-certs@v7
+        with:
+          p12-file-base64: ${{ secrets.APPLE_DISTRIBUTION_P12_BASE64 }}
+          p12-password: ${{ secrets.APPLE_P12_PASSWORD }}
+          keychain-password: ${{ secrets.KEYCHAIN_PASSWORD }}
+
+      - name: Install provisioning profile
+        if: env.HAS_SIGNING == 'true'
+        run: |
+          set -euo pipefail
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          echo "${{ secrets.APPLE_PROVISIONING_PROFILE_BASE64 }}" | base64 -d \
+            > ~/Library/MobileDevice/Provisioning\ Profiles/build.mobileprovision
+
+      - name: Replace appsettings.json with production config
+        if: inputs.channel == 'Prod'
+        env:
+          APPSETTINGS_CONTENT: ${{ secrets.APPSETTINGSPROD }}
+        run: |
+          set -euo pipefail
+          [ -n "$APPSETTINGS_CONTENT" ] || { echo "::error::APPSETTINGSPROD is not set - a Prod build would ship the test ad configuration."; exit 1; }
+          printenv APPSETTINGS_CONTENT > "$PROJECT_PATH/appsettings.json"
+
+      - name: Build signed .ipa (device)
+        if: env.HAS_SIGNING == 'true'
+        run: |
+          dotnet publish "$PROJECT_FILE" -c Release -f "$TFM" -r ios-arm64 \
+            -p:TargetFrameworks="$TFM" \
+            -p:AppChannel=${{ inputs.channel }} \
+            -p:CiVersionInjected=true \
+            -p:ApplicationDisplayVersion=${{ inputs.version_simple }} \
+            -p:ApplicationVersion=${{ inputs.version_simple }} \
+            -p:AdMobIosAppId="$ADMOB_IOS_APP_ID" \
+            -p:ArchiveOnBuild=true \
+            -p:CodesignKey="${{ secrets.APPLE_CODESIGN_KEY }}" \
+            -p:CodesignTeamId="${{ secrets.APPLE_TEAM_ID }}" \
+            -p:CodesignProvision="${{ vars.APPLE_PROVISIONING_PROFILE_NAME }}"
+
+      - name: Build simulator .app (signing not fully configured)
+        if: env.HAS_SIGNING != 'true'
+        run: |
+          echo "::notice::APPLE_DISTRIBUTION_P12_BASE64, APPLE_P12_PASSWORD, APPLE_PROVISIONING_PROFILE_BASE64, APPLE_CODESIGN_KEY, APPLE_TEAM_ID and vars.APPLE_PROVISIONING_PROFILE_NAME are not all set - building an iOS SIMULATOR app. The TestFlight upload will skip."
+          dotnet build "$PROJECT_FILE" -c Release -f "$TFM" \
+            -p:RuntimeIdentifier=iossimulator-arm64 \
+            -p:TargetFrameworks="$TFM" \
+            -p:AppChannel=${{ inputs.channel }} \
+            -p:CiVersionInjected=true \
+            -p:ApplicationDisplayVersion=${{ inputs.version_simple }} \
+            -p:ApplicationVersion=${{ inputs.version_simple }} \
+            -p:AdMobIosAppId="$ADMOB_IOS_APP_ID"
+
+      - name: Verify CFBundleVersion in the produced bundle
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/stage"
+          if [ "$HAS_SIGNING" = "true" ]; then
+            ipa="$(find "$PROJECT_PATH/bin/Release/$TFM/ios-arm64" -name '*.ipa' 2>/dev/null | head -1 || true)"
+            [ -n "$ipa" ] || { echo "::error::no .ipa produced. Grep the log for 'Created the package:'"; exit 1; }
+            rm -rf "$RUNNER_TEMP/crack" && mkdir -p "$RUNNER_TEMP/crack"
+            unzip -q "$ipa" -d "$RUNNER_TEMP/crack"
+            plist="$(find "$RUNNER_TEMP/crack/Payload" -maxdepth 2 -name Info.plist 2>/dev/null | head -1 || true)"
+            cp "$ipa" "$RUNNER_TEMP/stage/"
+          else
+            app="$(find "$PROJECT_PATH/bin/Release/$TFM/iossimulator-arm64" -maxdepth 2 -name '*.app' 2>/dev/null | head -1 || true)"
+            [ -n "$app" ] || { echo "::error::no .app produced"; exit 1; }
+            plist="$app/Info.plist"
+            ditto -c -k --keepParent "$app" "$RUNNER_TEMP/stage/${APP_NAME}-simulator.app.zip"
+          fi
+          cv="$(plutil -extract CFBundleVersion raw "$plist")"
+          sv="$(plutil -extract CFBundleShortVersionString raw "$plist")"
+          echo "Info.plist: CFBundleVersion=$cv CFBundleShortVersionString=$sv"
+          [ "$cv" = "${{ inputs.version_simple }}" ] || { echo "::error::CFBundleVersion is $cv, expected ${{ inputs.version_simple }}"; exit 1; }
+          [ "$sv" = "${{ inputs.version_simple }}" ] || { echo "::error::CFBundleShortVersionString is $sv, expected ${{ inputs.version_simple }}"; exit 1; }
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: ${{ inputs.artifact_name }}
+          path: ${{ runner.temp }}/stage
+          retention-days: ${{ inputs.channel == 'Prod' && 90 || 14 }}
+          if-no-files-found: error
+
+      - name: Remove production settings
+        if: always()
+        run: rm -f "$PROJECT_PATH/appsettings.json"
