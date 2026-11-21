@@ -64,6 +64,18 @@ public sealed class PurchaseHistoryService : IPurchaseHistoryService
 
     public Task<bool> DeleteAsync(Guid id) => MutateAsync(records => records.RemoveAll(r => r.Id == id) > 0);
 
+    public Task<bool> UpdateAsync(Guid id, Func<PurchaseRecord, PurchaseRecord> update) => MutateAsync(records =>
+    {
+        var index = records.FindIndex(r => r.Id == id);
+        if (index < 0)
+        {
+            return false;
+        }
+
+        records[index] = update(records[index]) with { Id = id };
+        return true;
+    });
+
     public async Task ClearAsync() => await MutateAsync(records =>
     {
         records.Clear();

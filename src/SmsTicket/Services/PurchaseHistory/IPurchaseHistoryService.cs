@@ -14,5 +14,8 @@ public interface IPurchaseHistoryService
 
     Task<bool> DeleteAsync(Guid id);
 
+    /// <summary>Replaces the record with <paramref name="id"/> by the result of <paramref name="update"/>. The id must not change.</summary>
+    Task<bool> UpdateAsync(Guid id, Func<PurchaseRecord, PurchaseRecord> update);
+
     Task ClearAsync();
 }
