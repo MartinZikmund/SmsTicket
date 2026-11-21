@@ -3,6 +3,7 @@ using SmsTicket.Data;
 using SmsTicket.Data.Models;
 using SmsTicket.Services.AppSettings;
 using SmsTicket.Services.Favorites;
+using SmsTicket.Services.Confirmation;
 using SmsTicket.Services.Localizer;
 using SmsTicket.Services.Location;
 using SmsTicket.Services.PurchaseHistory;
@@ -22,14 +23,21 @@ public class MainViewModel : ObservableObject
     private readonly IAppSettings _appSettings;
     private readonly FavoritesStore _favorites;
     private readonly IPurchaseHistoryService _purchaseHistory;
+    private readonly IConfirmationSmsListener _confirmationListener;
     private readonly LocalizationService _localizer = new();
 
     private JumpList? _jumpList;
     private City _selectedCity;
     private TicketType? _selectedTicketType;
 
-    public MainViewModel(ISettingsService settings, ISmsService smsService, IPurchaseHistoryService purchaseHistory, ILocationProvider? locationProvider = null)
+    public MainViewModel(
+        ISettingsService settings,
+        ISmsService smsService,
+        IPurchaseHistoryService purchaseHistory,
+        IConfirmationSmsListener? confirmationListener = null,
+        ILocationProvider? locationProvider = null)
     {
+        _confirmationListener = confirmationListener ?? new NoOpConfirmationSmsListener();
         _settings = settings;
         _smsService = smsService;
         _purchaseHistory = purchaseHistory;
@@ -175,8 +183,12 @@ public class MainViewModel : ObservableObject
             _appSettings.FirstTimeUse = false;
         }
 
+        var record = PurchaseRecord.FromTicket(DataSource.FindCityForTicket(ticket.Id) ?? SelectedCity, ticket, DateTimeOffset.Now);
+
+        // Listen before the SMS goes out: only messages arriving later are offered
+        _confirmationListener.Start(record.Id);
         await _smsService.PrepareSmsAsync(ticket.PhoneNumber, ticket.SmsText);
-        await _purchaseHistory.AddAsync(PurchaseRecord.FromTicket(DataSource.FindCityForTicket(ticket.Id) ?? SelectedCity, ticket, DateTimeOffset.Now));
+        await _purchaseHistory.AddAsync(record);
     }
 
     private async Task ToggleFavoriteAsync()

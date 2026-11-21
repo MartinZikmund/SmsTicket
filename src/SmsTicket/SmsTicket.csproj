@@ -76,4 +76,9 @@
         <EmbeddedResource Include="..\..\data\tickets.json" Link="Data\tickets.json" LogicalName="SmsTicket.Data.tickets.json" />
     </ItemGroup>
 
+    <!-- SMS User Consent API, for capturing the ticket confirmation SMS -->
+    <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+        <PackageReference Include="Xamarin.GooglePlayServices.Auth.Api.Phone" />
+    </ItemGroup>
+
 </Project>
