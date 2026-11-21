@@ -5,8 +5,8 @@ namespace SmsTicket.Services.PurchaseHistory;
 
 public sealed class PurchaseHistoryDocument
 {
-    /// <summary>Version 2 added the optional validity fields; version 1 files load unchanged.</summary>
-    public const int CurrentVersion = 2;
+    /// <summary>Version 2 added the optional validity fields, version 3 the confirmation SMS. Older files load unchanged.</summary>
+    public const int CurrentVersion = 3;
 
     public int Version { get; set; } = CurrentVersion;
 

@@ -33,6 +33,12 @@ public sealed partial record PurchaseRecord
     /// <summary>Where <see cref="ValidFrom"/> and <see cref="ValidUntil"/> came from; null means estimated.</summary>
     public ValiditySource? ValiditySource { get; init; }
 
+    /// <summary>The operator's ticket SMS as the user pasted or shared it.</summary>
+    public string? ConfirmationSms { get; init; }
+
+    /// <summary>The ticket code read from <see cref="ConfirmationSms"/>.</summary>
+    public string? TicketCode { get; init; }
+
     /// <summary>Set when the user hid the ticket from the active tickets.</summary>
     public DateTimeOffset? DismissedAt { get; init; }
 
