@@ -45,4 +45,16 @@ public class ActiveTicketFormatterTests
     }
 
     private static TimeZoneInfo PragueTimeZone => SmsTicket.Data.PragueTime.Zone;
+
+    [TestMethod]
+    public void Range_SameDay_ShowsDateOnce() =>
+        Assert.AreEqual(
+            "11/21/2026 14:22–14:52",
+            ActiveTicketFormatter.FormatRange(Local(2026, 11, 21, 14, 22), Local(2026, 11, 21, 14, 52), PragueTimeZone, CultureInfo.InvariantCulture));
+
+    [TestMethod]
+    public void Range_AcrossMidnight_ShowsBothDates() =>
+        Assert.AreEqual(
+            "11/21/2026 23:40 – 11/22/2026 01:10",
+            ActiveTicketFormatter.FormatRange(Local(2026, 11, 21, 23, 40), Local(2026, 11, 22, 1, 10), PragueTimeZone, CultureInfo.InvariantCulture));
 }

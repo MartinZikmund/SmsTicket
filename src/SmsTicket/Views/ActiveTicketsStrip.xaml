@@ -43,6 +43,25 @@
                             <Button.Flyout>
                                 <MenuFlyout Placement="Bottom">
                                     <MenuFlyoutItem
+                                        AutomationProperties.AutomationId="PasteConfirmationSmsMenuItem"
+                                        Click="OnPasteConfirmationClick"
+                                        Tag="{x:Bind}"
+                                        Text="{x:Bind views:ActiveTicketsStrip.PasteConfirmationText}">
+                                        <MenuFlyoutItem.Icon>
+                                            <FontIcon Glyph="&#xE77F;" />
+                                        </MenuFlyoutItem.Icon>
+                                    </MenuFlyoutItem>
+                                    <MenuFlyoutItem
+                                        AutomationProperties.AutomationId="ShowTicketSmsMenuItem"
+                                        Click="OnShowTicketSmsClick"
+                                        Tag="{x:Bind}"
+                                        Text="{x:Bind views:ActiveTicketsStrip.ShowTicketSmsText}"
+                                        Visibility="{x:Bind HasConfirmationSms, Mode=OneWay}">
+                                        <MenuFlyoutItem.Icon>
+                                            <FontIcon Glyph="&#xE8BD;" />
+                                        </MenuFlyoutItem.Icon>
+                                    </MenuFlyoutItem>
+                                    <MenuFlyoutItem
                                         AutomationProperties.AutomationId="AdjustStartMenuItem"
                                         Click="OnAdjustStartClick"
                                         Tag="{x:Bind}"

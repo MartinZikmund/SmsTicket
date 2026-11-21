@@ -3,6 +3,7 @@ using System.Globalization;
 using SmsTicket.Data;
 using SmsTicket.Data.Models;
 using SmsTicket.Services.ActiveTickets;
+using SmsTicket.Services.Confirmation;
 using SmsTicket.Services.Localizer;
 
 namespace SmsTicket.ViewModels;
@@ -81,6 +82,9 @@ public sealed class ActiveTicketsViewModel : ObservableObject
     public Task AdjustStartAsync(ActiveTicketItem item, TimeSpan timeOfDay) =>
         _service.AdjustStartAsync(item.Id, ActiveTickets.ResolveStartTime(item.Ticket.Record.PreparedAt, timeOfDay, _service.Zone));
 
+    public Task<ConfirmationResult> ApplyConfirmationAsync(ActiveTicketItem item, string smsText) =>
+        _service.ApplyConfirmationAsync(item.Id, smsText);
+
     public Task MarkNotSentAsync(ActiveTicketItem item) => _service.MarkNotSentAsync(item.Id);
 
     public Task DismissAsync(ActiveTicketItem item) => _service.DismissAsync(item.Id);
@@ -117,6 +121,7 @@ public sealed class ActiveTicketItem : ObservableObject
                 OnPropertyChanged(nameof(IsEstimate));
                 OnPropertyChanged(nameof(HintText));
                 OnPropertyChanged(nameof(ToolTipText));
+                OnPropertyChanged(nameof(HasConfirmationSms));
             }
         }
     }
@@ -135,6 +140,8 @@ public sealed class ActiveTicketItem : ObservableObject
     public string ToolTipText => IsEstimate ? $"{OptionsLabel}\n{_estimateHint}" : OptionsLabel;
 
     public bool IsEstimate => _ticket?.IsEstimate ?? false;
+
+    public bool HasConfirmationSms => _ticket?.Record.ConfirmationSms is not null;
 
     /// <summary>Prague day tickets only start after the user replies to the operator.</summary>
     public string HintText { get; private set; } = "";

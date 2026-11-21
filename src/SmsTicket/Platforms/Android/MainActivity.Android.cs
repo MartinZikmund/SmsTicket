@@ -1,4 +1,5 @@
 using Android.App;
+using Android.Content;
 using Android.Content.PM;
 using Android.OS;
 using Android.Views;
@@ -20,4 +21,24 @@ public class MainActivity : Uno.UI.Runtime.Android.ApplicationActivity
         base.OnCreate(savedInstanceState);
     }
 
+    protected override void OnResume()
+    {
+        base.OnResume();
+        SmsUserConsentListener.Instance.OnActivityResumed(this);
+    }
+
+    protected override void OnPause()
+    {
+        SmsUserConsentListener.Instance.OnActivityPaused();
+        base.OnPause();
+    }
+
+    protected override void OnActivityResult(int requestCode, Result resultCode, Intent? data)
+    {
+        base.OnActivityResult(requestCode, resultCode, data);
+        if (requestCode == SmsUserConsentListener.ConsentRequestCode)
+        {
+            SmsUserConsentListener.Instance.OnConsentResult(resultCode, data);
+        }
+    }
 }

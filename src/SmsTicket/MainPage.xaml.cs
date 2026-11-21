@@ -1,5 +1,6 @@
 using Microsoft.UI.Xaml.Media.Imaging;
 using SmsTicket.Data.Models;
+using SmsTicket.Services.Confirmation;
 using SmsTicket.Services.Localizer;
 using SmsTicket.Services.PurchaseHistory;
 using SmsTicket.Services.Settings;
@@ -15,7 +16,7 @@ public sealed partial class MainPage : Page
     public MainPage()
     {
         InitializeComponent();
-        ViewModel = new MainViewModel(new SettingsService(), new SmsService(), PurchaseHistoryService.Default);
+        ViewModel = new MainViewModel(new SettingsService(), new SmsService(), PurchaseHistoryService.Default, ConfirmationSmsListeners.Create());
         Loaded += OnLoaded;
         ViewModel.PropertyChanged += (_, e) =>
         {

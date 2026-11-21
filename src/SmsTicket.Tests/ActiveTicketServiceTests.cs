@@ -133,7 +133,7 @@ public class ActiveTicketServiceTests
     }
 
     [TestMethod]
-    public async Task Save_WritesVersionTwo_AndOmitsUnsetOverrides()
+    public async Task Save_WritesCurrentVersion_AndOmitsUnsetOverrides()
     {
         var (service, history) = Create();
         var plain = Record("PHA30min", _clock.Now);
@@ -144,7 +144,7 @@ public class ActiveTicketServiceTests
 
         using var document = JsonDocument.Parse(await File.ReadAllTextAsync(FilePath));
         var root = document.RootElement;
-        Assert.AreEqual(2, root.GetProperty("version").GetInt32());
+        Assert.AreEqual(PurchaseHistoryDocument.CurrentVersion, root.GetProperty("version").GetInt32());
         var purchases = root.GetProperty("purchases").EnumerateArray().ToList();
         var plainJson = purchases.Single(p => p.GetProperty("id").GetGuid() == plain.Id);
         var adjustedJson = purchases.Single(p => p.GetProperty("id").GetGuid() == adjusted.Id);

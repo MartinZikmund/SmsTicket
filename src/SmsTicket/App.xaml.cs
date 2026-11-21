@@ -12,6 +12,7 @@ using SmsTicket.Services.AppSettings;
 using SmsTicket.Services.Settings;
 using SmsTicket.Data.Models;
 using SmsTicket.Services.ActiveTickets;
+using SmsTicket.Services.Confirmation;
 using SmsTicket.Services.PurchaseHistory;
 using SmsTicket.Services.Reminders;
 using SmsTicket.Services.Sms;
@@ -205,9 +206,11 @@ public partial class App : Application
         // Arguments are untrusted input - only act on known ticket ids
         if (DataSource.FindTicket(arguments) is { City: var city, Ticket: var ticket })
         {
+            var record = PurchaseRecord.FromTicket(city, ticket, DateTimeOffset.Now);
+            ConfirmationSmsListeners.Create().Start(record.Id);
             SmsService smsService = new();
             await smsService.PrepareSmsAsync(ticket.PhoneNumber, ticket.SmsText);
-            await PurchaseHistoryService.Default.AddAsync(PurchaseRecord.FromTicket(city, ticket, DateTimeOffset.Now));
+            await PurchaseHistoryService.Default.AddAsync(record);
         }
     }
 

@@ -89,4 +89,24 @@ public class ActiveTicketsViewModelTests
         Assert.AreEqual(Local(2026, 11, 22, 0, 31), item.Ticket.ValidUntil);
         Assert.IsFalse(item.IsEstimate);
     }
+
+    [TestMethod]
+    public async Task ApplyConfirmation_ItemNoLongerEstimated_AndHasSms()
+    {
+        FakeTimeProvider clock = new(Local(2026, 11, 21, 14, 25));
+        PurchaseHistoryService history = new(Path.Combine(_directory, "history.json"));
+        ActiveTicketsViewModel viewModel = new(new ActiveTicketService(history, clock, PragueTime.Zone), new LocalizationService());
+        await history.AddAsync(Record("PHA30min", Local(2026, 11, 21, 14, 21)));
+        await viewModel.LoadAsync();
+        var item = viewModel.Items.Single();
+        Assert.IsTrue(item.IsEstimate);
+        Assert.IsFalse(item.HasConfirmationSms);
+
+        await viewModel.ApplyConfirmationAsync(item, "Jizdenka\nod 21.11.26. 14:22\ndo 21.11.26. 14:52");
+        await viewModel.LoadAsync();
+
+        Assert.AreSame(item, viewModel.Items.Single());
+        Assert.IsFalse(item.IsEstimate);
+        Assert.IsTrue(item.HasConfirmationSms);
+    }
 }
