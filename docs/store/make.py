@@ -1,9 +1,16 @@
-"""Composes Play Store screenshots: headline + phone mockup on a branded background, rendered with headless Edge."""
-import pathlib, subprocess, sys
+"""Composes store screenshots: headline + phone mockup on a branded background, rendered with headless Edge.
+
+IOS=1 renders the App Store iPhone size (1290x2796) into out-ios/ instead of Play's 1080x1920.
+"""
+import os, pathlib, subprocess, sys
+
+IOS = os.environ.get("IOS") == "1"
+CW, CH = (1080, 2341) if IOS else (1080, 1920)
+SCALE = 1290 / 1080 if IOS else 1
 
 ROOT = pathlib.Path(__file__).parent
 RAW = ROOT / "raw"
-OUT = ROOT / "out"  # renders land here; copy the PNGs to android/<lang>/
+OUT = ROOT / ("out-ios" if IOS else "out")  # renders land here; copy them to android/ or ios/
 OUT.mkdir(exist_ok=True)
 ICON_DIR = ROOT.parents[1] / "src" / "SmsTicket" / "Assets" / "Icons"
 EDGE = r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
@@ -40,7 +47,7 @@ TEMPLATE = """<!DOCTYPE html><html><head><meta charset="utf-8"><style>
 @font-face {{ font-family: OS; src: url('file:///C:/Windows/Fonts/OpenSans-SemiBold.ttf'); font-weight: 600; }}
 @font-face {{ font-family: OS; src: url('file:///C:/Windows/Fonts/OpenSans-ExtraBold.ttf'); font-weight: 800; }}
 * {{ margin: 0; box-sizing: border-box; }}
-html, body {{ width: 1080px; height: 1920px; overflow: hidden; }}
+html, body {{ width: {cw}px; height: {ch}px; overflow: hidden; }}
 body {{ font-family: OS, 'Segoe UI', sans-serif; color: #fff; position: relative;
   background: radial-gradient(1200px 900px at 85% 8%, {c3}AA 0%, transparent 60%),
               radial-gradient(900px 900px at 0% 100%, {c2}CC 0%, transparent 65%),
@@ -60,7 +67,7 @@ p {{ position: absolute; top: {sub_top}px; left: 110px; right: 110px; text-align
 .glow {{ position: absolute; left: 50%; bottom: 200px; width: 900px; height: 900px; transform: translateX(-50%);
   background: radial-gradient(circle, #ffffff30 0%, transparent 60%); }}
 </style></head><body>
-<svg class="wires" viewBox="0 0 1080 1920" preserveAspectRatio="none">
+<svg class="wires" viewBox="0 0 1080 {ch}" preserveAspectRatio="none">
   <g stroke="#fff" stroke-width="3" fill="none">
     <path d="M-50 330 C 300 360, 700 300, 1130 380"/>
     <path d="M-50 420 C 360 470, 760 400, 1130 520"/>
@@ -77,12 +84,12 @@ p {{ position: absolute; top: {sub_top}px; left: 110px; right: 110px; text-align
 
 def render(lang, idx, key, theme, headline, sub):
     c1, c2, c3 = THEMES[theme]
-    shot = (RAW / f"{lang}-{key}.png").as_uri()
+    shot = (RAW / f"{lang}-{key}.jpg").as_uri()
     # Phone shows the full 1344x2992 screen when it fits under the text, otherwise it bleeds off the bottom
-    pw = 600
+    pw = 780 if IOS else 600
     ph = int((pw - 32) * 2992 / 1344) + 32
     html = TEMPLATE.format(
-        c1=c1, c2=c2, c3=c3, pw=pw, ph=ph,
+        c1=c1, c2=c2, c3=c3, pw=pw, ph=ph, cw=CW, ch=CH,
         sub_top=196 + 2 * 92 + 34,
         icon_bg=(ICON_DIR / "icon.svg").as_uri(), icon_fg=(ICON_DIR / "icon_foreground.svg").as_uri(),
         app="SMS jízdenka" if lang == "cs" else "SMS Ticket",
@@ -91,7 +98,7 @@ def render(lang, idx, key, theme, headline, sub):
     page.write_text(html, encoding="utf-8")
     png = OUT / f"{lang}-{idx}-{key}.png"
     subprocess.run([EDGE, "--headless=new", "--disable-gpu", "--hide-scrollbars", "--allow-file-access-from-files",
-                    f"--screenshot={png}", "--window-size=1080,1920", "--force-device-scale-factor=1",
+                    f"--screenshot={png}", f"--window-size={CW},{CH}", f"--force-device-scale-factor={SCALE}",
                     "--virtual-time-budget=3000", page.as_uri()], check=True, capture_output=True)
     print(png)
 

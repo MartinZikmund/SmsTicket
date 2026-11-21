@@ -3,6 +3,7 @@ import pathlib, subprocess
 
 ROOT = pathlib.Path(__file__).parent
 OUT = ROOT / "out"  # renders land here; copy the PNGs to android/<lang>/
+OUT.mkdir(exist_ok=True)
 ICON_DIR = ROOT.parents[1] / "src" / "SmsTicket" / "Assets" / "Icons"
 EDGE = r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
 
@@ -38,7 +39,7 @@ p {{ font-size: 30px; line-height: 1.35; opacity: .92; white-space: pre-line; }}
 for lang, (name, tag) in TEXT.items():
     page = OUT / f"feature-{lang}.html"
     page.write_text(HTML.format(bg=(ICON_DIR / "icon.svg").as_uri(), fg=(ICON_DIR / "icon_foreground.svg").as_uri(),
-                                name=name, tag=tag, shot=(ROOT / "raw" / f"{lang}-main.png").as_uri()), encoding="utf-8")
+                                name=name, tag=tag, shot=(ROOT / "raw" / f"{lang}-main.jpg").as_uri()), encoding="utf-8")
     png = OUT / f"feature-{lang}.png"
     subprocess.run([EDGE, "--headless=new", "--disable-gpu", "--hide-scrollbars", f"--screenshot={png}",
                     "--window-size=1024,500", "--force-device-scale-factor=1", "--virtual-time-budget=3000", page.as_uri()],
