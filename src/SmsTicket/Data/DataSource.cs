@@ -17,7 +17,7 @@ public static class DataSource
                     Id = "PHA",
                     Abbreviation = localizerService["PragueAbbreviation"],
                     Name = localizerService["PragueName"],
-                    DefaultTicketId = "PHA42",
+                    DefaultTicketId = "PHA30min",
                     TicketTypes = new()
                     {
                         new PragueTicketType("PHA30min", "", "42", "30 min", "DPT42"),
@@ -38,6 +38,7 @@ public static class DataSource
                     TicketTypes = new()
                     {
                         new("LIB", "", "38", "60 min", "90206", "LIB", true),
+                        new("LIB45", localizerService["LIB45Detail"], "45", "90 min", "90206", "LIB45", true),
                         new("LIBDupe", localizerService["DuplicateSmsDetail"], "3", "", "9000603", "LIB", true)
                     }
                 },
@@ -72,19 +73,6 @@ public static class DataSource
                 },
                 new City
                 {
-                    Id = "KV",
-                    Abbreviation = "KV",
-                    Name = localizerService["CarlsbadName"],
-                    DefaultTicketId = "JKV25",
-                    TicketTypes = new()
-                    {
-                        new("JKV30", "", "20", "60 min", "90230", "JKV20", true),
-                        new("JKV17", localizerService["ReducedFare"], "40", "60 min", "90230", "JKV40", true),
-                        new("JKVDupe", localizerService["DuplicateSmsDetail"], "5", "", "90030", "JKVD", true)
-                    }
-                },
-                new City
-                {
                     Id = "OL",
                     Abbreviation = "OL",
                     Name = "Olomouc",
@@ -103,9 +91,9 @@ public static class DataSource
                     DefaultTicketId = "DPO70",
                     TicketTypes = new()
                     {
-                        new("DPO70", "", "38", "70 min", "90206", "DPO70", true),
+                        new("DPO70", localizerService["OSTDurationDetail"], "38", "70 min", "90206", "DPO70", true),
                         new("DPO24", "", "100", "24 h", "90206", "DPO24", true),
-                        new("DPO70Z", localizerService["ReducedFare"], "19", "70 min", "90206", "DPO70Z", true),
+                        new("DPO70Z", localizerService["OSTReducedDurationDetail"], "19", "70 min", "90206", "DPO70Z", true),
                         new("DPO24Z", localizerService["ReducedFare"], "50", "24 h", "90206", "DPO24Z", true),
                         new("DPODupe", localizerService["DuplicateSmsDetail"], "3", "", "9000603", "DPOD", true),
                     }
@@ -139,18 +127,6 @@ public static class DataSource
                 },
                 new City
                 {
-                    Id = "SOK",
-                    Abbreviation = "SOK",
-                    Name = "Sokolov",
-                    DefaultTicketId = "SOK",
-                    TicketTypes = new()
-                    {
-                        new("SOK", localizerService["SOKDurationDetail"], "30", "20 h", "90206", "SOK", true),
-                        new("SOKDupe", localizerService["DuplicateSmsDetail"], "3", "", "9000603", "SOKD", true),
-                    }
-                },
-                new City
-                {
                     Id = "UL",
                     Abbreviation = "ÚnL",
                     Name = "Ústí nad Labem",
@@ -158,9 +134,9 @@ public static class DataSource
                     TicketTypes = new()
                     {
                         new("MDJ", "", "26", "60 min", "90206", "MDJ", true),
-                        new("MDJ106", "", "106", "24 h", "90206", "MDJ106", true),
-                        new("MDJZD", localizerService["ReducedFareUL"], "53", "24 h", "90206", "MDJZD", true),
-                        new("MDJ60", localizerService["ReducedFareUL2"], "60", "24 h", "90206", "MDJ60", true),
+                        new("MDJ106", localizerService["ULDayDetail"], "106", localizerService["OneDay"], "90206", "MDJ106", true),
+                        new("MDJZD", localizerService["ReducedFareUL"], "53", localizerService["OneDay"], "90206", "MDJZD", true),
+                        new("MDJ60", localizerService["ReducedFareUL2"], "60", localizerService["OneDay"], "90206", "MDJ60", true),
                         new("MDJDupe", localizerService["DuplicateSmsDetail"], "3", "", "9000603", "MDJA", true),
                     }
                 },
@@ -195,7 +171,19 @@ public static class DataSource
                 },
                 new City
                 {
-                    Id ="TB",
+                    Id = "CHEB",
+                    Abbreviation = "CH",
+                    Name = "Cheb",
+                    DefaultTicketId = "CHD",
+                    TicketTypes = new()
+                    {
+                        new("CHD", localizerService["CHDDetail"], "30", localizerService["AllDay"], "90206", "CHD", true),
+                        new("CHDDupe", localizerService["DuplicateSmsDetail"], "3", "", "9000603", "CHDD", true)
+                    }
+                },
+                new City
+                {
+                    Id = "TB",
                     Abbreviation = "TB",
                     Name = "Tábor",
                     DefaultTicketId = "COM",

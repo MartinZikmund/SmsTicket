@@ -186,9 +186,6 @@
   <data name="TicketType" xml:space="preserve">
     <value>Ticket type</value>
   </data>
-  <data name="SOKDurationDetail" xml:space="preserve">
-    <value>Valid between 3 AM and 11:59 PM</value>
-  </data>
   <data name="PARDurationDetail" xml:space="preserve">
     <value>60 minutes on Sat., Sun. and holidays</value>
   </data>
@@ -205,16 +202,13 @@
     <value>For line nr. 11 (Liberec - Jablonec nad Nisou)</value>
   </data>
   <data name="ReducedFareUL" xml:space="preserve">
-    <value>Ages 6 to 18, students, ages 65 to 70</value>
+    <value>50 % reduced: ages 6–18, students 18–26, 65+, 3rd degree disability. Valid until 4 AM the next day</value>
   </data>
   <data name="ReducedFareUL2" xml:space="preserve">
-    <value>With a child up to 3 years of age, person with disabilities, ages 62 to 65</value>
+    <value>Ústí fare: ages 62–65, person with a child under 3, 3rd degree disability. Valid until 4 AM the next day</value>
   </data>
   <data name="QuickActionDescriptionFormatString" xml:space="preserve">
     <value>Price {0} CZK</value>
-  </data>
-  <data name="CarlsbadName" xml:space="preserve">
-    <value>Carlsbad</value>
   </data>
   <data name="PinnedDescription" xml:space="preserve">
     <value>You can find pinned tickets in the app icon menu on supported devices (long press the icon)</value>
@@ -227,5 +221,26 @@
   </data>
   <data name="PrepareSmsNoteTitle" xml:space="preserve">
     <value>Preparing SMS</value>
+  </data>
+  <data name="LIB45Detail" xml:space="preserve">
+    <value>Also valid on line 11 to Jablonec nad Nisou</value>
+  </data>
+  <data name="OSTDurationDetail" xml:space="preserve">
+    <value>90 minutes on Sat., Sun. and holidays</value>
+  </data>
+  <data name="OSTReducedDurationDetail" xml:space="preserve">
+    <value>Reduced fare, 90 minutes on Sat., Sun. and holidays</value>
+  </data>
+  <data name="ULDayDetail" xml:space="preserve">
+    <value>Valid until 4 AM the next day</value>
+  </data>
+  <data name="OneDay" xml:space="preserve">
+    <value>1 day</value>
+  </data>
+  <data name="AllDay" xml:space="preserve">
+    <value>All day</value>
+  </data>
+  <data name="CHDDetail" xml:space="preserve">
+    <value>All-day ticket, valid 4:30 AM–11:30 PM</value>
   </data>
 </root>
