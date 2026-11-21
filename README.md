@@ -5,10 +5,11 @@ Buy public transport tickets by SMS in Czech cities, without having to remember 
 <a href="https://play.google.com/store/apps/details?id=com.sphereline.smsticketandroid">Get it on Google Play</a>
 
 <p>
-  <img src="docs/images/01-tickets-light.png" width="200" alt="Tickets for Prague" />
-  <img src="docs/images/02-city-picker.png" width="200" alt="Choosing a city" />
-  <img src="docs/images/03-tickets-dark.png" width="200" alt="Tickets for Olomouc in dark theme" />
-  <img src="docs/images/04-about.png" width="200" alt="About page with photo credits" />
+  <img src="docs/images/01-main.jpg" width="180" alt="Buying an SMS ticket in Brno, with active tickets and favorites" />
+  <img src="docs/images/02-picker.jpg" width="180" alt="Choosing one of 13 Czech cities" />
+  <img src="docs/images/03-history.jpg" width="180" alt="Purchase history with monthly totals" />
+  <img src="docs/images/04-dark.jpg" width="180" alt="City transit info in dark mode" />
+  <img src="docs/images/05-settings.jpg" width="180" alt="Theme and language settings" />
 </p>
 
 ## Features
@@ -16,7 +17,12 @@ Buy public transport tickets by SMS in Czech cities, without having to remember 
 - SMS tickets for 13 cities, with prices and validity at a glance
 - A photo of each city, so it's obvious which one you're buying for
 - Duplicate tickets for when you've deleted the confirmation SMS
-- Home screen shortcuts for the tickets you buy most often
+- Favorites for one-tap buying, also as home screen shortcuts
+- Active tickets with a live countdown and a reminder before they expire
+- Purchase history with monthly totals
+- Paste or share the confirmation SMS to see the exact validity
+- City info: transport operator, SMS ticket rules and journey planner links
+- Optional nearest city detection
 - Light, dark and high contrast themes, in Czech and English
 
 The ticket SMS is charged by your operator: the ticket price plus the price of the SMS itself.
@@ -25,7 +31,7 @@ The ticket SMS is charged by your operator: the ticket price plus the price of t
 
 Brno, Cheb, České Budějovice, Hradec Králové, Liberec, Olomouc, Ostrava, Pardubice, Plzeň, Praha, Tábor, Ústí nad Labem, Zlín and Otrokovice.
 
-Prices and numbers live in [`DataSource.cs`](src/SmsTicket/Data/DataSource.cs). Spotted an outdated price or a missing city? [Open an issue](https://github.com/MartinZikmund/SmsTicket/issues/new) or send a pull request.
+Prices and numbers live in [`data/tickets.json`](data/tickets.json). The app downloads the latest version from `main`, so a fix there reaches users without an app update. Spotted an outdated price or a missing city? [Open an issue](https://github.com/MartinZikmund/SmsTicket/issues/new) or send a pull request.
 
 ## Building
 
