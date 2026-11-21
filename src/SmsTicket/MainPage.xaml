@@ -2,6 +2,7 @@
     x:Class="SmsTicket.MainPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:SmsTicket.Controls"
     xmlns:local="using:SmsTicket"
     xmlns:models="using:SmsTicket.Data.Models"
     xmlns:utu="using:Uno.Toolkit.UI"
@@ -18,10 +19,10 @@
 
         <!--  Hero  -->
         <Grid x:Name="Hero" Height="260">
-            <Image
+            <controls:FocusedImage
                 AutomationProperties.AccessibilityView="Raw"
-                Source="{x:Bind local:MainPage.ToImageSource(ViewModel.SelectedCity.HeroImage), Mode=OneWay}"
-                Stretch="UniformToFill" />
+                FocusY="{x:Bind local:MainPage.PhotoFocusY(ViewModel.SelectedCity.Photo), Mode=OneWay}"
+                Source="{x:Bind local:MainPage.ToImageSource(ViewModel.SelectedCity.HeroImage), Mode=OneWay}" />
             <Border Background="{ThemeResource HeroScrimBrush}" />
 
             <Button
