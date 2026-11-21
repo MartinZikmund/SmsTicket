@@ -109,6 +109,9 @@ public class LocalizationService : ILocalizerService
     public string ShowTipsAgainTitle => this[nameof(ShowTipsAgainTitle)];
     public string ShowTipsAgainDescription => this[nameof(ShowTipsAgainDescription)];
     public string ShowTipsAgain => this[nameof(ShowTipsAgain)];
+    public string AdPrivacyOptionsTitle => this[nameof(AdPrivacyOptionsTitle)];
+    public string AdPrivacyOptionsDescription => this[nameof(AdPrivacyOptionsDescription)];
+    public string AdPrivacyOptions => this[nameof(AdPrivacyOptions)];
     public string NavHistory => this[nameof(NavHistory)];
     public string HistoryTitle => this[nameof(HistoryTitle)];
     public string HistoryEmptyTitle => this[nameof(HistoryEmptyTitle)];

@@ -313,6 +313,15 @@
   <data name="ShowTipsAgain" xml:space="preserve">
     <value>Zobrazit znovu</value>
   </data>
+  <data name="AdPrivacyOptionsTitle" xml:space="preserve">
+    <value>Nastavení soukromí reklam</value>
+  </data>
+  <data name="AdPrivacyOptionsDescription" xml:space="preserve">
+    <value>Změňte nebo odvolejte souhlas se zpracováním údajů pro reklamy</value>
+  </data>
+  <data name="AdPrivacyOptions" xml:space="preserve">
+    <value>Spravovat</value>
+  </data>
   <data name="NavHistory" xml:space="preserve">
     <value>Historie</value>
   </data>
