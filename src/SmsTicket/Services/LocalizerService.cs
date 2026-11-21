@@ -95,4 +95,18 @@ public class LocalizationService : ILocalizerService
     public string NearestCityNoneNearby => this[nameof(NearestCityNoneNearby)];
     public string NearestCityDenied => this[nameof(NearestCityDenied)];
     public string NearestCityUnavailable => this[nameof(NearestCityUnavailable)];
+    public string Personalization => this[nameof(Personalization)];
+    public string AppTheme => this[nameof(AppTheme)];
+    public string AppThemeDescription => this[nameof(AppThemeDescription)];
+    public string Language => this[nameof(Language)];
+    public string LanguageDescription => this[nameof(LanguageDescription)];
+    public string SystemLanguage => this[nameof(SystemLanguage)];
+    public string CzechLanguage => this[nameof(CzechLanguage)];
+    public string EnglishLanguage => this[nameof(EnglishLanguage)];
+    public string RestartRequired => this[nameof(RestartRequired)];
+    public string RestartRequiredMessage => this[nameof(RestartRequiredMessage)];
+    public string Other => this[nameof(Other)];
+    public string ShowTipsAgainTitle => this[nameof(ShowTipsAgainTitle)];
+    public string ShowTipsAgainDescription => this[nameof(ShowTipsAgainDescription)];
+    public string ShowTipsAgain => this[nameof(ShowTipsAgain)];
 }

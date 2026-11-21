@@ -1,0 +1,143 @@
+<Page
+    x:Class="SmsTicket.Views.SettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Background="{ThemeResource SolidBackgroundFillColorBaseBrush}">
+
+    <Page.Resources>
+        <Style x:Key="SettingsCardStyle" TargetType="Grid">
+            <Setter Property="Padding" Value="16" />
+            <Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}" />
+            <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="{StaticResource ControlCornerRadius}" />
+            <Setter Property="ColumnSpacing" Value="16" />
+            <Setter Property="RowSpacing" Value="12" />
+        </Style>
+        <Style
+            x:Key="SettingsGroupHeaderStyle"
+            BasedOn="{StaticResource BodyStrongTextBlockStyle}"
+            TargetType="TextBlock">
+            <Setter Property="Margin" Value="0,16,0,4" />
+        </Style>
+        <Style
+            x:Key="SettingsDescriptionStyle"
+            BasedOn="{StaticResource CaptionTextBlockStyle}"
+            TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{ThemeResource TextFillColorSecondaryBrush}" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+        </Style>
+    </Page.Resources>
+
+    <ScrollViewer>
+        <StackPanel
+            MaxWidth="720"
+            Padding="16,24"
+            Spacing="4">
+            <TextBlock
+                AutomationProperties.HeadingLevel="Level1"
+                Style="{StaticResource TitleTextBlockStyle}"
+                Text="{x:Bind Localizer.Settings}" />
+
+            <TextBlock
+                AutomationProperties.HeadingLevel="Level2"
+                Style="{StaticResource SettingsGroupHeaderStyle}"
+                Text="{x:Bind Localizer.Personalization}" />
+
+            <!--  Theme  -->
+            <Grid Style="{StaticResource SettingsCardStyle}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <FontIcon VerticalAlignment="Center" Glyph="&#xE790;" />
+                <StackPanel Grid.Column="1">
+                    <TextBlock Text="{x:Bind Localizer.AppTheme}" />
+                    <TextBlock Style="{StaticResource SettingsDescriptionStyle}" Text="{x:Bind Localizer.AppThemeDescription}" />
+                </StackPanel>
+                <RadioButtons
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    AutomationProperties.AutomationId="ThemeRadioButtons"
+                    AutomationProperties.Name="{x:Bind Localizer.AppTheme}"
+                    SelectedIndex="{x:Bind ViewModel.ThemeIndex, Mode=TwoWay}">
+                    <RadioButton AutomationProperties.AutomationId="ThemeSystem" Content="{x:Bind Localizer.SystemTheme}" />
+                    <RadioButton AutomationProperties.AutomationId="ThemeLight" Content="{x:Bind Localizer.LightTheme}" />
+                    <RadioButton AutomationProperties.AutomationId="ThemeDark" Content="{x:Bind Localizer.DarkTheme}" />
+                </RadioButtons>
+            </Grid>
+
+            <!--  Language  -->
+            <Grid Style="{StaticResource SettingsCardStyle}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <FontIcon VerticalAlignment="Center" Glyph="&#xF2B7;" />
+                <StackPanel Grid.Column="1">
+                    <TextBlock Text="{x:Bind Localizer.Language}" />
+                    <TextBlock Style="{StaticResource SettingsDescriptionStyle}" Text="{x:Bind Localizer.LanguageDescription}" />
+                </StackPanel>
+                <RadioButtons
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    AutomationProperties.AutomationId="LanguageRadioButtons"
+                    AutomationProperties.Name="{x:Bind Localizer.Language}"
+                    SelectedIndex="{x:Bind ViewModel.LanguageIndex, Mode=TwoWay}">
+                    <RadioButton AutomationProperties.AutomationId="LanguageSystem" Content="{x:Bind Localizer.SystemLanguage}" />
+                    <RadioButton
+                        AutomationProperties.AutomationId="LanguageCzech"
+                        Content="{x:Bind Localizer.CzechLanguage}"
+                        Language="cs" />
+                    <RadioButton
+                        AutomationProperties.AutomationId="LanguageEnglish"
+                        Content="{x:Bind Localizer.EnglishLanguage}"
+                        Language="en" />
+                </RadioButtons>
+                <InfoBar
+                    Grid.Row="2"
+                    Grid.Column="1"
+                    AutomationProperties.AutomationId="RestartRequiredInfoBar"
+                    IsClosable="False"
+                    IsOpen="{x:Bind ViewModel.IsRestartRequired, Mode=OneWay}"
+                    Message="{x:Bind Localizer.RestartRequiredMessage}"
+                    Severity="Informational"
+                    Title="{x:Bind Localizer.RestartRequired}" />
+            </Grid>
+
+            <TextBlock
+                AutomationProperties.HeadingLevel="Level2"
+                Style="{StaticResource SettingsGroupHeaderStyle}"
+                Text="{x:Bind Localizer.Other}" />
+
+            <!--  Tips  -->
+            <Grid Style="{StaticResource SettingsCardStyle}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <FontIcon VerticalAlignment="Center" Glyph="&#xEA80;" />
+                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <TextBlock Text="{x:Bind Localizer.ShowTipsAgainTitle}" />
+                    <TextBlock Style="{StaticResource SettingsDescriptionStyle}" Text="{x:Bind Localizer.ShowTipsAgainDescription}" />
+                </StackPanel>
+                <Button
+                    Grid.Column="2"
+                    VerticalAlignment="Center"
+                    AutomationProperties.AutomationId="ShowTipsAgainButton"
+                    Command="{x:Bind ViewModel.ResetTipsCommand}"
+                    Content="{x:Bind Localizer.ShowTipsAgain}" />
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

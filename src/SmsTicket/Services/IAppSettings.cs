@@ -7,4 +7,8 @@ public interface IAppSettings
     bool AutoSelectNearestCity { get; set; }
 
     bool HasUsedNearestCity { get; set; }
+
+    ThemePreference Theme { get; set; }
+
+    LanguagePreference Language { get; set; }
 }

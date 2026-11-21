@@ -1,3 +1,4 @@
+using Microsoft.UI.Xaml.Automation;
 using SmsTicket.Services.Localizer;
 using Uno.AdMob;
 
@@ -28,11 +29,23 @@ public sealed partial class ShellPage : Page
 
     public LocalizationService Localizer { get; } = (LocalizationService)Application.Current.Resources["Localizer"];
 
+    private void OnNavViewLoaded(object sender, RoutedEventArgs e)
+    {
+        // The built-in label is only localized on Windows and ignores our language override
+        if (NavView.SettingsItem is NavigationViewItem settingsItem)
+        {
+            settingsItem.Content = Localizer.Settings;
+            AutomationProperties.SetAutomationId(settingsItem, "NavSettings");
+        }
+    }
+
     private void OnItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
     {
-        if (args.InvokedItemContainer?.Tag is string tag &&
-            _pages.TryGetValue(tag, out var pageType) &&
-            ContentFrame.CurrentSourcePageType != pageType)
+        var pageType = args.IsSettingsInvoked
+            ? typeof(SettingsPage)
+            : args.InvokedItemContainer?.Tag is string tag && _pages.TryGetValue(tag, out var tagged) ? tagged : null;
+
+        if (pageType is not null && ContentFrame.CurrentSourcePageType != pageType)
         {
             ContentFrame.Navigate(pageType, null, args.RecommendedNavigationTransitionInfo);
         }

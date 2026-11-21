@@ -268,4 +268,49 @@
   <data name="NearestCityUnavailable" xml:space="preserve">
     <value>Couldn't get your location. Please try again.</value>
   </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="Personalization" xml:space="preserve">
+    <value>Personalization</value>
+  </data>
+  <data name="AppTheme" xml:space="preserve">
+    <value>App theme</value>
+  </data>
+  <data name="AppThemeDescription" xml:space="preserve">
+    <value>Choose whether the app is light, dark, or follows the system</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="LanguageDescription" xml:space="preserve">
+    <value>The language the app's text is shown in</value>
+  </data>
+  <data name="SystemLanguage" xml:space="preserve">
+    <value>System language</value>
+  </data>
+  <data name="CzechLanguage" xml:space="preserve">
+    <value>Čeština</value>
+  </data>
+  <data name="EnglishLanguage" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="RestartRequired" xml:space="preserve">
+    <value>Restart required</value>
+  </data>
+  <data name="RestartRequiredMessage" xml:space="preserve">
+    <value>The language fully changes after you restart the app.</value>
+  </data>
+  <data name="Other" xml:space="preserve">
+    <value>Other</value>
+  </data>
+  <data name="ShowTipsAgainTitle" xml:space="preserve">
+    <value>SMS sending tips</value>
+  </data>
+  <data name="ShowTipsAgainDescription" xml:space="preserve">
+    <value>Show the explanation of how the ticket works before the next SMS again</value>
+  </data>
+  <data name="ShowTipsAgain" xml:space="preserve">
+    <value>Show again</value>
+  </data>
 </root>

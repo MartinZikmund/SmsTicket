@@ -268,4 +268,49 @@
   <data name="NearestCityUnavailable" xml:space="preserve">
     <value>Polohu se nepodařilo zjistit. Zkuste to znovu.</value>
   </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Nastavení</value>
+  </data>
+  <data name="Personalization" xml:space="preserve">
+    <value>Přizpůsobení</value>
+  </data>
+  <data name="AppTheme" xml:space="preserve">
+    <value>Motiv aplikace</value>
+  </data>
+  <data name="AppThemeDescription" xml:space="preserve">
+    <value>Vyberte, zda má aplikace být světlá, tmavá, nebo se řídit systémem</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Jazyk</value>
+  </data>
+  <data name="LanguageDescription" xml:space="preserve">
+    <value>Jazyk, ve kterém se zobrazují texty aplikace</value>
+  </data>
+  <data name="SystemLanguage" xml:space="preserve">
+    <value>Jazyk systému</value>
+  </data>
+  <data name="CzechLanguage" xml:space="preserve">
+    <value>Čeština</value>
+  </data>
+  <data name="EnglishLanguage" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="RestartRequired" xml:space="preserve">
+    <value>Je potřeba restart</value>
+  </data>
+  <data name="RestartRequiredMessage" xml:space="preserve">
+    <value>Jazyk se plně změní po restartování aplikace.</value>
+  </data>
+  <data name="Other" xml:space="preserve">
+    <value>Ostatní</value>
+  </data>
+  <data name="ShowTipsAgainTitle" xml:space="preserve">
+    <value>Tipy k odeslání SMS</value>
+  </data>
+  <data name="ShowTipsAgainDescription" xml:space="preserve">
+    <value>Před dalším odesláním SMS znovu zobrazit vysvětlení, jak jízdenka funguje</value>
+  </data>
+  <data name="ShowTipsAgain" xml:space="preserve">
+    <value>Zobrazit znovu</value>
+  </data>
 </root>

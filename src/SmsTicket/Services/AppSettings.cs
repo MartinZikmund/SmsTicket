@@ -28,4 +28,26 @@ public class AppSettings : IAppSettings
         get => _settings.GetSetting(nameof(HasUsedNearestCity), () => false);
         set => _settings.SetSetting(nameof(HasUsedNearestCity), value);
     }
+
+    public ThemePreference Theme
+    {
+        get => GetEnum(nameof(Theme), ThemePreference.System);
+        set => _settings.SetSetting(nameof(Theme), value.ToString());
+    }
+
+    public LanguagePreference Language
+    {
+        get => GetEnum(nameof(Language), LanguagePreference.System);
+        set => _settings.SetSetting(nameof(Language), value.ToString());
+    }
+
+    private TEnum GetEnum<TEnum>(string key, TEnum defaultValue) where TEnum : struct, Enum
+    {
+        var stored = _settings.GetSetting(key, () => defaultValue.ToString());
+
+        // Reject numeric strings, which Enum.TryParse happily accepts
+        return Enum.TryParse(stored, out TEnum value) && Enum.IsDefined(value) && !int.TryParse(stored, out _)
+            ? value
+            : defaultValue;
+    }
 }

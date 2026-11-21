@@ -8,6 +8,8 @@ using Uno.AdMob;
 using Uno.AdMob.Configuration;
 using SmsTicket.Configuration;
 using SmsTicket.Data;
+using SmsTicket.Services.AppSettings;
+using SmsTicket.Services.Settings;
 using SmsTicket.Services.Sms;
 using Uno.Resizetizer;
 using AppInstance = Microsoft.Windows.AppLifecycle.AppInstance;
@@ -32,9 +34,46 @@ public partial class App : Application
 
     protected Window? MainWindow { get; private set; }
 
+    /// <summary>
+    /// Language the strings were loaded in; changing it needs a restart.
+    /// </summary>
+    public static LanguagePreference StartupLanguage { get; private set; }
+
+    private static Window? _window;
+
+    public static void ApplyTheme(ThemePreference theme)
+    {
+        // Application.RequestedTheme can't change at runtime, the root element's theme can
+        if (_window?.Content is FrameworkElement root)
+        {
+            root.RequestedTheme = theme.ToElementTheme();
+        }
+
+#if !HAS_UNO
+        if (_window is not null)
+        {
+            _window.AppWindow.TitleBar.PreferredTheme = theme switch
+            {
+                ThemePreference.Light => Microsoft.UI.Windowing.TitleBarTheme.Light,
+                ThemePreference.Dark => Microsoft.UI.Windowing.TitleBarTheme.Dark,
+                _ => Microsoft.UI.Windowing.TitleBarTheme.UseDefaultAppMode,
+            };
+        }
+#endif
+    }
+
+    public static void ApplyLanguage(string languageTag) =>
+        Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = languageTag;
+
     protected override async void OnLaunched(LaunchActivatedEventArgs args)
     {
+        AppSettings appSettings = new(new SettingsService());
+        StartupLanguage = appSettings.Language;
+        // Before any page loads its strings
+        ApplyLanguage(StartupLanguage.ToLanguageTag());
+
         (var host, MainWindow) = BuildHost();
+        _window = MainWindow;
 
         AppConfig = host.Services.GetRequiredService<IOptions<AppConfig>>().Value;
 
@@ -52,6 +91,8 @@ public partial class App : Application
 
             rootFrame.NavigationFailed += OnNavigationFailed;
         }
+
+        ApplyTheme(appSettings.Theme);
 
         if (rootFrame.Content == null)
         {
