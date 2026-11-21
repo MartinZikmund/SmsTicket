@@ -1,255 +1,58 @@
+using System.Globalization;
 using SmsTicket.Data.Models;
 using SmsTicket.Services.Localizer;
 
 namespace SmsTicket.Data;
 
+/// <summary>
+/// Ticket data from data/tickets.json: the copy bundled with the app, or a newer one downloaded from GitHub.
+/// </summary>
 public static class DataSource
 {
-    private static readonly City[] _cities;
+    public const string RemoteUrl = "https://raw.githubusercontent.com/MartinZikmund/SmsTicket/main/data/tickets.json";
 
-    static DataSource()
+    private const string BundledResourceName = "SmsTicket.Data.tickets.json";
+    private const string CacheFileName = "tickets.json";
+
+    private static readonly Lazy<TicketDataRepository> _repository = new(CreateRepository);
+
+    // Loaded once per session - a download made meanwhile applies on the next launch,
+    // so the city and ticket lists never change while the user is picking from them
+    private static readonly Lazy<IReadOnlyList<City>> _cities = new(
+        () => TicketDataMapper.ToCities(_repository.Value.LoadCurrent(), GetLanguage()));
+
+    public static IReadOnlyList<City> Cities => _cities.Value;
+
+    public static Task RefreshAsync() => _repository.Value.RefreshAsync();
+
+    public static Stream OpenBundled() =>
+        typeof(DataSource).Assembly.GetManifestResourceStream(BundledResourceName)
+            ?? throw new InvalidOperationException($"Missing embedded resource {BundledResourceName}");
+
+    private static TicketDataRepository CreateRepository()
     {
-        var localizerService = new LocalizationService();
-        _cities = new City[]
-        {
-                new City
-                {
-                    Id = "PHA",
-                    OperatorName = "Dopravní podnik hl. m. Prahy",
-                    OperatorUrl = "https://www.dpp.cz/",
-                    SmsInfoUrl = "https://www.dpp.cz/jizdne/sms-jizdenka",
-                    JourneyPlannerUrl = "https://idos.cz/pid/spojeni/",
-                    Abbreviation = localizerService["PragueAbbreviation"],
-                    Name = localizerService["PragueName"],
-                    DefaultTicketId = "PHA30min",
-                    TicketTypes = new()
-                    {
-                        new PragueTicketType("PHA30min", "", "42", "30 min", "DPT42"),
-                        new PragueTicketType("PHA90min", "", "55", "90 min", "DPT55"),
-                        new PragueTicketType("PHA24h", localizerService["PragueRequiresConfirmationSms"], "150",
-                            "24 h", "DPT150"),
-                        new PragueTicketType("PHA72h", localizerService["PragueRequiresConfirmationSms"], "350",
-                            "72 h", "DPT350"),
-                        new("PHADPTA", localizerService["DuplicateSmsDetail"], "3", "", "9000603", "DPTA", true)
-                    }
-                },
-                new City
-                {
-                    Id = "LBC",
-                    OperatorName = "Dopravní podnik měst Liberce a Jablonce nad Nisou",
-                    OperatorUrl = "https://www.dpmlj.cz/",
-                    SmsInfoUrl = "https://www.dpmlj.cz/mhd-liberec/informace/sms-jizdenka",
-                    JourneyPlannerUrl = "https://idos.cz/liberec/spojeni/",
-                    Abbreviation = "LBC",
-                    Name = "Liberec",
-                    DefaultTicketId = "LIB",
-                    TicketTypes = new()
-                    {
-                        new("LIB", "", "38", "60 min", "90206", "LIB", true),
-                        new("LIB45", localizerService["LIB45Detail"], "45", "90 min", "90206", "LIB45", true),
-                        new("LIBDupe", localizerService["DuplicateSmsDetail"], "3", "", "9000603", "LIB", true)
-                    }
-                },
-                new City
-                {
-                    Id = "CB",
-                    OperatorName = "Dopravní podnik města České Budějovice",
-                    OperatorUrl = "https://www.dpmcb.cz/",
-                    SmsInfoUrl = "https://www.dpmcb.cz/cestovani-mhd/koupit-jizdenky/sms-jizdenka.html",
-                    JourneyPlannerUrl = "https://idos.cz/ceskebudejovice/spojeni/",
-                    Abbreviation = "ČB",
-                    Name = "České Budějovice",
-                    DefaultTicketId = "BUD25",
-                    TicketTypes = new()
-                    {
-                        new("BUD25", "", "30", "60 min", "90206", "BUD", true),
-                        new("BUD70", "", "115", "24 h", "90206", "BUD24", true),
-                        new("BUDDupe60", localizerService["DuplicateBud60SmsDetail"], "3", "", "9000603", "BUD", true),
-                        new("BUDDupe24", localizerService["DuplicateBud24SmsDetail"], "3", "", "9000603", "BUD24", true)
-                    }
-                },
-                new City
-                {
-                    Id = "HK",
-                    OperatorName = "Dopravní podnik města Hradce Králové",
-                    OperatorUrl = "https://www.dpmhk.cz/",
-                    SmsInfoUrl = "https://www.dpmhk.cz/cz/jizdenky/zpusob-nakupu-jizdenky/sms-jizdenky/",
-                    JourneyPlannerUrl = "https://idos.cz/hradeckralove/spojeni/",
-                    Abbreviation = "HK",
-                    Name = "Hradec Králové",
-                    DefaultTicketId = "HK",
-                    TicketTypes = new()
-                    {
-                        new("HK", "", "30", "60 min", "90230", "HK", true),
-                        new("HKZ", localizerService["ReducedFare"], "15", "60 min", "90230", "HKZ", true),
-                        new("HK24", "", "100", "24 h", "90230", "HK24", true),
-                        new("HKDupe", localizerService["DuplicateSmsDetail"], "5", "", "90030", "HKD", true)
-
-                    }
-                },
-                new City
-                {
-                    Id = "OL",
-                    OperatorName = "Dopravní podnik města Olomouce",
-                    OperatorUrl = "https://www.dpmo.cz/",
-                    SmsInfoUrl = "https://www.dpmo.cz/informace-pro-cestujici/sms-jizdenka/",
-                    JourneyPlannerUrl = "https://idos.cz/olomouc/spojeni/",
-                    Abbreviation = "OL",
-                    Name = "Olomouc",
-                    DefaultTicketId = "DPMO",
-                    TicketTypes = new()
-                    {
-                        new("DPMO", localizerService["OLDurationDetail"], "27", "50 min", "90206", "DPMO", true),
-                        new("DPMODupe", localizerService["DuplicateSmsDetail"], "3", "", "9000603", "DPMO", true),
-                    }
-                },
-                new City
-                {
-                    Id = "OST",
-                    OperatorName = "Dopravní podnik Ostrava",
-                    OperatorUrl = "https://www.dpo.cz/",
-                    SmsInfoUrl = "https://www.dpo.cz/jizdne/sms-jizdenky.html",
-                    JourneyPlannerUrl = "https://idos.cz/ostrava/spojeni/",
-                    Abbreviation = "OST",
-                    Name = "Ostrava",
-                    DefaultTicketId = "DPO70",
-                    TicketTypes = new()
-                    {
-                        new("DPO70", localizerService["OSTDurationDetail"], "38", "70 min", "90206", "DPO70", true),
-                        new("DPO24", "", "100", "24 h", "90206", "DPO24", true),
-                        new("DPO70Z", localizerService["OSTReducedDurationDetail"], "19", "70 min", "90206", "DPO70Z", true),
-                        new("DPO24Z", localizerService["ReducedFare"], "50", "24 h", "90206", "DPO24Z", true),
-                        new("DPODupe", localizerService["DuplicateSmsDetail"], "3", "", "9000603", "DPOD", true),
-                    }
-                },
-
-                new City
-                {
-                    Id = "PAR",
-                    OperatorName = "Dopravní podnik města Pardubic",
-                    OperatorUrl = "https://www.dpmp.cz/",
-                    SmsInfoUrl = "https://www.dpmp.cz/cestovani-mhd/koupit-jizdenky/sms-jizdenka.html",
-                    JourneyPlannerUrl = "https://idos.cz/pardubice/spojeni/",
-                    Abbreviation = "PAR",
-                    Name = "Pardubice",
-                    DefaultTicketId = "DPMP",
-                    TicketTypes = new()
-                    {
-                        new("DPMP", localizerService["PARDurationDetail"], "40", "45 min", "90206", "DPMP", true),
-                        new("DPMP24", "", "65", "24 h", "90206", "DPMP24", true),
-                        new("DPMPDUPE", localizerService["DuplicateSmsDetail"], "3", "", "9000603", "DPMP", true),
-                    }
-                },
-                new City
-                {
-                    Id = "PIL",
-                    OperatorName = "Plzeňské městské dopravní podniky",
-                    OperatorUrl = "https://www.pmdp.cz/",
-                    SmsInfoUrl = "https://www.pmdp.cz/cz/jizdne/sms-jizdenka/",
-                    JourneyPlannerUrl = "https://idos.cz/plzen/spojeni/",
-                    Abbreviation = localizerService["PILAbbreviation"],
-                    Name = localizerService["PILName"],
-                    DefaultTicketId = "PMDP35M",
-                    TicketTypes = new()
-                    {
-                        new("PMDP35M", localizerService["PILInnerZone"], "28", "35 min", "90206", "PMDP35M", true),
-                        new("PMDP24H", localizerService["PILInnerZone"], "99", "24 h", "90206", "PMDP24H", true),
-                        new("PILDUPE", localizerService["DuplicateSmsDetail"], "3", "", "9000603", "PMDPD", true),
-                    }
-                },
-                new City
-                {
-                    Id = "UL",
-                    OperatorName = "Dopravní podnik města Ústí nad Labem",
-                    OperatorUrl = "https://www.dpmul.cz/",
-                    SmsInfoUrl = "https://www.dpmul.cz/cestovani-mhd/koupit-jizdenku/sms",
-                    JourneyPlannerUrl = "https://idos.cz/ustinadlabem/spojeni/",
-                    Abbreviation = "ÚnL",
-                    Name = "Ústí nad Labem",
-                    DefaultTicketId = "MDJ",
-                    TicketTypes = new()
-                    {
-                        new("MDJ", "", "26", "60 min", "90206", "MDJ", true),
-                        new("MDJ106", localizerService["ULDayDetail"], "106", localizerService["OneDay"], "90206", "MDJ106", true),
-                        new("MDJZD", localizerService["ReducedFareUL"], "53", localizerService["OneDay"], "90206", "MDJZD", true),
-                        new("MDJ60", localizerService["ReducedFareUL2"], "60", localizerService["OneDay"], "90206", "MDJ60", true),
-                        new("MDJDupe", localizerService["DuplicateSmsDetail"], "3", "", "9000603", "MDJA", true),
-                    }
-                },
-                new City
-                {
-                    Id = "ZL",
-                    OperatorName = "Dopravní společnost Zlín-Otrokovice",
-                    OperatorUrl = "https://www.dszo.cz/",
-                    SmsInfoUrl = "https://www.dszo.cz/sms-jizdenka/",
-                    JourneyPlannerUrl = "https://idos.cz/zlin/spojeni/",
-                    Abbreviation = "ZL,O",
-                    Name = "Zlín a Otrokovice",
-                    DefaultTicketId = "DSZO",
-                    TicketTypes = new()
-                    {
-                        new("DSZO", "", "30", "70 min", "90206", "DSZO", true),
-                        new("DSZOZ", localizerService["ReducedFare"], "15", "70 min", "90206", "DSZOZ", true),
-                        new("DSZO24", "", "100", "24 h", "90206", "DSZO24", true),
-                        new("DSZO24Z", localizerService["ReducedFare"], "50", "24 h", "90206", "DSZO24Z", true),
-                        new("DSZODupe", localizerService["DuplicateSmsDetail"], "3", "", "9000603", "DSZO", true),
-                    }
-                },
-                new City
-                {
-                    Id = "BR",
-                    OperatorName = "Dopravní podnik města Brna",
-                    OperatorUrl = "https://www.dpmb.cz/",
-                    SmsInfoUrl = "https://www.dpmb.cz/jizdenky-v-mobilu",
-                    JourneyPlannerUrl = "https://idos.cz/idsjmk/spojeni/",
-                    Abbreviation = "BR",
-                    Name = "Brno",
-                    DefaultTicketId = "BR29",
-                    TicketTypes = new()
-                    {
-                        new BrnoTicketType("BR20", "", "20", "20 min", "BRNO20"),
-                        new BrnoTicketType("BR29", "", "29", "75 min", "BRNO"),
-                        new BrnoTicketType("BR99", "", "99", "24 h", "BRNOD"),
-                        new("BRDupe", localizerService["DuplicateSmsDetail"], "3", "", "9000603", "BRNOA", true)
-                    }
-                },
-                new City
-                {
-                    Id = "CHEB",
-                    OperatorName = "Dopravní podnik Cheb",
-                    OperatorUrl = "https://www.dpch.cz/",
-                    SmsInfoUrl = "https://www.dpch.cz/cz/jizdne/tarif-mhd/",
-                    JourneyPlannerUrl = "https://idos.cz/cheb/spojeni/",
-                    Abbreviation = "CH",
-                    Name = "Cheb",
-                    DefaultTicketId = "CHD",
-                    TicketTypes = new()
-                    {
-                        new("CHD", localizerService["CHDDetail"], "30", localizerService["AllDay"], "90206", "CHD", true),
-                        new("CHDDupe", localizerService["DuplicateSmsDetail"], "3", "", "9000603", "CHDD", true)
-                    }
-                },
-                new City
-                {
-                    Id = "TB",
-                    OperatorName = "COMETT PLUS",
-                    OperatorUrl = "https://www.comettplus.cz/",
-                    SmsInfoUrl = "https://www.comettplus.cz/cz/cestujici/",
-                    JourneyPlannerUrl = "https://idos.cz/tabor/spojeni/",
-                    Abbreviation = "TB",
-                    Name = "Tábor",
-                    DefaultTicketId = "COM",
-                    TicketTypes = new()
-                    {
-                        new("COM", "", "24", "60 min", "90206", "COM", true),
-                        new("COMZ", localizerService["ReducedFare"], "12", "60 min", "90206", "COMZ", true),
-                        new("COMDupe", localizerService["DuplicateSmsDetail"], "3", "", "9000603", "COMA", true)
-                    }
-                }
-        }
-        .OrderBy(d => d.Name)
-        .ToArray();
+        HttpClient httpClient = new() { Timeout = TicketDataRepository.DefaultTimeout };
+        return new TicketDataRepository(OpenBundled, GetCachePath(), httpClient, new Uri(RemoteUrl));
     }
 
-    public static IReadOnlyList<City> Cities => Array.AsReadOnly(_cities);
+    private static string? GetCachePath()
+    {
+        try
+        {
+            return Path.Combine(ApplicationData.Current.LocalFolder.Path, CacheFileName);
+        }
+        catch (Exception)
+        {
+            // No app data folder (e.g. unit tests) - run on bundled data only
+            return null;
+        }
+    }
+
+    // The resw files say which language the UI resolved to, so data texts always match it
+    private static string GetLanguage()
+    {
+        const string key = "DataLanguage";
+        var language = new LocalizationService()[key];
+        return language == key ? CultureInfo.CurrentUICulture.Name : language;
+    }
 }

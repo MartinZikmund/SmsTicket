@@ -141,35 +141,11 @@
   <data name="LightTheme" xml:space="preserve">
     <value>Světlý motiv</value>
   </data>
-  <data name="OLDurationDetail" xml:space="preserve">
-    <value>70 minut mimo pracovní dny</value>
-  </data>
-  <data name="PARDurationDetail" xml:space="preserve">
-    <value>60 minut v SO, NE a státní svátky</value>
-  </data>
-  <data name="PILAbbreviation" xml:space="preserve">
-    <value>PL</value>
-  </data>
-  <data name="PILName" xml:space="preserve">
-    <value>Plzeň</value>
-  </data>
   <data name="PlusPriceOfSms" xml:space="preserve">
     <value>+ cena SMS</value>
   </data>
-  <data name="PragueAbbreviation" xml:space="preserve">
-    <value>PHA</value>
-  </data>
-  <data name="PragueName" xml:space="preserve">
-    <value>Praha</value>
-  </data>
-  <data name="PragueRequiresConfirmationSms" xml:space="preserve">
-    <value>Vyžaduje potvrzující SMS "Ano" na 90206</value>
-  </data>
   <data name="PrepareToSend" xml:space="preserve">
     <value>Připravit k odeslání</value>
-  </data>
-  <data name="ReducedFare" xml:space="preserve">
-    <value>Zlevněné jízdné</value>
   </data>
   <data name="SMSTicket" xml:space="preserve">
     <value>SMS jízdenka</value>
@@ -183,29 +159,11 @@
   <data name="PILInnerAndOuterZones" xml:space="preserve">
     <value>Vnitřní + vnější zóny (P+V)</value>
   </data>
-  <data name="PILInnerZone" xml:space="preserve">
-    <value>Vnitřní zóna 001 Plzeň (P)</value>
-  </data>
   <data name="PILOuterZones" xml:space="preserve">
     <value>Vnější zóny (V)</value>
   </data>
-  <data name="DuplicateBud24SmsDetail" xml:space="preserve">
-    <value>Získání duplikátu platných 24 h jízdenek v případě smazání</value>
-  </data>
-  <data name="DuplicateBud60SmsDetail" xml:space="preserve">
-    <value>Získání duplikátu platných 60 min jízdenek v případě smazání</value>
-  </data>
-  <data name="DuplicateSmsDetail" xml:space="preserve">
-    <value>Získání duplikátu platných jízdenek v případě smazání</value>
-  </data>
   <data name="Lib36Detail" xml:space="preserve">
     <value>Pro linku č.11 (Liberec - Jablonec nad Nisou)</value>
-  </data>
-  <data name="ReducedFareUL" xml:space="preserve">
-    <value>Zvýhodněné 50 % (6–18 let, studenti do 26, 65+). Do 4:00 dalšího dne</value>
-  </data>
-  <data name="ReducedFareUL2" xml:space="preserve">
-    <value>Ústecké jízdné (62–65 let, s dítětem do 3 let). Do 4:00 dalšího dne</value>
   </data>
   <data name="QuickActionDescriptionFormatString" xml:space="preserve">
     <value>Cena {0} CZK</value>
@@ -221,27 +179,6 @@
   </data>
   <data name="PrepareSmsNoteTitle" xml:space="preserve">
     <value>Připravení SMS</value>
-  </data>
-  <data name="LIB45Detail" xml:space="preserve">
-    <value>Platí i na lince 11 do Jablonce nad Nisou</value>
-  </data>
-  <data name="OSTDurationDetail" xml:space="preserve">
-    <value>90 minut v SO, NE a státní svátky</value>
-  </data>
-  <data name="OSTReducedDurationDetail" xml:space="preserve">
-    <value>Zlevněné jízdné, 90 minut v SO, NE a státní svátky</value>
-  </data>
-  <data name="ULDayDetail" xml:space="preserve">
-    <value>Platí do 4:00 následujícího dne</value>
-  </data>
-  <data name="OneDay" xml:space="preserve">
-    <value>1 den</value>
-  </data>
-  <data name="AllDay" xml:space="preserve">
-    <value>Celý den</value>
-  </data>
-  <data name="CHDDetail" xml:space="preserve">
-    <value>Celodenní, platí 4:30–23:30</value>
   </data>
   <data name="ChangeCity" xml:space="preserve">
     <value>Změnit město</value>
@@ -305,5 +242,9 @@
   </data>
   <data name="JourneyPlanner" xml:space="preserve">
     <value>Vyhledat spojení (IDOS)</value>
+  </data>
+  <data name="DataLanguage" xml:space="preserve">
+    <value>cs</value>
+    <comment>Language code used to pick texts from data/tickets.json - do not translate</comment>
   </data>
 </root>

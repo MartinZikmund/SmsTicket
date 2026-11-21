@@ -70,4 +70,10 @@
             <FileWrites Include="$(_AdMobPlist)" />
         </ItemGroup>
     </Target>
+
+    <!-- Single source of truth for ticket data, also served remotely from GitHub (see DataSource) -->
+    <ItemGroup>
+        <EmbeddedResource Include="..\..\data\tickets.json" Link="Data\tickets.json" LogicalName="SmsTicket.Data.tickets.json" />
+    </ItemGroup>
+
 </Project>
