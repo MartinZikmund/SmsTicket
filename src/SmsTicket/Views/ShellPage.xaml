@@ -5,11 +5,158 @@
     xmlns:utu="using:Uno.Toolkit.UI"
     Background="{ThemeResource SolidBackgroundFillColorBaseBrush}">
 
-    <!--  NavigationView ignores Padding, so the insets go on a wrapper  -->
-    <Grid x:Name="ShellRoot" utu:SafeArea.Insets="Left,Top,Right,Bottom">
+    <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.ThemeDictionaries>
+                <ResourceDictionary x:Key="Default">
+                    <StaticResource x:Key="BottomTabBarBackground" ResourceKey="SolidBackgroundFillColorTertiaryBrush" />
+                    <StaticResource x:Key="BottomTabBarBorderBrush" ResourceKey="DividerStrokeColorDefaultBrush" />
+                    <StaticResource x:Key="BottomTabItemForeground" ResourceKey="TextFillColorSecondaryBrush" />
+                    <StaticResource x:Key="BottomTabItemForegroundPointerOver" ResourceKey="TextFillColorPrimaryBrush" />
+                    <StaticResource x:Key="BottomTabItemForegroundPressed" ResourceKey="TextFillColorTertiaryBrush" />
+                    <StaticResource x:Key="BottomTabItemForegroundSelected" ResourceKey="AccentTextFillColorPrimaryBrush" />
+                    <StaticResource x:Key="BottomTabItemForegroundSelectedPressed" ResourceKey="AccentTextFillColorTertiaryBrush" />
+                    <StaticResource x:Key="BottomTabItemBackgroundPointerOver" ResourceKey="SubtleFillColorSecondaryBrush" />
+                    <StaticResource x:Key="BottomTabItemBackgroundPressed" ResourceKey="SubtleFillColorTertiaryBrush" />
+                    <StaticResource x:Key="BottomTabItemBackgroundSelected" ResourceKey="SubtleFillColorTransparentBrush" />
+                    <StaticResource x:Key="BottomTabItemIndicator" ResourceKey="AccentFillColorDefaultBrush" />
+                </ResourceDictionary>
+                <ResourceDictionary x:Key="HighContrast">
+                    <StaticResource x:Key="BottomTabBarBackground" ResourceKey="SystemColorWindowColorBrush" />
+                    <StaticResource x:Key="BottomTabBarBorderBrush" ResourceKey="SystemColorWindowTextColorBrush" />
+                    <StaticResource x:Key="BottomTabItemForeground" ResourceKey="SystemColorWindowTextColorBrush" />
+                    <StaticResource x:Key="BottomTabItemForegroundPointerOver" ResourceKey="SystemColorHighlightColorBrush" />
+                    <StaticResource x:Key="BottomTabItemForegroundPressed" ResourceKey="SystemColorHighlightColorBrush" />
+                    <StaticResource x:Key="BottomTabItemForegroundSelected" ResourceKey="SystemColorHighlightTextColorBrush" />
+                    <StaticResource x:Key="BottomTabItemForegroundSelectedPressed" ResourceKey="SystemColorHighlightTextColorBrush" />
+                    <StaticResource x:Key="BottomTabItemBackgroundPointerOver" ResourceKey="SystemColorWindowColorBrush" />
+                    <StaticResource x:Key="BottomTabItemBackgroundPressed" ResourceKey="SystemColorWindowColorBrush" />
+                    <StaticResource x:Key="BottomTabItemBackgroundSelected" ResourceKey="SystemColorHighlightColorBrush" />
+                    <StaticResource x:Key="BottomTabItemIndicator" ResourceKey="SystemColorHighlightTextColorBrush" />
+                </ResourceDictionary>
+            </ResourceDictionary.ThemeDictionaries>
+
+            <!--  The Toolkit only ships bottom tab styles for Material, Cupertino and Simple, so this is the Fluent one  -->
+            <Style x:Key="BottomTabBarItemStyle" TargetType="utu:TabBarItem">
+                <Setter Property="Foreground" Value="{ThemeResource BottomTabItemForeground}" />
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="MinHeight" Value="64" />
+                <Setter Property="Padding" Value="4" />
+                <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
+                <Setter Property="FontSize" Value="12" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                <Setter Property="VerticalContentAlignment" Value="Stretch" />
+                <Setter Property="UseSystemFocusVisuals" Value="True" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="utu:TabBarItem">
+                            <Grid
+                                x:Name="LayoutRoot"
+                                Padding="{TemplateBinding Padding}"
+                                Background="Transparent"
+                                Control.IsTemplateFocusTarget="True">
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="PointerStates">
+                                        <VisualState x:Name="Normal" />
+                                        <VisualState x:Name="PointerOver">
+                                            <VisualState.Setters>
+                                                <Setter Target="ItemBackground.Background" Value="{ThemeResource BottomTabItemBackgroundPointerOver}" />
+                                                <Setter Target="Icon.Foreground" Value="{ThemeResource BottomTabItemForegroundPointerOver}" />
+                                                <Setter Target="Label.Foreground" Value="{ThemeResource BottomTabItemForegroundPointerOver}" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Pressed">
+                                            <VisualState.Setters>
+                                                <Setter Target="ItemBackground.Background" Value="{ThemeResource BottomTabItemBackgroundPressed}" />
+                                                <Setter Target="Icon.Foreground" Value="{ThemeResource BottomTabItemForegroundPressed}" />
+                                                <Setter Target="Label.Foreground" Value="{ThemeResource BottomTabItemForegroundPressed}" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Selected">
+                                            <VisualState.Setters>
+                                                <Setter Target="ItemBackground.Background" Value="{ThemeResource BottomTabItemBackgroundSelected}" />
+                                                <Setter Target="Icon.Foreground" Value="{ThemeResource BottomTabItemForegroundSelected}" />
+                                                <Setter Target="Label.Foreground" Value="{ThemeResource BottomTabItemForegroundSelected}" />
+                                                <Setter Target="Indicator.Opacity" Value="1" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="PointerOverSelected">
+                                            <VisualState.Setters>
+                                                <Setter Target="ItemBackground.Background" Value="{ThemeResource BottomTabItemBackgroundSelected}" />
+                                                <Setter Target="Icon.Foreground" Value="{ThemeResource BottomTabItemForegroundSelected}" />
+                                                <Setter Target="Label.Foreground" Value="{ThemeResource BottomTabItemForegroundSelected}" />
+                                                <Setter Target="Indicator.Opacity" Value="1" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="PressedSelected">
+                                            <VisualState.Setters>
+                                                <Setter Target="ItemBackground.Background" Value="{ThemeResource BottomTabItemBackgroundSelected}" />
+                                                <Setter Target="Icon.Foreground" Value="{ThemeResource BottomTabItemForegroundSelectedPressed}" />
+                                                <Setter Target="Label.Foreground" Value="{ThemeResource BottomTabItemForegroundSelectedPressed}" />
+                                                <Setter Target="Indicator.Opacity" Value="1" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                    <VisualStateGroup x:Name="DisabledStates">
+                                        <VisualState x:Name="Enabled" />
+                                        <VisualState x:Name="Disabled">
+                                            <VisualState.Setters>
+                                                <Setter Target="LayoutRoot.Opacity" Value="0.4" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+
+                                <Border
+                                    x:Name="ItemBackground"
+                                    Background="{TemplateBinding Background}"
+                                    CornerRadius="{ThemeResource OverlayCornerRadius}" />
+
+                                <StackPanel
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Spacing="4">
+                                    <ContentPresenter
+                                        x:Name="Icon"
+                                        Height="20"
+                                        HorizontalAlignment="Center"
+                                        Content="{TemplateBinding Icon}"
+                                        Foreground="{TemplateBinding Foreground}" />
+                                    <ContentPresenter
+                                        x:Name="Label"
+                                        HorizontalAlignment="Center"
+                                        AutomationProperties.AccessibilityView="Raw"
+                                        Content="{TemplateBinding Content}"
+                                        FontFamily="{TemplateBinding FontFamily}"
+                                        FontSize="{TemplateBinding FontSize}"
+                                        FontWeight="{TemplateBinding FontWeight}"
+                                        Foreground="{TemplateBinding Foreground}"
+                                        TextWrapping="NoWrap" />
+                                    <!--  Same pill as the NavigationView's top-mode selection indicator  -->
+                                    <Border
+                                        x:Name="Indicator"
+                                        Width="16"
+                                        Height="3"
+                                        HorizontalAlignment="Center"
+                                        Background="{ThemeResource BottomTabItemIndicator}"
+                                        CornerRadius="1.5"
+                                        Opacity="0" />
+                                </StackPanel>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
+    </Page.Resources>
+
+    <!--  NavigationView ignores Padding, so the insets go on a wrapper. The bottom one goes on whatever sits at the bottom.  -->
+    <Grid x:Name="ShellRoot" utu:SafeArea.Insets="Left,Top,Right">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
-            <!--  Banner ad, added in code-behind  -->
+            <!--  Banner ad, filled in code-behind  -->
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
@@ -17,6 +164,7 @@
             x:Name="NavView"
             AutomationProperties.AutomationId="ShellNavigationView"
             IsBackButtonVisible="Collapsed"
+            IsPaneVisible="False"
             IsSettingsVisible="True"
             ItemInvoked="OnItemInvoked"
             Loaded="OnNavViewLoaded"
@@ -53,18 +201,74 @@
                 </NavigationViewItem>
             </NavigationView.FooterMenuItems>
 
-            <Frame x:Name="ContentFrame" />
+            <Frame x:Name="ContentFrame" Navigated="OnContentNavigated" />
         </NavigationView>
 
+        <!--  Padded off the content and the tabs, so neither sits close enough to tap the ad by accident  -->
+        <Border
+            x:Name="AdHost"
+            Grid.Row="1"
+            Padding="0,8,0,12"
+            Visibility="Collapsed" />
+
+        <!--  Narrow: bottom tabs. Wide: an empty spacer that keeps the content above the gesture bar.  -->
+        <Border
+            x:Name="BottomBar"
+            Grid.Row="2"
+            utu:SafeArea.Insets="Bottom"
+            Background="{ThemeResource BottomTabBarBackground}"
+            BorderBrush="{ThemeResource BottomTabBarBorderBrush}"
+            BorderThickness="0,1,0,0">
+            <utu:TabBar
+                x:Name="BottomTabs"
+                AutomationProperties.AutomationId="ShellTabBar"
+                ItemContainerStyle="{StaticResource BottomTabBarItemStyle}"
+                SelectionChanged="OnTabSelectionChanged">
+                <utu:TabBarItem
+                    AutomationProperties.AutomationId="TabTickets"
+                    AutomationProperties.Name="{x:Bind Localizer.NavTickets}"
+                    Click="OnTabClick"
+                    Content="{x:Bind Localizer.NavTickets}"
+                    Tag="Tickets">
+                    <utu:TabBarItem.Icon>
+                        <FontIcon FontSize="20" Glyph="&#xE8BD;" />
+                    </utu:TabBarItem.Icon>
+                </utu:TabBarItem>
+                <utu:TabBarItem
+                    AutomationProperties.AutomationId="TabHistory"
+                    AutomationProperties.Name="{x:Bind Localizer.NavHistory}"
+                    Click="OnTabClick"
+                    Content="{x:Bind Localizer.NavHistory}"
+                    Tag="History">
+                    <utu:TabBarItem.Icon>
+                        <FontIcon FontSize="20" Glyph="&#xE81C;" />
+                    </utu:TabBarItem.Icon>
+                </utu:TabBarItem>
+                <utu:TabBarItem
+                    AutomationProperties.AutomationId="TabSettings"
+                    AutomationProperties.Name="{x:Bind Localizer.Settings}"
+                    Click="OnTabClick"
+                    Content="{x:Bind Localizer.Settings}"
+                    Tag="Settings">
+                    <utu:TabBarItem.Icon>
+                        <FontIcon FontSize="20" Glyph="&#xE713;" />
+                    </utu:TabBarItem.Icon>
+                </utu:TabBarItem>
+            </utu:TabBar>
+        </Border>
+
         <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup>
+            <!--  The pane itself is switched in code-behind, the order of its two properties matters  -->
+            <VisualStateGroup CurrentStateChanged="OnLayoutStateChanged">
                 <VisualState x:Name="NarrowState" />
                 <VisualState x:Name="WideState">
                     <VisualState.StateTriggers>
                         <AdaptiveTrigger MinWindowWidth="640" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="NavView.PaneDisplayMode" Value="Auto" />
+                        <Setter Target="BottomTabs.Visibility" Value="Collapsed" />
+                        <Setter Target="BottomBar.Background" Value="{x:Null}" />
+                        <Setter Target="BottomBar.BorderThickness" Value="0" />
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
