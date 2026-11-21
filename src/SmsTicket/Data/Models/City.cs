@@ -12,6 +12,14 @@ public class City
 
     public required List<TicketType> TicketTypes { get; init; }
 
+    public required string OperatorName { get; init; }
+
+    public required string OperatorUrl { get; init; }
+
+    public required string SmsInfoUrl { get; init; }
+
+    public required string JourneyPlannerUrl { get; init; }
+
     public string HeroImage => $"ms-appx:///Assets/Cities/{Id.ToLowerInvariant()}.jpg";
 
     public PhotoCredit? Photo => PhotoCredits.ForCity(Id);

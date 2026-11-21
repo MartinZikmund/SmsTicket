@@ -52,4 +52,29 @@ public class DataSourceTests
             Assert.IsNotNull(city.Photo, $"{city.Id}: missing photo credit");
         }
     }
+
+    [TestMethod]
+    public void EveryCity_HasOperatorName()
+    {
+        foreach (var city in DataSource.Cities)
+        {
+            Assert.IsFalse(string.IsNullOrWhiteSpace(city.OperatorName), $"{city.Id}: missing operator name");
+        }
+    }
+
+    [TestMethod]
+    public void EveryCity_HasAbsoluteHttpsLinks()
+    {
+        foreach (var city in DataSource.Cities)
+        {
+            AssertHttps(city.Id, nameof(city.OperatorUrl), city.OperatorUrl);
+            AssertHttps(city.Id, nameof(city.SmsInfoUrl), city.SmsInfoUrl);
+            AssertHttps(city.Id, nameof(city.JourneyPlannerUrl), city.JourneyPlannerUrl);
+        }
+    }
+
+    private static void AssertHttps(string cityId, string name, string? url) =>
+        Assert.IsTrue(
+            Uri.TryCreate(url, UriKind.Absolute, out var uri) && uri.Scheme == Uri.UriSchemeHttps,
+            $"{cityId}: {name} '{url}' is not an absolute https URL");
 }
