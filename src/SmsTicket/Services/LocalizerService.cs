@@ -62,9 +62,9 @@ public class LocalizationService : ILocalizerService
 
     public string QuickActionDescriptionFormatString => this[nameof(QuickActionDescriptionFormatString)];
 
-    public string PinnedTitle => this[nameof(PinnedTitle)];
+    public string FavoriteAddedTitle => this[nameof(FavoriteAddedTitle)];
 
-    public string PinnedDescription => this[nameof(PinnedDescription)];
+    public string FavoriteAddedDescription => this[nameof(FavoriteAddedDescription)];
     public string PrepareSmsNote => this[nameof(PrepareSmsNote)];
     public string PrepareSmsNoteTitle => this[nameof(PrepareSmsNoteTitle)];
     public string ChangeCity => this[nameof(ChangeCity)];
@@ -73,8 +73,9 @@ public class LocalizationService : ILocalizerService
     public string PhotoBy => this[nameof(PhotoBy)];
     public string ViewSource => this[nameof(ViewSource)];
     public string Duplicate => this[nameof(Duplicate)];
-    public string Pin => this[nameof(Pin)];
-    public string Unpin => this[nameof(Unpin)];
+    public string Favorites => this[nameof(Favorites)];
+    public string AddToFavorites => this[nameof(AddToFavorites)];
+    public string RemoveFromFavorites => this[nameof(RemoveFromFavorites)];
     public string NavTickets => this[nameof(NavTickets)];
     public string PhotoCredits => this[nameof(PhotoCredits)];
     public string Version => this[nameof(Version)];

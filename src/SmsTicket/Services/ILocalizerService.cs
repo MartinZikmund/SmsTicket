@@ -6,9 +6,9 @@ public interface ILocalizerService
 
     string QuickActionDescriptionFormatString { get; }
 
-    string PinnedTitle { get; }
+    string FavoriteAddedTitle { get; }
 
-    string PinnedDescription { get; }
+    string FavoriteAddedDescription { get; }
 
     string PrepareSmsNote { get; }
 
