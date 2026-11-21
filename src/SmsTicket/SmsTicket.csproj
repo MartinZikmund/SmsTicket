@@ -48,4 +48,26 @@
         <PublishReadyToRunCrossgen2ExtraArgs>$(PublishReadyToRunCrossgen2ExtraArgs);--partial</PublishReadyToRunCrossgen2ExtraArgs>
     </PropertyGroup>
 
+    <!--
+        AdMob iOS app ID. The Google SDK crashes on start without one, so ads stay off when it is empty.
+        Debug falls back to Google's sample ID; release builds get the real one from CI (-p:AdMobIosAppId=...).
+    -->
+    <PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' and '$(AdMobIosAppId)' == '' and '$(Configuration)' == 'Debug'">
+        <AdMobIosAppId>ca-app-pub-3940256099942544~1458002511</AdMobIosAppId>
+    </PropertyGroup>
+
+    <Target Name="AddAdMobIosAppId" BeforeTargets="_CompileAppManifest" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' and '$(AdMobIosAppId)' != ''">
+        <PropertyGroup>
+            <_AdMobPlist>$(IntermediateOutputPath)AdMob.plist</_AdMobPlist>
+        </PropertyGroup>
+        <WriteLinesToFile
+            File="$(_AdMobPlist)"
+            Lines="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;;&lt;plist version=&quot;1.0&quot;&gt;&lt;dict&gt;;&lt;key&gt;GADApplicationIdentifier&lt;/key&gt;&lt;string&gt;$(AdMobIosAppId)&lt;/string&gt;;&lt;/dict&gt;&lt;/plist&gt;"
+            Overwrite="true"
+            WriteOnlyWhenDifferent="true" />
+        <ItemGroup>
+            <PartialAppManifest Include="$(_AdMobPlist)" />
+            <FileWrites Include="$(_AdMobPlist)" />
+        </ItemGroup>
+    </Target>
 </Project>

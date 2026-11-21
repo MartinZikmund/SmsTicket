@@ -9,5 +9,7 @@ public record AppConfig
     public string? IosAdUnitId { get; init; }
 
     public string? AndroidTestDeviceId { get; init; }
+
+    public string? IosTestDeviceId { get; init; }
 }
 

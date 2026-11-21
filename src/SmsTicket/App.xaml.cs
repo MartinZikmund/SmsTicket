@@ -86,11 +86,24 @@ public partial class App : Application
 
     private static void InitializeAds(IServiceProvider services)
     {
-#if __ANDROID__
-        // iOS has no AdMob app ID configured yet, and the SDK crashes on start without one
-        if (!string.IsNullOrEmpty(AppConfig.AndroidAdUnitId))
+#if __ANDROID__ || __IOS__
+#if __IOS__
+        // Only builds given an AdMobIosAppId have one, and the SDK crashes on start without it
+        if (Foundation.NSBundle.MainBundle.ObjectForInfoDictionary("GADApplicationIdentifier") is null)
         {
-            AdConfig.DefaultBannerAdUnitId = AppConfig.AndroidAdUnitId;
+            return;
+        }
+
+        var adUnitId = AppConfig.IosAdUnitId;
+        var testDeviceId = AppConfig.IosTestDeviceId;
+#else
+        var adUnitId = AppConfig.AndroidAdUnitId;
+        var testDeviceId = AppConfig.AndroidTestDeviceId;
+#endif
+
+        if (!string.IsNullOrEmpty(adUnitId))
+        {
+            AdConfig.DefaultBannerAdUnitId = adUnitId;
         }
         else
         {
@@ -101,9 +114,9 @@ public partial class App : Application
 #endif
         }
 
-        if (!string.IsNullOrEmpty(AppConfig.AndroidTestDeviceId))
+        if (!string.IsNullOrEmpty(testDeviceId))
         {
-            AdConfig.AddTestDevice(AppConfig.AndroidTestDeviceId);
+            AdConfig.AddTestDevice(testDeviceId);
         }
 
         AdMobPlatform.Initialize(services);
