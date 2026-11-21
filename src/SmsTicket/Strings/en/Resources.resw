@@ -141,20 +141,8 @@
   <data name="LightTheme" xml:space="preserve">
     <value>Light theme</value>
   </data>
-  <data name="OLDurationDetail" xml:space="preserve">
-    <value>70 minutes outside work days</value>
-  </data>
-  <data name="PILAbbreviation" xml:space="preserve">
-    <value>PIL</value>
-  </data>
   <data name="PILInnerAndOuterZones" xml:space="preserve">
     <value>Inner + outer zones (P+V)</value>
-  </data>
-  <data name="PILInnerZone" xml:space="preserve">
-    <value>Inner zone 001 Pilsen (P)</value>
-  </data>
-  <data name="PILName" xml:space="preserve">
-    <value>Pilsen</value>
   </data>
   <data name="PILOuterZones" xml:space="preserve">
     <value>Outer zones (V)</value>
@@ -162,20 +150,8 @@
   <data name="PlusPriceOfSms" xml:space="preserve">
     <value>+ SMS price</value>
   </data>
-  <data name="PragueAbbreviation" xml:space="preserve">
-    <value>PRG</value>
-  </data>
-  <data name="PragueName" xml:space="preserve">
-    <value>Prague</value>
-  </data>
-  <data name="PragueRequiresConfirmationSms" xml:space="preserve">
-    <value>Requires confirmation SMS with text "Ano" to 90206</value>
-  </data>
   <data name="PrepareToSend" xml:space="preserve">
     <value>Prepare to send</value>
-  </data>
-  <data name="ReducedFare" xml:space="preserve">
-    <value>Reduced fare</value>
   </data>
   <data name="SMSTicket" xml:space="preserve">
     <value>SMS Ticket</value>
@@ -186,26 +162,8 @@
   <data name="TicketType" xml:space="preserve">
     <value>Ticket type</value>
   </data>
-  <data name="PARDurationDetail" xml:space="preserve">
-    <value>60 minutes on Sat., Sun. and holidays</value>
-  </data>
-  <data name="DuplicateBud24SmsDetail" xml:space="preserve">
-    <value>Get a duplicate of valid 24 h tickets in case of deletion</value>
-  </data>
-  <data name="DuplicateBud60SmsDetail" xml:space="preserve">
-    <value>Get a duplicate of valid 60 min tickets in case of deletion</value>
-  </data>
-  <data name="DuplicateSmsDetail" xml:space="preserve">
-    <value>Get a duplicate of valid tickets in case of deletion</value>
-  </data>
   <data name="Lib36Detail" xml:space="preserve">
     <value>For line nr. 11 (Liberec - Jablonec nad Nisou)</value>
-  </data>
-  <data name="ReducedFareUL" xml:space="preserve">
-    <value>50 % reduced (ages 6–18, students to 26, 65+). Until 4 AM next day</value>
-  </data>
-  <data name="ReducedFareUL2" xml:space="preserve">
-    <value>Ústí fare (ages 62–65, with a child under 3). Until 4 AM next day</value>
   </data>
   <data name="QuickActionDescriptionFormatString" xml:space="preserve">
     <value>Price {0} CZK</value>
@@ -221,27 +179,6 @@
   </data>
   <data name="PrepareSmsNoteTitle" xml:space="preserve">
     <value>Preparing SMS</value>
-  </data>
-  <data name="LIB45Detail" xml:space="preserve">
-    <value>Also valid on line 11 to Jablonec nad Nisou</value>
-  </data>
-  <data name="OSTDurationDetail" xml:space="preserve">
-    <value>90 minutes on Sat., Sun. and holidays</value>
-  </data>
-  <data name="OSTReducedDurationDetail" xml:space="preserve">
-    <value>Reduced fare, 90 minutes on Sat., Sun. and holidays</value>
-  </data>
-  <data name="ULDayDetail" xml:space="preserve">
-    <value>Valid until 4 AM the next day</value>
-  </data>
-  <data name="OneDay" xml:space="preserve">
-    <value>1 day</value>
-  </data>
-  <data name="AllDay" xml:space="preserve">
-    <value>All day</value>
-  </data>
-  <data name="CHDDetail" xml:space="preserve">
-    <value>All-day ticket, valid 4:30 AM–11:30 PM</value>
   </data>
   <data name="ChangeCity" xml:space="preserve">
     <value>Change city</value>
@@ -305,5 +242,9 @@
   </data>
   <data name="JourneyPlanner" xml:space="preserve">
     <value>Find a connection (IDOS)</value>
+  </data>
+  <data name="DataLanguage" xml:space="preserve">
+    <value>en</value>
+    <comment>Language code used to pick texts from data/tickets.json - do not translate</comment>
   </data>
 </root>

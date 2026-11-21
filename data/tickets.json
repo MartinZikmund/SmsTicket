@@ -1,0 +1,338 @@
+{
+  "schemaVersion": 1,
+  "dataVersion": "2026-11-21",
+  "cities": [
+    {
+      "id": "PHA",
+      "name": { "cs": "Praha", "en": "Prague" },
+      "abbreviation": { "cs": "PHA", "en": "PRG" },
+      "operatorName": "Dopravní podnik hl. m. Prahy",
+      "operatorUrl": "https://www.dpp.cz/",
+      "smsInfoUrl": "https://www.dpp.cz/jizdne/sms-jizdenka",
+      "journeyPlannerUrl": "https://idos.cz/pid/spojeni/",
+      "defaultTicketId": "PHA30min",
+      "tickets": [
+        { "id": "PHA30min", "price": 42, "timeText": "30 min", "phoneNumber": "90206", "smsText": "DPT42" },
+        { "id": "PHA90min", "price": 55, "timeText": "90 min", "phoneNumber": "90206", "smsText": "DPT55" },
+        {
+          "id": "PHA24h",
+          "description": { "cs": "Vyžaduje potvrzující SMS \"Ano\" na 90206", "en": "Requires confirmation SMS with text \"Ano\" to 90206" },
+          "price": 150, "timeText": "24 h", "phoneNumber": "90206", "smsText": "DPT150"
+        },
+        {
+          "id": "PHA72h",
+          "description": { "cs": "Vyžaduje potvrzující SMS \"Ano\" na 90206", "en": "Requires confirmation SMS with text \"Ano\" to 90206" },
+          "price": 350, "timeText": "72 h", "phoneNumber": "90206", "smsText": "DPT350"
+        },
+        {
+          "id": "PHADPTA",
+          "description": { "cs": "Získání duplikátu platných jízdenek v případě smazání", "en": "Get a duplicate of valid tickets in case of deletion" },
+          "price": 3, "phoneNumber": "9000603", "smsText": "DPTA"
+        }
+      ]
+    },
+    {
+      "id": "LBC",
+      "name": "Liberec",
+      "abbreviation": "LBC",
+      "operatorName": "Dopravní podnik měst Liberce a Jablonce nad Nisou",
+      "operatorUrl": "https://www.dpmlj.cz/",
+      "smsInfoUrl": "https://www.dpmlj.cz/mhd-liberec/informace/sms-jizdenka",
+      "journeyPlannerUrl": "https://idos.cz/liberec/spojeni/",
+      "defaultTicketId": "LIB",
+      "tickets": [
+        { "id": "LIB", "price": 38, "timeText": "60 min", "phoneNumber": "90206", "smsText": "LIB" },
+        {
+          "id": "LIB45",
+          "description": { "cs": "Platí i na lince 11 do Jablonce nad Nisou", "en": "Also valid on line 11 to Jablonec nad Nisou" },
+          "price": 45, "timeText": "90 min", "phoneNumber": "90206", "smsText": "LIB45"
+        },
+        {
+          "id": "LIBDupe",
+          "description": { "cs": "Získání duplikátu platných jízdenek v případě smazání", "en": "Get a duplicate of valid tickets in case of deletion" },
+          "price": 3, "phoneNumber": "9000603", "smsText": "LIB"
+        }
+      ]
+    },
+    {
+      "id": "CB",
+      "name": "České Budějovice",
+      "abbreviation": "ČB",
+      "operatorName": "Dopravní podnik města České Budějovice",
+      "operatorUrl": "https://www.dpmcb.cz/",
+      "smsInfoUrl": "https://www.dpmcb.cz/cestovani-mhd/koupit-jizdenky/sms-jizdenka.html",
+      "journeyPlannerUrl": "https://idos.cz/ceskebudejovice/spojeni/",
+      "defaultTicketId": "BUD25",
+      "tickets": [
+        { "id": "BUD25", "price": 30, "timeText": "60 min", "phoneNumber": "90206", "smsText": "BUD" },
+        { "id": "BUD70", "price": 115, "timeText": "24 h", "phoneNumber": "90206", "smsText": "BUD24" },
+        {
+          "id": "BUDDupe60",
+          "description": { "cs": "Získání duplikátu platných 60 min jízdenek v případě smazání", "en": "Get a duplicate of valid 60 min tickets in case of deletion" },
+          "price": 3, "phoneNumber": "9000603", "smsText": "BUD"
+        },
+        {
+          "id": "BUDDupe24",
+          "description": { "cs": "Získání duplikátu platných 24 h jízdenek v případě smazání", "en": "Get a duplicate of valid 24 h tickets in case of deletion" },
+          "price": 3, "phoneNumber": "9000603", "smsText": "BUD24"
+        }
+      ]
+    },
+    {
+      "id": "HK",
+      "name": "Hradec Králové",
+      "abbreviation": "HK",
+      "operatorName": "Dopravní podnik města Hradce Králové",
+      "operatorUrl": "https://www.dpmhk.cz/",
+      "smsInfoUrl": "https://www.dpmhk.cz/cz/jizdenky/zpusob-nakupu-jizdenky/sms-jizdenky/",
+      "journeyPlannerUrl": "https://idos.cz/hradeckralove/spojeni/",
+      "defaultTicketId": "HK",
+      "tickets": [
+        { "id": "HK", "price": 30, "timeText": "60 min", "phoneNumber": "90230", "smsText": "HK" },
+        {
+          "id": "HKZ",
+          "description": { "cs": "Zlevněné jízdné", "en": "Reduced fare" },
+          "price": 15, "timeText": "60 min", "phoneNumber": "90230", "smsText": "HKZ"
+        },
+        { "id": "HK24", "price": 100, "timeText": "24 h", "phoneNumber": "90230", "smsText": "HK24" },
+        {
+          "id": "HKDupe",
+          "description": { "cs": "Získání duplikátu platných jízdenek v případě smazání", "en": "Get a duplicate of valid tickets in case of deletion" },
+          "price": 5, "phoneNumber": "90030", "smsText": "HKD"
+        }
+      ]
+    },
+    {
+      "id": "OL",
+      "name": "Olomouc",
+      "abbreviation": "OL",
+      "operatorName": "Dopravní podnik města Olomouce",
+      "operatorUrl": "https://www.dpmo.cz/",
+      "smsInfoUrl": "https://www.dpmo.cz/informace-pro-cestujici/sms-jizdenka/",
+      "journeyPlannerUrl": "https://idos.cz/olomouc/spojeni/",
+      "defaultTicketId": "DPMO",
+      "tickets": [
+        {
+          "id": "DPMO",
+          "description": { "cs": "70 minut mimo pracovní dny", "en": "70 minutes outside work days" },
+          "price": 27, "timeText": "50 min", "phoneNumber": "90206", "smsText": "DPMO"
+        },
+        {
+          "id": "DPMODupe",
+          "description": { "cs": "Získání duplikátu platných jízdenek v případě smazání", "en": "Get a duplicate of valid tickets in case of deletion" },
+          "price": 3, "phoneNumber": "9000603", "smsText": "DPMO"
+        }
+      ]
+    },
+    {
+      "id": "OST",
+      "name": "Ostrava",
+      "abbreviation": "OST",
+      "operatorName": "Dopravní podnik Ostrava",
+      "operatorUrl": "https://www.dpo.cz/",
+      "smsInfoUrl": "https://www.dpo.cz/jizdne/sms-jizdenky.html",
+      "journeyPlannerUrl": "https://idos.cz/ostrava/spojeni/",
+      "defaultTicketId": "DPO70",
+      "tickets": [
+        {
+          "id": "DPO70",
+          "description": { "cs": "90 minut v SO, NE a státní svátky", "en": "90 minutes on Sat., Sun. and holidays" },
+          "price": 38, "timeText": "70 min", "phoneNumber": "90206", "smsText": "DPO70"
+        },
+        { "id": "DPO24", "price": 100, "timeText": "24 h", "phoneNumber": "90206", "smsText": "DPO24" },
+        {
+          "id": "DPO70Z",
+          "description": { "cs": "Zlevněné jízdné, 90 minut v SO, NE a státní svátky", "en": "Reduced fare, 90 minutes on Sat., Sun. and holidays" },
+          "price": 19, "timeText": "70 min", "phoneNumber": "90206", "smsText": "DPO70Z"
+        },
+        {
+          "id": "DPO24Z",
+          "description": { "cs": "Zlevněné jízdné", "en": "Reduced fare" },
+          "price": 50, "timeText": "24 h", "phoneNumber": "90206", "smsText": "DPO24Z"
+        },
+        {
+          "id": "DPODupe",
+          "description": { "cs": "Získání duplikátu platných jízdenek v případě smazání", "en": "Get a duplicate of valid tickets in case of deletion" },
+          "price": 3, "phoneNumber": "9000603", "smsText": "DPOD"
+        }
+      ]
+    },
+    {
+      "id": "PAR",
+      "name": "Pardubice",
+      "abbreviation": "PAR",
+      "operatorName": "Dopravní podnik města Pardubic",
+      "operatorUrl": "https://www.dpmp.cz/",
+      "smsInfoUrl": "https://www.dpmp.cz/cestovani-mhd/koupit-jizdenky/sms-jizdenka.html",
+      "journeyPlannerUrl": "https://idos.cz/pardubice/spojeni/",
+      "defaultTicketId": "DPMP",
+      "tickets": [
+        {
+          "id": "DPMP",
+          "description": { "cs": "60 minut v SO, NE a státní svátky", "en": "60 minutes on Sat., Sun. and holidays" },
+          "price": 40, "timeText": "45 min", "phoneNumber": "90206", "smsText": "DPMP"
+        },
+        { "id": "DPMP24", "price": 65, "timeText": "24 h", "phoneNumber": "90206", "smsText": "DPMP24" },
+        {
+          "id": "DPMPDUPE",
+          "description": { "cs": "Získání duplikátu platných jízdenek v případě smazání", "en": "Get a duplicate of valid tickets in case of deletion" },
+          "price": 3, "phoneNumber": "9000603", "smsText": "DPMP"
+        }
+      ]
+    },
+    {
+      "id": "PIL",
+      "name": { "cs": "Plzeň", "en": "Pilsen" },
+      "abbreviation": { "cs": "PL", "en": "PIL" },
+      "operatorName": "Plzeňské městské dopravní podniky",
+      "operatorUrl": "https://www.pmdp.cz/",
+      "smsInfoUrl": "https://www.pmdp.cz/cz/jizdne/sms-jizdenka/",
+      "journeyPlannerUrl": "https://idos.cz/plzen/spojeni/",
+      "defaultTicketId": "PMDP35M",
+      "tickets": [
+        {
+          "id": "PMDP35M",
+          "description": { "cs": "Vnitřní zóna 001 Plzeň (P)", "en": "Inner zone 001 Pilsen (P)" },
+          "price": 28, "timeText": "35 min", "phoneNumber": "90206", "smsText": "PMDP35M"
+        },
+        {
+          "id": "PMDP24H",
+          "description": { "cs": "Vnitřní zóna 001 Plzeň (P)", "en": "Inner zone 001 Pilsen (P)" },
+          "price": 99, "timeText": "24 h", "phoneNumber": "90206", "smsText": "PMDP24H"
+        },
+        {
+          "id": "PILDUPE",
+          "description": { "cs": "Získání duplikátu platných jízdenek v případě smazání", "en": "Get a duplicate of valid tickets in case of deletion" },
+          "price": 3, "phoneNumber": "9000603", "smsText": "PMDPD"
+        }
+      ]
+    },
+    {
+      "id": "UL",
+      "name": "Ústí nad Labem",
+      "abbreviation": "ÚnL",
+      "operatorName": "Dopravní podnik města Ústí nad Labem",
+      "operatorUrl": "https://www.dpmul.cz/",
+      "smsInfoUrl": "https://www.dpmul.cz/cestovani-mhd/koupit-jizdenku/sms",
+      "journeyPlannerUrl": "https://idos.cz/ustinadlabem/spojeni/",
+      "defaultTicketId": "MDJ",
+      "tickets": [
+        { "id": "MDJ", "price": 26, "timeText": "60 min", "phoneNumber": "90206", "smsText": "MDJ" },
+        {
+          "id": "MDJ106",
+          "description": { "cs": "Platí do 4:00 následujícího dne", "en": "Valid until 4 AM the next day" },
+          "price": 106, "timeText": { "cs": "1 den", "en": "1 day" }, "phoneNumber": "90206", "smsText": "MDJ106"
+        },
+        {
+          "id": "MDJZD",
+          "description": { "cs": "Zvýhodněné 50 % (6–18 let, studenti do 26, 65+). Do 4:00 dalšího dne", "en": "50 % reduced (ages 6–18, students to 26, 65+). Until 4 AM next day" },
+          "price": 53, "timeText": { "cs": "1 den", "en": "1 day" }, "phoneNumber": "90206", "smsText": "MDJZD"
+        },
+        {
+          "id": "MDJ60",
+          "description": { "cs": "Ústecké jízdné (62–65 let, s dítětem do 3 let). Do 4:00 dalšího dne", "en": "Ústí fare (ages 62–65, with a child under 3). Until 4 AM next day" },
+          "price": 60, "timeText": { "cs": "1 den", "en": "1 day" }, "phoneNumber": "90206", "smsText": "MDJ60"
+        },
+        {
+          "id": "MDJDupe",
+          "description": { "cs": "Získání duplikátu platných jízdenek v případě smazání", "en": "Get a duplicate of valid tickets in case of deletion" },
+          "price": 3, "phoneNumber": "9000603", "smsText": "MDJA"
+        }
+      ]
+    },
+    {
+      "id": "ZL",
+      "name": "Zlín a Otrokovice",
+      "abbreviation": "ZL,O",
+      "operatorName": "Dopravní společnost Zlín-Otrokovice",
+      "operatorUrl": "https://www.dszo.cz/",
+      "smsInfoUrl": "https://www.dszo.cz/sms-jizdenka/",
+      "journeyPlannerUrl": "https://idos.cz/zlin/spojeni/",
+      "defaultTicketId": "DSZO",
+      "tickets": [
+        { "id": "DSZO", "price": 30, "timeText": "70 min", "phoneNumber": "90206", "smsText": "DSZO" },
+        {
+          "id": "DSZOZ",
+          "description": { "cs": "Zlevněné jízdné", "en": "Reduced fare" },
+          "price": 15, "timeText": "70 min", "phoneNumber": "90206", "smsText": "DSZOZ"
+        },
+        { "id": "DSZO24", "price": 100, "timeText": "24 h", "phoneNumber": "90206", "smsText": "DSZO24" },
+        {
+          "id": "DSZO24Z",
+          "description": { "cs": "Zlevněné jízdné", "en": "Reduced fare" },
+          "price": 50, "timeText": "24 h", "phoneNumber": "90206", "smsText": "DSZO24Z"
+        },
+        {
+          "id": "DSZODupe",
+          "description": { "cs": "Získání duplikátu platných jízdenek v případě smazání", "en": "Get a duplicate of valid tickets in case of deletion" },
+          "price": 3, "phoneNumber": "9000603", "smsText": "DSZO"
+        }
+      ]
+    },
+    {
+      "id": "BR",
+      "name": "Brno",
+      "abbreviation": "BR",
+      "operatorName": "Dopravní podnik města Brna",
+      "operatorUrl": "https://www.dpmb.cz/",
+      "smsInfoUrl": "https://www.dpmb.cz/jizdenky-v-mobilu",
+      "journeyPlannerUrl": "https://idos.cz/idsjmk/spojeni/",
+      "defaultTicketId": "BR29",
+      "tickets": [
+        { "id": "BR20", "price": 20, "timeText": "20 min", "phoneNumber": "90206", "smsText": "BRNO20" },
+        { "id": "BR29", "price": 29, "timeText": "75 min", "phoneNumber": "90206", "smsText": "BRNO" },
+        { "id": "BR99", "price": 99, "timeText": "24 h", "phoneNumber": "90206", "smsText": "BRNOD" },
+        {
+          "id": "BRDupe",
+          "description": { "cs": "Získání duplikátu platných jízdenek v případě smazání", "en": "Get a duplicate of valid tickets in case of deletion" },
+          "price": 3, "phoneNumber": "9000603", "smsText": "BRNOA"
+        }
+      ]
+    },
+    {
+      "id": "CHEB",
+      "name": "Cheb",
+      "abbreviation": "CH",
+      "operatorName": "Dopravní podnik Cheb",
+      "operatorUrl": "https://www.dpch.cz/",
+      "smsInfoUrl": "https://www.dpch.cz/cz/jizdne/tarif-mhd/",
+      "journeyPlannerUrl": "https://idos.cz/cheb/spojeni/",
+      "defaultTicketId": "CHD",
+      "tickets": [
+        {
+          "id": "CHD",
+          "description": { "cs": "Celodenní, platí 4:30–23:30", "en": "All-day ticket, valid 4:30 AM–11:30 PM" },
+          "price": 30, "timeText": { "cs": "Celý den", "en": "All day" }, "phoneNumber": "90206", "smsText": "CHD"
+        },
+        {
+          "id": "CHDDupe",
+          "description": { "cs": "Získání duplikátu platných jízdenek v případě smazání", "en": "Get a duplicate of valid tickets in case of deletion" },
+          "price": 3, "phoneNumber": "9000603", "smsText": "CHDD"
+        }
+      ]
+    },
+    {
+      "id": "TB",
+      "name": "Tábor",
+      "abbreviation": "TB",
+      "operatorName": "COMETT PLUS",
+      "operatorUrl": "https://www.comettplus.cz/",
+      "smsInfoUrl": "https://www.comettplus.cz/cz/cestujici/",
+      "journeyPlannerUrl": "https://idos.cz/tabor/spojeni/",
+      "defaultTicketId": "COM",
+      "tickets": [
+        { "id": "COM", "price": 24, "timeText": "60 min", "phoneNumber": "90206", "smsText": "COM" },
+        {
+          "id": "COMZ",
+          "description": { "cs": "Zlevněné jízdné", "en": "Reduced fare" },
+          "price": 12, "timeText": "60 min", "phoneNumber": "90206", "smsText": "COMZ"
+        },
+        {
+          "id": "COMDupe",
+          "description": { "cs": "Získání duplikátu platných jízdenek v případě smazání", "en": "Get a duplicate of valid tickets in case of deletion" },
+          "price": 3, "phoneNumber": "9000603", "smsText": "COMA"
+        }
+      ]
+    }
+  ]
+}

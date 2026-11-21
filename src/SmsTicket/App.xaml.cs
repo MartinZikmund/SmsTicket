@@ -68,6 +68,9 @@ public partial class App : Application
         // Ensure the current window is active
         MainWindow.Activate();
 
+        // Fresh tariffs are cached for the next launch, see DataSource
+        _ = Task.Run(DataSource.RefreshAsync);
+
         await HandleTicketShortcutAsync(args.Arguments);
     }
 

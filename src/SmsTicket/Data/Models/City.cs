@@ -20,7 +20,8 @@ public class City
 
     public required string JourneyPlannerUrl { get; init; }
 
-    public string HeroImage => $"ms-appx:///Assets/Cities/{Id.ToLowerInvariant()}.jpg";
+    // Photos are bundled, so a city added remotely later may have none
+    public string? HeroImage => Photo is null ? null : $"ms-appx:///Assets/Cities/{Id.ToLowerInvariant()}.jpg";
 
     public PhotoCredit? Photo => PhotoCredits.ForCity(Id);
 
