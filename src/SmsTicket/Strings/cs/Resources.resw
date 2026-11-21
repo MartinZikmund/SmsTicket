@@ -313,4 +313,40 @@
   <data name="ShowTipsAgain" xml:space="preserve">
     <value>Zobrazit znovu</value>
   </data>
+  <data name="NavHistory" xml:space="preserve">
+    <value>Historie</value>
+  </data>
+  <data name="HistoryTitle" xml:space="preserve">
+    <value>Historie nákupů</value>
+  </data>
+  <data name="HistoryEmptyTitle" xml:space="preserve">
+    <value>Zatím tu nic není</value>
+  </data>
+  <data name="HistoryEmptyText" xml:space="preserve">
+    <value>Jízdenky, které připravíte k odeslání, se objeví tady.</value>
+  </data>
+  <data name="HistoryDisclaimer" xml:space="preserve">
+    <value>Aplikace nepozná, zda jste SMS skutečně odeslali. Záznamy, které neplatí, můžete smazat.</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Smazat</value>
+  </data>
+  <data name="DeleteEntryFormat" xml:space="preserve">
+    <value>Smazat záznam: {0}</value>
+  </data>
+  <data name="ClearHistory" xml:space="preserve">
+    <value>Vymazat historii</value>
+  </data>
+  <data name="ClearHistoryConfirmTitle" xml:space="preserve">
+    <value>Vymazat celou historii?</value>
+  </data>
+  <data name="ClearHistoryConfirmText" xml:space="preserve">
+    <value>Všechny záznamy budou trvale odstraněny.</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Zrušit</value>
+  </data>
+  <data name="MonthTotal" xml:space="preserve">
+    <value>Celkem</value>
+  </data>
 </root>

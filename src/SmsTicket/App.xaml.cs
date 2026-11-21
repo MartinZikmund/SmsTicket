@@ -10,6 +10,8 @@ using SmsTicket.Configuration;
 using SmsTicket.Data;
 using SmsTicket.Services.AppSettings;
 using SmsTicket.Services.Settings;
+using SmsTicket.Data.Models;
+using SmsTicket.Services.PurchaseHistory;
 using SmsTicket.Services.Sms;
 using Uno.Resizetizer;
 using AppInstance = Microsoft.Windows.AppLifecycle.AppInstance;
@@ -186,10 +188,11 @@ public partial class App : Application
         }
 
         // Arguments are untrusted input - only act on known ticket ids
-        if (DataSource.FindTicket(arguments) is { Ticket: var ticket })
+        if (DataSource.FindTicket(arguments) is { City: var city, Ticket: var ticket })
         {
             SmsService smsService = new();
             await smsService.PrepareSmsAsync(ticket.PhoneNumber, ticket.SmsText);
+            await PurchaseHistoryService.Default.AddAsync(PurchaseRecord.FromTicket(city, ticket, DateTimeOffset.Now));
         }
     }
 
