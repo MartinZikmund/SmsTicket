@@ -138,6 +138,57 @@
                     Command="{x:Bind ViewModel.ResetTipsCommand}"
                     Content="{x:Bind Localizer.ShowTipsAgain}" />
             </Grid>
+
+            <!--  Ad privacy  -->
+            <Grid
+                Style="{StaticResource SettingsCardStyle}"
+                Visibility="{x:Bind ViewModel.IsAdPrivacyOptionsVisible, Mode=OneWay}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <FontIcon VerticalAlignment="Center" Glyph="&#xE72E;" />
+                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <TextBlock Text="{x:Bind Localizer.AdPrivacyOptionsTitle}" />
+                    <TextBlock Style="{StaticResource SettingsDescriptionStyle}" Text="{x:Bind Localizer.AdPrivacyOptionsDescription}" />
+                </StackPanel>
+                <Button
+                    Grid.Column="2"
+                    VerticalAlignment="Center"
+                    AutomationProperties.AutomationId="AdPrivacyOptionsButton"
+                    Command="{x:Bind ViewModel.ShowAdPrivacyOptionsCommand}"
+                    Content="{x:Bind Localizer.AdPrivacyOptions}" />
+            </Grid>
+
+            <!--  About, which shares the Settings tab on phones  -->
+            <Button
+                Padding="16"
+                HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Stretch"
+                AutomationProperties.AutomationId="AboutAppButton"
+                AutomationProperties.Name="{x:Bind Localizer.AboutApp}"
+                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                Click="OnAboutClick">
+                <Grid ColumnSpacing="16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <FontIcon VerticalAlignment="Center" Glyph="&#xE946;" />
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <TextBlock Text="{x:Bind Localizer.AboutApp}" />
+                        <TextBlock Style="{StaticResource SettingsDescriptionStyle}" Text="{x:Bind Localizer.AboutAppDescription}" />
+                    </StackPanel>
+                    <FontIcon
+                        Grid.Column="2"
+                        VerticalAlignment="Center"
+                        FontSize="12"
+                        Glyph="&#xE76C;" />
+                </Grid>
+            </Button>
         </StackPanel>
     </ScrollViewer>
 </Page>

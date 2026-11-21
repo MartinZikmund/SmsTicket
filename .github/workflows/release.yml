@@ -1,0 +1,279 @@
+name: Release
+
+# A push to release/v** builds Android and iOS in the Prod channel and uploads them:
+# Google Play *internal* (as a draft release - promote it in the Play Console) and
+# TestFlight. Then it tags vX.Y.Z and drafts a GitHub Release.
+#
+# See docs/CI.md.
+
+on:
+  push:
+    branches: [ "release/v**" ]
+  workflow_dispatch:
+    inputs:
+      only:
+        description: "Comma-separated heads to build (blank = all enabled): android,ios"
+        required: false
+        default: ""
+      force:
+        description: "Upload again even if this commit already reached a store"
+        type: boolean
+        default: false
+
+concurrency:
+  # Scoped per COMMIT: every commit is a distinct version, so per-commit runs are independent.
+  group: release-${{ github.ref }}-${{ github.sha }}
+  # NEVER cancel a release. Cancelling mid-upload burns a versionCode / CFBundleVersion.
+  cancel-in-progress: false
+
+# Workflow-level permissions are the CEILING for every reusable workflow this file calls.
+permissions:
+  contents: write
+  statuses: write
+  actions: read
+
+env:
+  PACKAGE_NAME: com.sphereline.smsticketandroid
+  GOOGLE_PLAY_TRACK_STATUS: draft  # completed, draft, halted, inProgress
+
+jobs:
+  version:
+    if: github.event.repository.private == false || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    outputs:
+      simple:  ${{ steps.v.outputs.simple }}
+      code:    ${{ steps.v.outputs.code }}
+      channel: ${{ steps.v.outputs.channel }}
+      only:    ${{ inputs.only }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: ./.github/actions/setup-dotnet-build
+      - id: v
+        uses: ./.github/actions/app-version
+        with:
+          version-code-offset: ${{ vars.VERSION_CODE_OFFSET }}
+      - name: Assert this is a Prod build
+        run: |
+          [ "${{ steps.v.outputs.channel }}" = "Prod" ] || {
+            echo "::error::Release runs must resolve to the Prod channel. Ref is $GITHUB_REF."
+            exit 1
+          }
+
+  # ---------------------------------------------------------------- build
+
+  build-android:
+    needs: version
+    if: vars.ENABLE_ANDROID != 'false' && (needs.version.outputs.only == '' || contains(needs.version.outputs.only, 'android'))
+    uses: ./.github/workflows/_build-android.yml
+    with:
+      channel:        Prod
+      version_simple: ${{ needs.version.outputs.simple }}
+      version_code:   ${{ needs.version.outputs.code }}
+      artifact_name:  release-android
+    secrets:
+      ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+      ANDROID_KEY_ALIAS:       ${{ secrets.ANDROID_KEY_ALIAS }}
+      ANDROID_KEY_PASSWORD:    ${{ secrets.ANDROID_KEY_PASSWORD }}
+      ANDROID_STORE_PASSWORD:  ${{ secrets.ANDROID_STORE_PASSWORD }}
+      APPSETTINGSPROD:         ${{ secrets.APPSETTINGSPROD }}
+
+  build-ios:
+    needs: version
+    if: vars.ENABLE_IOS != 'false' && (needs.version.outputs.only == '' || contains(needs.version.outputs.only, 'ios'))
+    uses: ./.github/workflows/_build-ios.yml
+    with:
+      channel:        Prod
+      version_simple: ${{ needs.version.outputs.simple }}
+      artifact_name:  release-ios
+    secrets:
+      APPLE_DISTRIBUTION_P12_BASE64:     ${{ secrets.APPLE_DISTRIBUTION_P12_BASE64 }}
+      APPLE_P12_PASSWORD:                ${{ secrets.APPLE_P12_PASSWORD }}
+      APPLE_PROVISIONING_PROFILE_BASE64: ${{ secrets.APPLE_PROVISIONING_PROFILE_BASE64 }}
+      APPLE_CODESIGN_KEY:                ${{ secrets.APPLE_CODESIGN_KEY }}
+      APPLE_TEAM_ID:                     ${{ secrets.APPLE_TEAM_ID }}
+      KEYCHAIN_PASSWORD:                 ${{ secrets.KEYCHAIN_PASSWORD }}
+      APPSETTINGSPROD:                   ${{ secrets.APPSETTINGSPROD }}
+
+  # ------------------------------------------------------------- publish
+  # Each publish job needs ONLY the build job whose artifact it consumes, so a Play
+  # failure can never block TestFlight and vice versa.
+
+  publish-play-internal:
+    needs: [version, build-android]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      HAS_PLAY: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON != '' }}
+      # The same four the Android build requires before it signs anything.
+      HAS_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' && secrets.ANDROID_KEY_ALIAS != '' && secrets.ANDROID_KEY_PASSWORD != '' && secrets.ANDROID_STORE_PASSWORD != '' }}
+    steps:
+      - uses: actions/checkout@v7
+      - id: once
+        uses: ./.github/actions/publish-once
+        with:
+          environment: play-internal
+          sha: ${{ github.sha }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          force: ${{ inputs.force && 'true' || 'false' }}
+
+      - name: Skip - Play credentials incomplete
+        if: env.HAS_PLAY != 'true' || env.HAS_KEYSTORE != 'true'
+        run: echo "::warning::Skipping the Play internal upload - it needs GOOGLE_PLAY_SERVICE_ACCOUNT_JSON and all four ANDROID_* signing secrets. The AAB artifact is unaffected."
+
+      - uses: actions/download-artifact@v8
+        if: steps.once.outputs.skip != 'true' && env.HAS_PLAY == 'true' && env.HAS_KEYSTORE == 'true'
+        with:
+          name: release-android
+          path: pkg
+
+      - name: Upload to Play (internal)
+        id: upload
+        if: steps.once.outputs.skip != 'true' && env.HAS_PLAY == 'true' && env.HAS_KEYSTORE == 'true'
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName: ${{ env.PACKAGE_NAME }}
+          releaseFiles: pkg/*-Signed.aab
+          # `track:` is DEPRECATED in this action - use `tracks:`.
+          tracks: internal
+          # Draft: Martin rolls it out from the Play Console by hand.
+          status: ${{ env.GOOGLE_PLAY_TRACK_STATUS }}
+          releaseName: ${{ needs.version.outputs.simple }}
+
+      - name: Record the publish
+        if: steps.upload.outcome == 'success'
+        uses: ./.github/actions/publish-once
+        with:
+          mode: record
+          environment: play-internal
+          sha: ${{ github.sha }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  publish-testflight:
+    needs: [version, build-ios]
+    runs-on: ubuntu-24.04          # the appstore-api backend needs no macOS minutes
+    timeout-minutes: 90
+    env:
+      HAS_ASC: ${{ secrets.APPSTORE_ISSUER_ID != '' && secrets.APPSTORE_API_KEY_ID != '' && secrets.APPSTORE_API_PRIVATE_KEY != '' }}
+    steps:
+      - uses: actions/checkout@v7
+      - id: once
+        uses: ./.github/actions/publish-once
+        with:
+          environment: testflight
+          sha: ${{ github.sha }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          force: ${{ inputs.force && 'true' || 'false' }}
+
+      - name: Skip - App Store Connect credentials incomplete
+        if: env.HAS_ASC != 'true'
+        run: echo "::warning::Skipping the TestFlight upload - it needs APPSTORE_ISSUER_ID, APPSTORE_API_KEY_ID and APPSTORE_API_PRIVATE_KEY. The iOS artifact is unaffected."
+
+      - uses: actions/download-artifact@v8
+        if: steps.once.outputs.skip != 'true' && env.HAS_ASC == 'true'
+        with:
+          name: release-ios
+          path: pkg
+
+      - name: Locate the .ipa
+        id: ipa
+        if: steps.once.outputs.skip != 'true' && env.HAS_ASC == 'true'
+        run: |
+          set -euo pipefail
+          f="$(ls -1 pkg/*.ipa 2>/dev/null | head -1 || true)"
+          if [ -z "$f" ]; then
+            echo "::warning::No .ipa in the build artifact (the iOS build ran without signing material). Skipping TestFlight."
+            echo "found=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "found=true" >> "$GITHUB_OUTPUT"
+            echo "path=$f"    >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Upload to TestFlight
+        id: upload
+        if: steps.once.outputs.skip != 'true' && env.HAS_ASC == 'true' && steps.ipa.outputs.found == 'true'
+        uses: Apple-Actions/upload-testflight-build@v5
+        with:
+          app-path: ${{ steps.ipa.outputs.path }}
+          issuer-id: ${{ secrets.APPSTORE_ISSUER_ID }}
+          api-key-id: ${{ secrets.APPSTORE_API_KEY_ID }}
+          api-private-key: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
+          app-type: ios
+          backend: appstore-api
+          # Without this every build stalls forever at "Waiting for Export Compliance".
+          uses-non-exempt-encryption: 'false'
+          wait-for-processing: 'true'
+
+      - name: Record the publish
+        if: steps.upload.outcome == 'success'
+        uses: ./.github/actions/publish-once
+        with:
+          mode: record
+          environment: testflight
+          sha: ${{ github.sha }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  # ------------------------------------------------------------ tag + release page
+  # `tag` needs every build and every publish, because a failed build only makes its
+  # publish `skipped`. `skipped` itself is fine: that is a head switched off, and a
+  # publish with no secrets configured still reports `success`. An `only` dispatch is an
+  # iteration run, not a release, so it never tags.
+
+  tag:
+    needs: [version, build-android, publish-play-internal, build-ios, publish-testflight]
+    if: >-
+      !cancelled() && needs.version.result == 'success' && needs.version.outputs.only == ''
+      && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Mint a GitHub App token (optional)
+        id: app-token
+        if: vars.RELEASE_APP_ID != ''
+        uses: actions/create-github-app-token@v3
+        with:
+          app-id: ${{ vars.RELEASE_APP_ID }}
+          private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          token: ${{ steps.app-token.outputs.token || secrets.GITHUB_TOKEN }}
+
+      - uses: ./.github/actions/setup-dotnet-build
+
+      - name: Tag (idempotent)
+        run: |
+          set -euo pipefail
+          t="v${{ needs.version.outputs.simple }}"
+          if git rev-parse -q --verify "refs/tags/$t" >/dev/null; then
+            echo "::notice::$t already exists - nothing to do."
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          dotnet nbgv tag
+          git push origin "$t"
+
+  # No assets: the store packages embed the APPSETTINGSPROD secret and this repo is public.
+  publish-github-release:
+    needs: [version, tag]
+    if: ${{ !cancelled() && needs.tag.result == 'success' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Create the GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          t="v${{ needs.version.outputs.simple }}"
+          gh release view "$t" >/dev/null 2>&1 || \
+            gh release create "$t" --title "$t" --verify-tag --generate-notes --draft \
+              --notes "Automated release from \`${GITHUB_REF_NAME}\` (Android versionCode ${{ needs.version.outputs.code }})."
+          echo "::notice::GitHub Release $t is a DRAFT - review and publish it."

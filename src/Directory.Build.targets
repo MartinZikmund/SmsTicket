@@ -1,2 +1,44 @@
 <Project>
+
+    <!--
+      HOW VERSIONS REACH A PACKAGE
+      ============================
+      CI is authoritative. Every packaging command in .github/workflows/_build-*.yml passes
+
+          -p:CiVersionInjected=true
+          -p:ApplicationDisplayVersion=<X.Y.Z>
+          -p:ApplicationVersion=<versionCode for Android | X.Y.Z for iOS>
+
+      as MSBuild GLOBAL properties, which win over every evaluation-time assignment. NBGV only
+      computes its version inside the GetBuildVersion TARGET, too late for the SDKs that read
+      these properties during evaluation. See docs/CI.md.
+    -->
+
+    <!-- Windows local-dev fallback. Reliable because Uno generates the manifest inside a
+         target, which we can run in front of. -->
+    <Target Name="SetNbgvVersionForUnoWindows"
+            Condition="'$(TargetPlatformIdentifier)' == 'windows' and '$(CiVersionInjected)' != 'true'"
+            BeforeTargets="UnoGeneratePackageAppxManifest"
+            DependsOnTargets="GetBuildVersion">
+        <PropertyGroup>
+            <!-- The Microsoft Store reserves the fourth section and requires it to be 0. -->
+            <ApplicationVersion>0</ApplicationVersion>
+            <ApplicationDisplayVersion>$(BuildVersionSimple)</ApplicationDisplayVersion>
+        </PropertyGroup>
+    </Target>
+
+    <!-- Fail a Prod CI build that lost its version injection, instead of shipping versionCode=1.
+         Checks the values captured in Directory.Build.props: 1.0.0 and 1 are the SDK defaults
+         but also legitimate versions. The _build-*.yml workflows also read the version back. -->
+    <Target Name="AssertStoreVersionStamped"
+            Condition="'$(ContinuousIntegrationBuild)' == 'true' and '$(AppChannel)' == 'Prod'"
+            BeforeTargets="Build">
+        <Error Condition="'$(CiVersionInjected)' != 'true'"
+               Text="Prod CI builds must pass -p:CiVersionInjected=true together with the version properties. See docs/CI.md." />
+        <Error Condition="'$(_InjectedApplicationDisplayVersion)' == ''"
+               Text="ApplicationDisplayVersion was not passed on the command line (it resolved to '$(ApplicationDisplayVersion)') - CI did not inject a real version." />
+        <Error Condition="'$(_InjectedApplicationVersion)' == ''"
+               Text="ApplicationVersion was not passed on the command line (it resolved to '$(ApplicationVersion)') - CI did not inject a real version." />
+    </Target>
+
 </Project>

@@ -1,34 +1,34 @@
+using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Navigation;
 using SmsTicket.Services.ActiveTickets;
 using SmsTicket.Services.Confirmation;
 using SmsTicket.Services.Localizer;
 using Uno.AdMob;
+using Uno.Toolkit.UI;
 
 namespace SmsTicket.Views;
 
 public sealed partial class ShellPage : Page
 {
-    private static readonly Dictionary<string, Type> _pages = new()
-    {
-        ["Tickets"] = typeof(MainPage),
-        ["History"] = typeof(HistoryPage),
-        ["About"] = typeof(AboutPage),
-    };
-
     private bool _isProcessingSms;
 
     public ShellPage()
     {
         InitializeComponent();
-        NavView.SelectedItem = TicketsItem;
         ContentFrame.Navigate(typeof(MainPage));
+
+        // Switching between the top and left pane resets the built-in settings label
+        NavView.RegisterPropertyChangedCallback(
+            NavigationView.PaneDisplayModeProperty,
+            (_, _) => DispatcherQueue.TryEnqueue(LocalizeSettingsItem));
 
         // Full window width, so the adaptive banner's size matches the space it gets
         if (App.AreAdsEnabled)
         {
-            BannerAd banner = new() { HorizontalAlignment = HorizontalAlignment.Center };
-            Grid.SetRow(banner, 1);
-            ShellRoot.Children.Add(banner);
+            AdHost.Child = new BannerAd { HorizontalAlignment = HorizontalAlignment.Center };
+            AdHost.Visibility = Visibility.Visible;
         }
 
         Loaded += (_, _) =>
@@ -42,6 +42,34 @@ public sealed partial class ShellPage : Page
     public LocalizationService Localizer { get; } = (LocalizationService)Application.Current.Resources["Localizer"];
 
     private void OnNavViewLoaded(object sender, RoutedEventArgs e)
+    {
+        LocalizeSettingsItem();
+        SyncSelection(ContentFrame.CurrentSourcePageType);
+    }
+
+    // NavigationView only lays out a display mode change correctly while its pane is visible
+    private void OnLayoutStateChanged(object sender, VisualStateChangedEventArgs e)
+    {
+        if (e.NewState == WideState)
+        {
+            NavView.IsPaneVisible = true;
+            NavView.PaneDisplayMode = NavigationViewPaneDisplayMode.Auto;
+
+            // After the pane items are laid out, so the selection indicator lands on the right one
+            DispatcherQueue.TryEnqueue(
+                DispatcherQueuePriority.Low,
+                () => SyncSelection(ContentFrame.CurrentSourcePageType));
+        }
+        else
+        {
+            // A selection changed while the pane is hidden leaves the indicator on the old item
+            NavView.SelectedItem = null;
+            NavView.PaneDisplayMode = NavigationViewPaneDisplayMode.Top;
+            NavView.IsPaneVisible = false;
+        }
+    }
+
+    private void LocalizeSettingsItem()
     {
         // The built-in label is only localized on Windows and ignores our language override
         if (NavView.SettingsItem is NavigationViewItem settingsItem)
@@ -102,13 +130,50 @@ public sealed partial class ShellPage : Page
 
     private void OnItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
     {
-        var pageType = args.IsSettingsInvoked
-            ? typeof(SettingsPage)
-            : args.InvokedItemContainer?.Tag is string tag && _pages.TryGetValue(tag, out var tagged) ? tagged : null;
+        var tag = args.IsSettingsInvoked ? ShellDestinations.Settings : args.InvokedItemContainer?.Tag as string;
+        NavigateTo(tag, args.RecommendedNavigationTransitionInfo);
+    }
 
+    private void OnTabSelectionChanged(TabBar sender, TabBarSelectionChangedEventArgs args) =>
+        NavigateTo((args.NewItem as FrameworkElement)?.Tag as string, null);
+
+    // Tapping the current tab again returns to its root page, e.g. from About back to Settings
+    private void OnTabClick(object sender, RoutedEventArgs e) =>
+        NavigateTo((sender as FrameworkElement)?.Tag as string, null);
+
+    private void NavigateTo(string? tag, NavigationTransitionInfo? transition)
+    {
+        var pageType = ShellDestinations.PageFor(tag);
         if (pageType is not null && ContentFrame.CurrentSourcePageType != pageType)
         {
-            ContentFrame.Navigate(pageType, null, args.RecommendedNavigationTransitionInfo);
+            ContentFrame.Navigate(pageType, null, transition);
         }
+    }
+
+    private void OnContentNavigated(object sender, NavigationEventArgs e) => SyncSelection(e.SourcePageType);
+
+    // The pane and the tabs both follow the page, so they stay in sync across a resize
+    private void SyncSelection(Type? pageType)
+    {
+        var tag = ShellDestinations.TagFor(pageType);
+        if (tag is null)
+        {
+            return;
+        }
+
+        object? navItem = tag switch
+        {
+            ShellDestinations.Tickets => TicketsItem,
+            ShellDestinations.History => HistoryItem,
+            ShellDestinations.About => AboutItem,
+            _ => NavView.SettingsItem,
+        };
+        if (navItem is not null && NavView.IsPaneVisible)
+        {
+            NavView.SelectedItem = navItem;
+        }
+
+        var tab = ShellDestinations.TabFor(tag);
+        BottomTabs.SelectedItem = BottomTabs.Items.OfType<TabBarItem>().FirstOrDefault(t => Equals(t.Tag, tab));
     }
 }

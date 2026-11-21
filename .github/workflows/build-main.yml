@@ -1,0 +1,82 @@
+name: Package (main)
+
+# Every push to main packages Android and iOS in the Dev channel and publishes nothing.
+# The artifacts are sideload-ready. Publishing lives exclusively in release.yml, on
+# release/v* branches.
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+    inputs:
+      only:
+        description: "Comma-separated heads to build (blank = all enabled): android,ios"
+        required: false
+        default: ""
+
+concurrency:
+  group: package-main-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  # THE single cost gate. Everything needs this job.
+  version:
+    if: github.event.repository.private == false || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    outputs:
+      simple:  ${{ steps.v.outputs.simple }}
+      code:    ${{ steps.v.outputs.code }}
+      channel: ${{ steps.v.outputs.channel }}
+      only:    ${{ inputs.only }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: ./.github/actions/setup-dotnet-build
+      - id: v
+        uses: ./.github/actions/app-version
+        with:
+          version-code-offset: ${{ vars.VERSION_CODE_OFFSET }}
+      - name: Summary
+        run: |
+          {
+            echo "## Dev packages for \`${{ steps.v.outputs.simple }}\`"
+            echo ""
+            echo "Channel **${{ steps.v.outputs.channel }}**, versionCode \`${{ steps.v.outputs.code }}\` - nothing on this branch is published to any store."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  build-android:
+    needs: version
+    if: vars.ENABLE_ANDROID != 'false' && (needs.version.outputs.only == '' || contains(needs.version.outputs.only, 'android'))
+    uses: ./.github/workflows/_build-android.yml
+    with:
+      channel:        ${{ needs.version.outputs.channel }}
+      version_simple: ${{ needs.version.outputs.simple }}
+      version_code:   ${{ needs.version.outputs.code }}
+      artifact_name:  dev-android
+    secrets:
+      ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+      ANDROID_KEY_ALIAS:       ${{ secrets.ANDROID_KEY_ALIAS }}
+      ANDROID_KEY_PASSWORD:    ${{ secrets.ANDROID_KEY_PASSWORD }}
+      ANDROID_STORE_PASSWORD:  ${{ secrets.ANDROID_STORE_PASSWORD }}
+
+  build-ios:
+    needs: version
+    if: vars.ENABLE_IOS != 'false' && (needs.version.outputs.only == '' || contains(needs.version.outputs.only, 'ios'))
+    uses: ./.github/workflows/_build-ios.yml
+    with:
+      channel:        ${{ needs.version.outputs.channel }}
+      version_simple: ${{ needs.version.outputs.simple }}
+      artifact_name:  dev-ios
+    secrets:
+      # main uses the AD-HOC / development profile when present. Absent -> simulator build.
+      APPLE_DISTRIBUTION_P12_BASE64:     ${{ secrets.APPLE_DISTRIBUTION_P12_BASE64 }}
+      APPLE_P12_PASSWORD:                ${{ secrets.APPLE_P12_PASSWORD }}
+      APPLE_PROVISIONING_PROFILE_BASE64: ${{ secrets.APPLE_ADHOC_PROVISIONING_PROFILE_BASE64 }}
+      APPLE_CODESIGN_KEY:                ${{ secrets.APPLE_CODESIGN_KEY }}
+      APPLE_TEAM_ID:                     ${{ secrets.APPLE_TEAM_ID }}
+      KEYCHAIN_PASSWORD:                 ${{ secrets.KEYCHAIN_PASSWORD }}

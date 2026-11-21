@@ -1,0 +1,91 @@
+name: Compute app version
+description: >
+  Derives every store's version number from Nerdbank.GitVersioning, exactly once.
+  Never use `nbgv get-version -v Version` or `AssemblyFileVersion` for a store: their
+  fourth component is derived from the commit hash and is NOT monotonic.
+
+inputs:
+  version-code-offset:
+    description: >
+      Added to the computed android:versionCode. Exists for exactly one scenario: an app
+      already live on Play whose highest versionCode is above the computed value.
+    required: false
+    default: ""
+
+outputs:
+  simple:
+    description: "X.Y.Z (BuildVersionSimple)"
+    value: ${{ steps.calc.outputs.simple }}
+  store4:
+    description: "X.Y.Z.0 - the MSIX Identity Version"
+    value: ${{ steps.calc.outputs.store4 }}
+  code:
+    description: "Monotonic integer for android:versionCode"
+    value: ${{ steps.calc.outputs.code }}
+  channel:
+    description: "Dev on any branch, Prod on release/v*"
+    value: ${{ steps.calc.outputs.channel }}
+
+runs:
+  using: composite
+  steps:
+    - name: Compute
+      id: calc
+      shell: bash
+      env:
+        VERSION_CODE_OFFSET: ${{ inputs.version-code-offset }}
+      run: |
+        set -euo pipefail
+
+        simple="$(dotnet nbgv get-version -v SimpleVersion)"
+
+        # nbgv reports 0.0.0 SILENTLY for a malformed version.json or a shallow clone.
+        if [ "$simple" = "0.0.0" ]; then
+          echo "::error::nbgv reported 0.0.0 - version.json is malformed, or this checkout is shallow (needs fetch-depth: 0)."
+          exit 1
+        fi
+
+        IFS=. read -r maj min pat <<< "$simple"
+
+        # Slot budget: maj*10^7 + min*10^5 + pat  <=  209*10^7 + 99*10^5 + 99999 = 2099999999
+        # Google Play's documented ceiling is 2100000000.
+        #
+        # Five digits of patch, not three: NBGV's patch IS the git height, and the height
+        # does NOT reset when a release branch is cut - release/vX.Y inherits main's
+        # accumulated height. A 3-digit slot would overflow within a few release branches.
+        if [ "$maj" -gt 209 ] || [ "$min" -gt 99 ] || [ "$pat" -gt 99999 ]; then
+          echo "::error::version slot overflow in $simple (limits: major<=209, minor<=99, patch<=99999)"
+          exit 1
+        fi
+
+        offset="${VERSION_CODE_OFFSET:-0}"
+        offset="${offset:-0}"
+        code=$(( maj * 10000000 + min * 100000 + pat + offset ))
+
+        if [ "$code" -gt 2100000000 ]; then
+          echo "::error::versionCode $code exceeds Google Play's 2100000000 ceiling."
+          exit 1
+        fi
+
+        case "${GITHUB_REF:-}" in
+          refs/heads/release/v*) channel=Prod ;;
+          *)                     channel=Dev  ;;
+        esac
+
+        # The Microsoft Store rejects any package whose revision (4th) component is not 0.
+        # SimpleVersion degenerates to Major.Minor when the build number is negative, which
+        # would silently yield a 3-part store4 - assert the exact shape instead.
+        store4="$simple.0"
+        if ! [[ "$store4" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.0$ ]]; then
+          echo "::error::store4 is '$store4' but must be X.Y.Z.0 (the Store requires a zero revision)."
+          exit 1
+        fi
+
+        {
+          echo "simple=$simple"
+          echo "store4=$store4"
+          echo "code=$code"
+          echo "channel=$channel"
+        } >> "$GITHUB_OUTPUT"
+
+        echo "::notice::version=$simple  identity=$simple.0  versionCode=$code (offset $offset)  channel=$channel"

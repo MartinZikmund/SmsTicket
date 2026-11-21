@@ -120,6 +120,9 @@
   <data name="AboutApp" xml:space="preserve">
     <value>About app</value>
   </data>
+  <data name="AboutAppDescription" xml:space="preserve">
+    <value>Version, feedback and photo credits</value>
+  </data>
   <data name="AppName" xml:space="preserve">
     <value>Czech Transport Ticket</value>
   </data>
@@ -312,6 +315,15 @@
   </data>
   <data name="ShowTipsAgain" xml:space="preserve">
     <value>Show again</value>
+  </data>
+  <data name="AdPrivacyOptionsTitle" xml:space="preserve">
+    <value>Ad privacy settings</value>
+  </data>
+  <data name="AdPrivacyOptionsDescription" xml:space="preserve">
+    <value>Change or withdraw your consent for personalized ads</value>
+  </data>
+  <data name="AdPrivacyOptions" xml:space="preserve">
+    <value>Manage</value>
   </data>
   <data name="NavHistory" xml:space="preserve">
     <value>History</value>

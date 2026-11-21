@@ -12,4 +12,25 @@
         -->
         <NoWarn>$(NoWarn);NU1507;NETSDK1201;PRI257</NoWarn>
     </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="Nerdbank.GitVersioning" PrivateAssets="All" />
+    </ItemGroup>
+
+    <!-- Dev (default, local + main) or Prod (release/v* CI builds). See docs/CI.md. -->
+    <PropertyGroup>
+        <AppChannel Condition="'$(AppChannel)' == ''">Dev</AppChannel>
+    </PropertyGroup>
+
+    <!-- Runs before any SDK applies its defaults, so only the command line can fill these. An SDK's
+         default 1 and an injected 1 are otherwise the same value. Read by AssertStoreVersionStamped. -->
+    <PropertyGroup>
+        <_InjectedApplicationVersion>$(ApplicationVersion)</_InjectedApplicationVersion>
+        <_InjectedApplicationDisplayVersion>$(ApplicationDisplayVersion)</_InjectedApplicationDisplayVersion>
+    </PropertyGroup>
+
+    <!-- NBGV's NBGV_SetVersionForMauiAndroid/iOS targets overwrite ApplicationVersion and
+         ApplicationDisplayVersion mid-build, even over -p: values. CI's injected version must win. -->
+    <PropertyGroup Condition="'$(CiVersionInjected)' == 'true'">
+        <NBGV_SetMauiVersionProperties>false</NBGV_SetMauiVersionProperties>
+    </PropertyGroup>
 </Project>
