@@ -2,9 +2,51 @@ using SmsTicket.Data;
 
 namespace SmsTicket.Tests;
 
+// Validates the shipped data/tickets.json, which DataSource loads from its embedded copy
 [TestClass]
 public class DataSourceTests
 {
+    [TestMethod]
+    public void ShippedJson_IsValid()
+    {
+        var json = File.ReadAllText(FindShippedJson());
+
+        Assert.IsTrue(TicketDataParser.TryParse(json, out var document, out var error), error);
+        Assert.AreEqual(TicketDataParser.SupportedSchemaVersion, document!.SchemaVersion);
+    }
+
+    [TestMethod]
+    public void EmbeddedJson_MatchesShippedFile()
+    {
+        using var stream = DataSource.OpenBundled();
+        using StreamReader reader = new(stream);
+
+        Assert.AreEqual(File.ReadAllText(FindShippedJson()), reader.ReadToEnd());
+    }
+
+    [TestMethod]
+    public void ShippedJson_LocalizedTexts_HaveCzechAndEnglish()
+    {
+        Assert.IsTrue(TicketDataParser.TryParse(File.ReadAllText(FindShippedJson()), out var document));
+
+        foreach (var city in document!.Cities)
+        {
+            var texts = new[] { city.Name, city.Abbreviation }
+                .Concat(city.Tickets.SelectMany(t => new[] { t.Description, t.TimeText }))
+                .OfType<LocalizedText>()
+                .Where(t => !t.IsInvariant);
+
+            foreach (var text in texts)
+            {
+                Assert.IsTrue(
+                    text.Values.ContainsKey("cs") && text.Values.ContainsKey("en"),
+                    $"{city.Id}: '{text}' is missing a Czech or English translation");
+            }
+        }
+    }
+
+    [TestMethod]
+    public void Cities_AreLoaded() => Assert.AreEqual(13, DataSource.Cities.Count);
     [TestMethod]
     public void EveryCity_DefaultTicketExists()
     {
@@ -71,6 +113,20 @@ public class DataSourceTests
             AssertHttps(city.Id, nameof(city.SmsInfoUrl), city.SmsInfoUrl);
             AssertHttps(city.Id, nameof(city.JourneyPlannerUrl), city.JourneyPlannerUrl);
         }
+    }
+
+    private static string FindShippedJson()
+    {
+        for (var dir = new DirectoryInfo(AppContext.BaseDirectory); dir is not null; dir = dir.Parent)
+        {
+            var candidate = Path.Combine(dir.FullName, "data", "tickets.json");
+            if (File.Exists(candidate))
+            {
+                return candidate;
+            }
+        }
+
+        throw new FileNotFoundException("data/tickets.json not found above " + AppContext.BaseDirectory);
     }
 
     private static void AssertHttps(string cityId, string name, string? url) =>
