@@ -1,4 +1,4 @@
-﻿<Project Sdk="Uno.Sdk">
+<Project Sdk="Uno.Sdk">
     <PropertyGroup>
         <TargetFrameworks>net10.0-android;net10.0-ios;net10.0-windows10.0.26100;net10.0-browserwasm;net10.0-desktop</TargetFrameworks>
 
@@ -18,13 +18,13 @@
         <Description>SmsTicket powered by Uno Platform.</Description>
 
         <UnoFeatures>
-            SkiaRenderer;
             Mvvm;
             Configuration;
             Hosting;
+            Toolkit;
         </UnoFeatures>
 
-        <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) =='android'">23</SupportedOSPlatformVersion>
+        <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) =='android'">24</SupportedOSPlatformVersion>
     </PropertyGroup>
 
     <!-- Ad packages for mobile platforms -->

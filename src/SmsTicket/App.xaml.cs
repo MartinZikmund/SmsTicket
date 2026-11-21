@@ -3,10 +3,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.Windows.AppLifecycle;
 using SmsTicket.Configuration;
 using SmsTicket.Data;
 using SmsTicket.Services.Sms;
 using Uno.Resizetizer;
+using AppInstance = Microsoft.Windows.AppLifecycle.AppInstance;
 
 namespace SmsTicket;
 
@@ -19,8 +21,9 @@ public partial class App : Application
     public App()
     {
         this.InitializeComponent();
+        AppInstance.GetCurrent().Activated += OnAppInstanceActivated;
     }
-    
+
     public static AppConfig AppConfig { get; private set; }
 
     protected Window? MainWindow { get; private set; }
@@ -59,24 +62,34 @@ public partial class App : Application
         // Ensure the current window is active
         MainWindow.Activate();
 
-        if (!String.IsNullOrEmpty(args.Arguments))
+        await HandleTicketShortcutAsync(args.Arguments);
+    }
+
+    private void OnAppInstanceActivated(object? sender, AppActivationArguments args)
+    {
+        // Shortcut tapped while the app is already running
+        if (args.Kind == ExtendedActivationKind.Launch &&
+            args.Data is Windows.ApplicationModel.Activation.LaunchActivatedEventArgs launch)
         {
-            var cities = DataSource.Cities;
-            var ticket = cities.SelectMany(c => c.TicketTypes).FirstOrDefault(tt => tt.Id == args.Arguments);
-            if (ticket != null)
-            {
-                var smsService = new SmsService();
-                await smsService.PrepareSmsAsync(ticket.PhoneNumber, ticket.SmsText);
-            }
+            MainWindow?.DispatcherQueue.TryEnqueue(async () => await HandleTicketShortcutAsync(launch.Arguments));
         }
     }
 
-#if HAS_UNO
-    protected override void OnActivated(Windows.ApplicationModel.Activation.IActivatedEventArgs args)
+    private static async Task HandleTicketShortcutAsync(string? arguments)
     {
-        base.OnActivated(args);
+        if (string.IsNullOrEmpty(arguments))
+        {
+            return;
+        }
+
+        // Arguments are untrusted input - only act on known ticket ids
+        var ticket = DataSource.Cities.SelectMany(c => c.TicketTypes).FirstOrDefault(tt => tt.Id == arguments);
+        if (ticket != null)
+        {
+            var smsService = new SmsService();
+            await smsService.PrepareSmsAsync(ticket.PhoneNumber, ticket.SmsText);
+        }
     }
-#endif
 
     /// <summary>
     /// Invoked when Navigation to a certain page fails

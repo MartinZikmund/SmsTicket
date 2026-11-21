@@ -211,5 +211,5 @@ public static class DataSource
         .ToArray();
     }
 
-    public static IReadOnlyList<City> Cities => System.Collections.Generic.CollectionExtensions.AsReadOnly(_cities);
+    public static IReadOnlyList<City> Cities => Array.AsReadOnly(_cities);
 }
