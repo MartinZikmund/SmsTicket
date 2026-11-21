@@ -189,9 +189,6 @@
   <data name="PILOuterZones" xml:space="preserve">
     <value>Vnější zóny (V)</value>
   </data>
-  <data name="SOKDurationDetail" xml:space="preserve">
-    <value>Platná mezi 3:00 a 23:59</value>
-  </data>
   <data name="DuplicateBud24SmsDetail" xml:space="preserve">
     <value>Získání duplikátu platných 24 h jízdenek v případě smazání</value>
   </data>
@@ -205,16 +202,13 @@
     <value>Pro linku č.11 (Liberec - Jablonec nad Nisou)</value>
   </data>
   <data name="ReducedFareUL" xml:space="preserve">
-    <value>Cestující ve věku od 6 do 18 let, žáci a studenti, od 65 do 70 let</value>
+    <value>Zvýhodněné 50 % (6–18 let, studenti do 26, 65+). Do 4:00 dalšího dne</value>
   </data>
   <data name="ReducedFareUL2" xml:space="preserve">
-    <value>hodněné - osoba s dítětem do 3 let, invalidní důchod, 62 - 65 let</value>
+    <value>Ústecké jízdné (62–65 let, s dítětem do 3 let). Do 4:00 dalšího dne</value>
   </data>
   <data name="QuickActionDescriptionFormatString" xml:space="preserve">
     <value>Cena {0} CZK</value>
-  </data>
-  <data name="CarlsbadName" xml:space="preserve">
-    <value>Karlovy Vary</value>
   </data>
   <data name="PinnedDescription" xml:space="preserve">
     <value>Připnuté jízdenky najdete v menu ikony aplikace na podporovaných zařízeních (dlouze stiskněte ikonu)</value>
@@ -227,5 +221,62 @@
   </data>
   <data name="PrepareSmsNoteTitle" xml:space="preserve">
     <value>Připravení SMS</value>
+  </data>
+  <data name="LIB45Detail" xml:space="preserve">
+    <value>Platí i na lince 11 do Jablonce nad Nisou</value>
+  </data>
+  <data name="OSTDurationDetail" xml:space="preserve">
+    <value>90 minut v SO, NE a státní svátky</value>
+  </data>
+  <data name="OSTReducedDurationDetail" xml:space="preserve">
+    <value>Zlevněné jízdné, 90 minut v SO, NE a státní svátky</value>
+  </data>
+  <data name="ULDayDetail" xml:space="preserve">
+    <value>Platí do 4:00 následujícího dne</value>
+  </data>
+  <data name="OneDay" xml:space="preserve">
+    <value>1 den</value>
+  </data>
+  <data name="AllDay" xml:space="preserve">
+    <value>Celý den</value>
+  </data>
+  <data name="CHDDetail" xml:space="preserve">
+    <value>Celodenní, platí 4:30–23:30</value>
+  </data>
+  <data name="ChangeCity" xml:space="preserve">
+    <value>Změnit město</value>
+  </data>
+  <data name="ChooseCity" xml:space="preserve">
+    <value>Vyberte město</value>
+  </data>
+  <data name="PhotoInfo" xml:space="preserve">
+    <value>Informace o fotografii</value>
+  </data>
+  <data name="PhotoBy" xml:space="preserve">
+    <value>Foto</value>
+  </data>
+  <data name="ViewSource" xml:space="preserve">
+    <value>Zobrazit zdroj</value>
+  </data>
+  <data name="Duplicate" xml:space="preserve">
+    <value>Duplikát</value>
+  </data>
+  <data name="Pin" xml:space="preserve">
+    <value>Připnout</value>
+  </data>
+  <data name="Unpin" xml:space="preserve">
+    <value>Odepnout</value>
+  </data>
+  <data name="NavTickets" xml:space="preserve">
+    <value>Jízdenky</value>
+  </data>
+  <data name="PhotoCredits" xml:space="preserve">
+    <value>Fotografie měst</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>Verze</value>
+  </data>
+  <data name="MadeBy" xml:space="preserve">
+    <value>Vytvořil Martin Zikmund</value>
   </data>
 </root>

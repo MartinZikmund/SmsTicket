@@ -9,4 +9,5 @@
   <Project Path="SmsTicket/SmsTicket.csproj">
     <Deploy />
   </Project>
+  <Project Path="SmsTicket.Tests/SmsTicket.Tests.csproj" />
 </Solution>

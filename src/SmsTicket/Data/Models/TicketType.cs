@@ -1,7 +1,11 @@
+using SmsTicket.Services.Localizer;
+
 namespace SmsTicket.Data.Models;
 
 public class TicketType
 {
+    private static readonly LocalizationService _localizer = new();
+
     public TicketType(
         string id,
         string description,
@@ -30,4 +34,11 @@ public class TicketType
 
     public string PhoneNumber { get; set; }
     public string SmsText { get; set; }
+
+    public bool IsDuplicate => string.IsNullOrEmpty(TimeText);
+
+    public bool HasDescription => !string.IsNullOrEmpty(Description);
+
+    // Used by GridView/ListView as the item's automation name
+    public override string ToString() => $"{(IsDuplicate ? _localizer.Duplicate : TimeText)}, {Price} {_localizer["CzechPriceTag"]}";
 }

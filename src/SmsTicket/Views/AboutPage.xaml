@@ -1,0 +1,75 @@
+<Page
+    x:Class="SmsTicket.Views.AboutPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:models="using:SmsTicket.Data.Models"
+    xmlns:views="using:SmsTicket.Views"
+    Background="{ThemeResource SolidBackgroundFillColorBaseBrush}">
+
+    <ScrollViewer>
+        <StackPanel
+            MaxWidth="720"
+            Padding="16,24"
+            Spacing="16">
+            <TextBlock
+                AutomationProperties.HeadingLevel="Level1"
+                Style="{StaticResource TitleTextBlockStyle}"
+                Text="{x:Bind Localizer.AboutApp}" />
+
+            <StackPanel
+                Padding="16"
+                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                BorderThickness="1"
+                CornerRadius="{StaticResource OverlayCornerRadius}"
+                Spacing="8">
+                <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="{x:Bind Localizer.SMSTicket}" />
+                <TextBlock Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="{x:Bind VersionText}" />
+                <TextBlock Text="{x:Bind Localizer.HelpText}" TextWrapping="Wrap" />
+                <HyperlinkButton
+                    Padding="0"
+                    AutomationProperties.AutomationId="AuthorLink"
+                    Content="{x:Bind Localizer.MadeBy}"
+                    NavigateUri="https://mzikmund.dev" />
+            </StackPanel>
+
+            <TextBlock
+                AutomationProperties.HeadingLevel="Level2"
+                Style="{StaticResource BodyStrongTextBlockStyle}"
+                Text="{x:Bind Localizer.PhotoCredits}" />
+            <ItemsRepeater ItemsSource="{x:Bind Credits}">
+                <ItemsRepeater.Layout>
+                    <StackLayout Spacing="4" />
+                </ItemsRepeater.Layout>
+                <ItemsRepeater.ItemTemplate>
+                    <DataTemplate x:DataType="views:CityPhotoCredit">
+                        <StackPanel
+                            Padding="16,12"
+                            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                            BorderThickness="1"
+                            CornerRadius="{StaticResource ControlCornerRadius}"
+                            Spacing="2">
+                            <TextBlock Style="{StaticResource BodyStrongTextBlockStyle}" Text="{x:Bind CityName}" />
+                            <TextBlock
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                Style="{StaticResource CaptionTextBlockStyle}"
+                                Text="{x:Bind Photo.Author}"
+                                TextWrapping="Wrap" />
+                            <StackPanel Orientation="Horizontal" Spacing="16">
+                                <HyperlinkButton
+                                    Padding="0"
+                                    Content="{x:Bind Photo.License}"
+                                    NavigateUri="{x:Bind LicenseUri}" />
+                                <HyperlinkButton
+                                    Padding="0"
+                                    Content="{x:Bind ViewSourceText}"
+                                    NavigateUri="{x:Bind SourceUri}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsRepeater.ItemTemplate>
+            </ItemsRepeater>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

@@ -67,4 +67,16 @@ public class LocalizationService : ILocalizerService
     public string PinnedDescription => this[nameof(PinnedDescription)];
     public string PrepareSmsNote => this[nameof(PrepareSmsNote)];
     public string PrepareSmsNoteTitle => this[nameof(PrepareSmsNoteTitle)];
+    public string ChangeCity => this[nameof(ChangeCity)];
+    public string ChooseCity => this[nameof(ChooseCity)];
+    public string PhotoInfo => this[nameof(PhotoInfo)];
+    public string PhotoBy => this[nameof(PhotoBy)];
+    public string ViewSource => this[nameof(ViewSource)];
+    public string Duplicate => this[nameof(Duplicate)];
+    public string Pin => this[nameof(Pin)];
+    public string Unpin => this[nameof(Unpin)];
+    public string NavTickets => this[nameof(NavTickets)];
+    public string PhotoCredits => this[nameof(PhotoCredits)];
+    public string Version => this[nameof(Version)];
+    public string MadeBy => this[nameof(MadeBy)];
 }

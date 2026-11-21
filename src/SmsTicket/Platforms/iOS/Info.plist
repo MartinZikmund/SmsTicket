@@ -27,6 +27,22 @@
 			<string>UIInterfaceOrientationLandscapeLeft</string>
 			<string>UIInterfaceOrientationLandscapeRight</string>
 		</array>
+		<!-- Required since the iOS 27 SDK (MT7199); without a delegate class Uno uses its own scene delegate -->
+		<key>UIApplicationSceneManifest</key>
+		<dict>
+			<key>UIApplicationSupportsMultipleScenes</key>
+			<false/>
+			<key>UISceneConfigurations</key>
+			<dict>
+				<key>UIWindowSceneSessionRoleApplication</key>
+				<array>
+					<dict>
+						<key>UISceneConfigurationName</key>
+						<string>Default Configuration</string>
+					</dict>
+				</array>
+			</dict>
+		</dict>
 		<key>UIViewControllerBasedStatusBarAppearance</key>
 		<false/>
 		<key>XSAppIconAssets</key>

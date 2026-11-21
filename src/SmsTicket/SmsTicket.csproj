@@ -1,6 +1,6 @@
-﻿<Project Sdk="Uno.Sdk">
+<Project Sdk="Uno.Sdk">
     <PropertyGroup>
-        <TargetFrameworks>net10.0-android;net10.0-ios;net10.0-windows10.0.26100;net10.0-browserwasm;net10.0-desktop</TargetFrameworks>
+        <TargetFrameworks>net11.0-android;net11.0-ios;net11.0-windows10.0.26100;net11.0-browserwasm;net11.0-desktop;net11.0</TargetFrameworks>
 
         <OutputType>Exe</OutputType>
         <UnoSingleProject>true</UnoSingleProject>
@@ -18,21 +18,34 @@
         <Description>SmsTicket powered by Uno Platform.</Description>
 
         <UnoFeatures>
-            SkiaRenderer;
             Mvvm;
             Configuration;
             Hosting;
+            Toolkit;
         </UnoFeatures>
 
-        <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) =='android'">23</SupportedOSPlatformVersion>
+        <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) =='android'">24</SupportedOSPlatformVersion>
     </PropertyGroup>
 
-    <!-- Ad packages for mobile platforms -->
-    <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-android'">
-        <PackageReference Include="Xamarin.GooglePlayServices.Ads" />
+    <!-- The plain net11.0 target exists for unit tests, which have no native ICU to load -->
+    <PropertyGroup Condition="'$(TargetFramework)' == 'net11.0'">
+        <SkipIcuDataInitializerGenerator>true</SkipIcuDataInitializerGenerator>
+    </PropertyGroup>
+    <ItemGroup Condition="'$(TargetFramework)' == 'net11.0'">
+        <CompilerVisibleProperty Include="SkipIcuDataInitializerGenerator" />
     </ItemGroup>
-    <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-ios'">
-        <PackageReference Include="Xamarin.Google.iOS.MobileAds" />
+
+    <ItemGroup>
+        <PackageReference Include="MZikmund.Uno.AdMob" />
     </ItemGroup>
+
+    <!--
+      .NET 11 precompiles the whole app into one composite ReadyToRun image on Android (+19 MB per ABI download).
+      MAUI apps get partial R2R by default; this opts in the same way: the app assembly and the runtime's
+      profiled hot paths stay precompiled, the rest is JIT-ed.
+    -->
+    <PropertyGroup Condition="'$(IsAndroid)' == 'true'">
+        <PublishReadyToRunCrossgen2ExtraArgs>$(PublishReadyToRunCrossgen2ExtraArgs);--partial</PublishReadyToRunCrossgen2ExtraArgs>
+    </PropertyGroup>
 
 </Project>

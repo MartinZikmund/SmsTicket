@@ -1,0 +1,123 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  DOTNET_NOLOGO: 1
+  DOTNET_CLI_TELEMETRY_OPTOUT: 1
+  ContinuousIntegrationBuild: true
+  SOLUTION_FILE: src/SmsTicket.slnx
+  PROJECT_FILE: src/SmsTicket/SmsTicket.csproj
+  TEST_PROJECT: src/SmsTicket.Tests/SmsTicket.Tests.csproj
+
+jobs:
+  test:
+    name: Unit tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: src/global.json
+
+      - uses: actions/cache@v6
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.slnx', '**/*.csproj', 'src/Directory.Packages.props', 'src/global.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Install .NET workloads
+        run: dotnet workload restore "$SOLUTION_FILE"
+
+      - name: Run unit tests
+        run: dotnet test "$TEST_PROJECT" -c Release --logger "trx;LogFileName=test-results.trx"
+
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: test-results
+          path: '**/TestResults/*.trx'
+          if-no-files-found: ignore
+
+  android:
+    name: Android (Release, unsigned)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: src/global.json
+
+      - uses: actions/cache@v6
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.slnx', '**/*.csproj', 'src/Directory.Packages.props', 'src/global.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Install .NET workloads
+        run: dotnet workload restore "$SOLUTION_FILE"
+
+      - name: Build Android
+        run: dotnet build "$PROJECT_FILE" -c Release -f net11.0-android
+
+  ios:
+    name: iOS (Release, simulator)
+    # The iOS SDK pack (27.2) hard-requires Xcode 27.2; same runner as daily-plants
+    runs-on: xcode-27
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: src/global.json
+
+      - uses: actions/cache@v6
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.slnx', '**/*.csproj', 'src/Directory.Packages.props', 'src/global.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Install .NET workloads
+        run: dotnet workload restore "$SOLUTION_FILE"
+
+      - name: Select Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: "27.2"
+
+      - name: Show Xcode version
+        run: xcodebuild -version
+
+      - name: Download iOS platform
+        # https://github.com/actions/runner-images/issues/13275
+        run: xcodebuild -downloadPlatform iOS
+
+      - name: Build iOS simulator app (no signing)
+        run: |
+          dotnet build "$PROJECT_FILE" -c Release -f net11.0-ios \
+            -p:RuntimeIdentifier=iossimulator-arm64 \
+            -p:TargetFrameworks=net11.0-ios
+
+      - name: Inspect built Info.plist
+        run: |
+          app="$(find src/SmsTicket/bin/Release/net11.0-ios/iossimulator-arm64 -maxdepth 2 -name '*.app' | head -1)"
+          echo "App: $app"
+          plutil -p "$app/Info.plist" | grep -E "GADApplicationIdentifier|NSUserTracking" || echo "No ad keys in Info.plist"

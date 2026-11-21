@@ -3,10 +3,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.Windows.AppLifecycle;
+using Uno.AdMob;
+using Uno.AdMob.Configuration;
 using SmsTicket.Configuration;
 using SmsTicket.Data;
 using SmsTicket.Services.Sms;
 using Uno.Resizetizer;
+using AppInstance = Microsoft.Windows.AppLifecycle.AppInstance;
 
 namespace SmsTicket;
 
@@ -19,9 +23,12 @@ public partial class App : Application
     public App()
     {
         this.InitializeComponent();
+        AppInstance.GetCurrent().Activated += OnAppInstanceActivated;
     }
-    
-    public static AppConfig AppConfig { get; private set; }
+
+    public static AppConfig AppConfig { get; private set; } = new();
+
+    public static bool AreAdsEnabled { get; private set; }
 
     protected Window? MainWindow { get; private set; }
 
@@ -31,9 +38,7 @@ public partial class App : Application
 
         AppConfig = host.Services.GetRequiredService<IOptions<AppConfig>>().Value;
 
-#if __ANDROID__
-        Google.Android.Gms.Ads.MobileAds.Initialize(Android.App.Application.Context);
-#endif
+        InitializeAds(host.Services);
 
         // Do not repeat app initialization when the Window already has content,
         // just ensure that the window is active
@@ -53,30 +58,84 @@ public partial class App : Application
             // When the navigation stack isn't restored navigate to the first page,
             // configuring the new page by passing required information as a navigation
             // parameter
-            rootFrame.Navigate(typeof(MainPage), args.Arguments);
+            rootFrame.Navigate(typeof(Views.ShellPage), args.Arguments);
         }
+
+#if !HAS_UNO
+        ResizeWindow(MainWindow, 1000, 820);
+#endif
 
         // Ensure the current window is active
         MainWindow.Activate();
 
-        if (!String.IsNullOrEmpty(args.Arguments))
+        await HandleTicketShortcutAsync(args.Arguments);
+    }
+
+#if !HAS_UNO
+    [System.Runtime.InteropServices.DllImport("user32.dll")]
+    private static extern uint GetDpiForWindow(IntPtr hWnd);
+
+    private static void ResizeWindow(Window window, int width, int height)
+    {
+        // AppWindow.Resize takes physical pixels
+        var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(window);
+        var scale = GetDpiForWindow(hwnd) / 96.0;
+        window.AppWindow.Resize(new Windows.Graphics.SizeInt32((int)(width * scale), (int)(height * scale)));
+    }
+#endif
+
+    private static void InitializeAds(IServiceProvider services)
+    {
+#if __ANDROID__
+        // iOS has no AdMob app ID configured yet, and the SDK crashes on start without one
+        if (!string.IsNullOrEmpty(AppConfig.AndroidAdUnitId))
         {
-            var cities = DataSource.Cities;
-            var ticket = cities.SelectMany(c => c.TicketTypes).FirstOrDefault(tt => tt.Id == args.Arguments);
-            if (ticket != null)
-            {
-                var smsService = new SmsService();
-                await smsService.PrepareSmsAsync(ticket.PhoneNumber, ticket.SmsText);
-            }
+            AdConfig.DefaultBannerAdUnitId = AppConfig.AndroidAdUnitId;
+        }
+        else
+        {
+#if DEBUG
+            AdConfig.UseTestAdUnitIds = true;
+#else
+            return;
+#endif
+        }
+
+        if (!string.IsNullOrEmpty(AppConfig.AndroidTestDeviceId))
+        {
+            AdConfig.AddTestDevice(AppConfig.AndroidTestDeviceId);
+        }
+
+        AdMobPlatform.Initialize(services);
+        AreAdsEnabled = true;
+#endif
+    }
+
+    private void OnAppInstanceActivated(object? sender, AppActivationArguments args)
+    {
+        // Shortcut tapped while the app is already running
+        if (args.Kind == ExtendedActivationKind.Launch &&
+            args.Data is Windows.ApplicationModel.Activation.LaunchActivatedEventArgs launch)
+        {
+            MainWindow?.DispatcherQueue.TryEnqueue(async () => await HandleTicketShortcutAsync(launch.Arguments));
         }
     }
 
-#if HAS_UNO
-    protected override void OnActivated(Windows.ApplicationModel.Activation.IActivatedEventArgs args)
+    private static async Task HandleTicketShortcutAsync(string? arguments)
     {
-        base.OnActivated(args);
+        if (string.IsNullOrEmpty(arguments))
+        {
+            return;
+        }
+
+        // Arguments are untrusted input - only act on known ticket ids
+        var ticket = DataSource.Cities.SelectMany(c => c.TicketTypes).FirstOrDefault(tt => tt.Id == arguments);
+        if (ticket != null)
+        {
+            var smsService = new SmsService();
+            await smsService.PrepareSmsAsync(ticket.PhoneNumber, ticket.SmsText);
+        }
     }
-#endif
 
     /// <summary>
     /// Invoked when Navigation to a certain page fails
@@ -100,7 +159,8 @@ public partial class App : Application
             .UseConfiguration(configure: configBuilder =>
                 configBuilder
                     .EmbeddedSource<App>()
-                    .Section<AppConfig>()));
+                    .Section<AppConfig>())
+            .ConfigureServices((_, services) => services.AddAdMob()));
 
         return (builder.Build(), builder.Window);
     }
