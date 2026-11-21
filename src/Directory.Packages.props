@@ -1,6 +1,5 @@
 <Project ToolsVersion="15.0">
     <ItemGroup>
-        <PackageVersion Include="Xamarin.Google.iOS.MobileAds" Version="8.13.0.3" />
-        <PackageVersion Include="Xamarin.GooglePlayServices.Ads" Version="125.5.0" />
+        <PackageVersion Include="MZikmund.Uno.AdMob" Version="1.0.0-beta.17" />
     </ItemGroup>
 </Project>

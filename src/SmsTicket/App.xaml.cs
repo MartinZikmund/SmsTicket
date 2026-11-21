@@ -4,6 +4,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Windows.AppLifecycle;
+using Uno.AdMob;
+using Uno.AdMob.Configuration;
 using SmsTicket.Configuration;
 using SmsTicket.Data;
 using SmsTicket.Services.Sms;
@@ -24,7 +26,9 @@ public partial class App : Application
         AppInstance.GetCurrent().Activated += OnAppInstanceActivated;
     }
 
-    public static AppConfig AppConfig { get; private set; }
+    public static AppConfig AppConfig { get; private set; } = new();
+
+    public static bool AreAdsEnabled { get; private set; }
 
     protected Window? MainWindow { get; private set; }
 
@@ -34,9 +38,7 @@ public partial class App : Application
 
         AppConfig = host.Services.GetRequiredService<IOptions<AppConfig>>().Value;
 
-#if __ANDROID__
-        Google.Android.Gms.Ads.MobileAds.Initialize(Android.App.Application.Context);
-#endif
+        InitializeAds(host.Services);
 
         // Do not repeat app initialization when the Window already has content,
         // just ensure that the window is active
@@ -63,6 +65,33 @@ public partial class App : Application
         MainWindow.Activate();
 
         await HandleTicketShortcutAsync(args.Arguments);
+    }
+
+    private static void InitializeAds(IServiceProvider services)
+    {
+#if __ANDROID__
+        // iOS has no AdMob app ID configured yet, and the SDK crashes on start without one
+        if (!string.IsNullOrEmpty(AppConfig.AndroidAdUnitId))
+        {
+            AdConfig.DefaultBannerAdUnitId = AppConfig.AndroidAdUnitId;
+        }
+        else
+        {
+#if DEBUG
+            AdConfig.UseTestAdUnitIds = true;
+#else
+            return;
+#endif
+        }
+
+        if (!string.IsNullOrEmpty(AppConfig.AndroidTestDeviceId))
+        {
+            AdConfig.AddTestDevice(AppConfig.AndroidTestDeviceId);
+        }
+
+        AdMobPlatform.Initialize(services);
+        AreAdsEnabled = true;
+#endif
     }
 
     private void OnAppInstanceActivated(object? sender, AppActivationArguments args)
@@ -113,7 +142,8 @@ public partial class App : Application
             .UseConfiguration(configure: configBuilder =>
                 configBuilder
                     .EmbeddedSource<App>()
-                    .Section<AppConfig>()));
+                    .Section<AppConfig>())
+            .ConfigureServices((_, services) => services.AddAdMob()));
 
         return (builder.Build(), builder.Window);
     }

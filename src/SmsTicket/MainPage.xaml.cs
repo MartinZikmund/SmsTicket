@@ -1,10 +1,10 @@
-using SmsTicket.Controls;
 using SmsTicket.Services.Localizer;
 using SmsTicket.Services.Settings;
 using SmsTicket.Services.Sms;
 using SmsTicket.ViewModels;
 using Windows.System;
 using Windows.System.Profile;
+using Uno.AdMob;
 
 namespace SmsTicket;
 
@@ -29,19 +29,17 @@ public sealed partial class MainPage : Page
     private void MainPage_Loaded(object sender, RoutedEventArgs e)
     {
         ViewModel.XamlRoot = XamlRoot;
-#if __ANDROID__ || __IOS__
-        if (!_adControlLoaded)
+        if (!_adControlLoaded && App.AreAdsEnabled)
         {
             _adControlLoaded = true;
-            var adControl = new AdControl()
+            BannerAd adControl = new()
             {
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Bottom
             };
             ContentRoot.Children.Add(adControl);
-            adControl.SetValue(Grid.RowProperty, 2);
+            Grid.SetRow(adControl, 2);
         }
-#endif
     }
 
     private void MainPage_DataContextChanged(DependencyObject sender, DataContextChangedEventArgs args)
