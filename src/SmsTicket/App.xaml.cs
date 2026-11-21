@@ -11,7 +11,9 @@ using SmsTicket.Data;
 using SmsTicket.Services.AppSettings;
 using SmsTicket.Services.Settings;
 using SmsTicket.Data.Models;
+using SmsTicket.Services.ActiveTickets;
 using SmsTicket.Services.PurchaseHistory;
+using SmsTicket.Services.Reminders;
 using SmsTicket.Services.Sms;
 using Uno.Resizetizer;
 using AppInstance = Microsoft.Windows.AppLifecycle.AppInstance;
@@ -20,6 +22,8 @@ namespace SmsTicket;
 
 public partial class App : Application
 {
+    private static ExpiryReminderCoordinator? _expiryReminders;
+
     /// <summary>
     /// Initializes the singleton application object. This is the first line of authored code
     /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -113,6 +117,17 @@ public partial class App : Application
 
         // Fresh tariffs are cached for the next launch, see DataSource
         _ = Task.Run(DataSource.RefreshAsync);
+
+        if (_expiryReminders is null)
+        {
+            _expiryReminders = new(
+                PurchaseHistoryService.Default,
+                ActiveTicketService.Default,
+                ExpiryReminderSchedulers.Create(),
+                TimeProvider.System,
+                ExpiryReminderSchedulers.CreateTexts);
+            _expiryReminders.Start();
+        }
 
         await HandleTicketShortcutAsync(args.Arguments);
     }

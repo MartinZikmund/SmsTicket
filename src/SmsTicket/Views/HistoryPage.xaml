@@ -25,6 +25,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <TextBlock
                 AutomationProperties.HeadingLevel="Level1"
@@ -53,6 +54,10 @@
                 Text="{x:Bind Localizer.HistoryDisclaimer}"
                 TextWrapping="Wrap"
                 Visibility="{x:Bind ViewModel.HasItems, Mode=OneWay}" />
+            <views:ActiveTicketsStrip
+                Grid.Row="2"
+                Grid.ColumnSpan="2"
+                Margin="0,12,0,0" />
         </Grid>
 
         <!--  Months  -->
