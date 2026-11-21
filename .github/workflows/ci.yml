@@ -78,6 +78,15 @@ jobs:
       - name: Build Android
         run: dotnet build "$PROJECT_FILE" -c Release -f net11.0-android
 
+      - name: Exact alarms stay out of the manifest
+        run: |
+          set -euo pipefail
+          man="$(find src/SmsTicket/obj/Release/net11.0-android -name AndroidManifest.xml -path '*manifest*' | head -1)"
+          if grep -q 'SCHEDULE_EXACT_ALARM\|USE_EXACT_ALARM' "$man"; then
+            echo "::error::$man requests an exact-alarm permission, which Play policy restricts. Reminders fall back to SetWindow without it."
+            exit 1
+          fi
+
   ios:
     name: iOS (Release, simulator)
     # The iOS SDK pack (27.2) hard-requires Xcode 27.2; same runner as daily-plants
