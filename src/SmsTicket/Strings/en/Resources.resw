@@ -202,10 +202,10 @@
     <value>For line nr. 11 (Liberec - Jablonec nad Nisou)</value>
   </data>
   <data name="ReducedFareUL" xml:space="preserve">
-    <value>50 % reduced: ages 6–18, students 18–26, 65+, 3rd degree disability. Valid until 4 AM the next day</value>
+    <value>50 % reduced (ages 6–18, students to 26, 65+). Until 4 AM next day</value>
   </data>
   <data name="ReducedFareUL2" xml:space="preserve">
-    <value>Ústí fare: ages 62–65, person with a child under 3, 3rd degree disability. Valid until 4 AM the next day</value>
+    <value>Ústí fare (ages 62–65, with a child under 3). Until 4 AM next day</value>
   </data>
   <data name="QuickActionDescriptionFormatString" xml:space="preserve">
     <value>Price {0} CZK</value>
@@ -242,5 +242,41 @@
   </data>
   <data name="CHDDetail" xml:space="preserve">
     <value>All-day ticket, valid 4:30 AM–11:30 PM</value>
+  </data>
+  <data name="ChangeCity" xml:space="preserve">
+    <value>Change city</value>
+  </data>
+  <data name="ChooseCity" xml:space="preserve">
+    <value>Choose a city</value>
+  </data>
+  <data name="PhotoInfo" xml:space="preserve">
+    <value>About this photo</value>
+  </data>
+  <data name="PhotoBy" xml:space="preserve">
+    <value>Photo</value>
+  </data>
+  <data name="ViewSource" xml:space="preserve">
+    <value>View source</value>
+  </data>
+  <data name="Duplicate" xml:space="preserve">
+    <value>Duplicate</value>
+  </data>
+  <data name="Pin" xml:space="preserve">
+    <value>Pin</value>
+  </data>
+  <data name="Unpin" xml:space="preserve">
+    <value>Unpin</value>
+  </data>
+  <data name="NavTickets" xml:space="preserve">
+    <value>Tickets</value>
+  </data>
+  <data name="PhotoCredits" xml:space="preserve">
+    <value>City photos</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="MadeBy" xml:space="preserve">
+    <value>Made by Martin Zikmund</value>
   </data>
 </root>

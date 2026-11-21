@@ -202,10 +202,10 @@
     <value>Pro linku č.11 (Liberec - Jablonec nad Nisou)</value>
   </data>
   <data name="ReducedFareUL" xml:space="preserve">
-    <value>Zvýhodněné 50 %: 6–18 let, studenti 18–26 let, od 65 let, inv. důchod 3. st. Platí do 4:00 následujícího dne</value>
+    <value>Zvýhodněné 50 % (6–18 let, studenti do 26, 65+). Do 4:00 dalšího dne</value>
   </data>
   <data name="ReducedFareUL2" xml:space="preserve">
-    <value>Ústecké jízdné: 62–65 let, osoba s dítětem do 3 let, inv. důchod 3. st. Platí do 4:00 následujícího dne</value>
+    <value>Ústecké jízdné (62–65 let, s dítětem do 3 let). Do 4:00 dalšího dne</value>
   </data>
   <data name="QuickActionDescriptionFormatString" xml:space="preserve">
     <value>Cena {0} CZK</value>
@@ -242,5 +242,41 @@
   </data>
   <data name="CHDDetail" xml:space="preserve">
     <value>Celodenní, platí 4:30–23:30</value>
+  </data>
+  <data name="ChangeCity" xml:space="preserve">
+    <value>Změnit město</value>
+  </data>
+  <data name="ChooseCity" xml:space="preserve">
+    <value>Vyberte město</value>
+  </data>
+  <data name="PhotoInfo" xml:space="preserve">
+    <value>Informace o fotografii</value>
+  </data>
+  <data name="PhotoBy" xml:space="preserve">
+    <value>Foto</value>
+  </data>
+  <data name="ViewSource" xml:space="preserve">
+    <value>Zobrazit zdroj</value>
+  </data>
+  <data name="Duplicate" xml:space="preserve">
+    <value>Duplikát</value>
+  </data>
+  <data name="Pin" xml:space="preserve">
+    <value>Připnout</value>
+  </data>
+  <data name="Unpin" xml:space="preserve">
+    <value>Odepnout</value>
+  </data>
+  <data name="NavTickets" xml:space="preserve">
+    <value>Jízdenky</value>
+  </data>
+  <data name="PhotoCredits" xml:space="preserve">
+    <value>Fotografie měst</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>Verze</value>
+  </data>
+  <data name="MadeBy" xml:space="preserve">
+    <value>Vytvořil Martin Zikmund</value>
   </data>
 </root>

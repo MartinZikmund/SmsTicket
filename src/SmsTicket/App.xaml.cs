@@ -58,14 +58,31 @@ public partial class App : Application
             // When the navigation stack isn't restored navigate to the first page,
             // configuring the new page by passing required information as a navigation
             // parameter
-            rootFrame.Navigate(typeof(MainPage), args.Arguments);
+            rootFrame.Navigate(typeof(Views.ShellPage), args.Arguments);
         }
+
+#if !HAS_UNO
+        ResizeWindow(MainWindow, 1000, 820);
+#endif
 
         // Ensure the current window is active
         MainWindow.Activate();
 
         await HandleTicketShortcutAsync(args.Arguments);
     }
+
+#if !HAS_UNO
+    [System.Runtime.InteropServices.DllImport("user32.dll")]
+    private static extern uint GetDpiForWindow(IntPtr hWnd);
+
+    private static void ResizeWindow(Window window, int width, int height)
+    {
+        // AppWindow.Resize takes physical pixels
+        var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(window);
+        var scale = GetDpiForWindow(hwnd) / 96.0;
+        window.AppWindow.Resize(new Windows.Graphics.SizeInt32((int)(width * scale), (int)(height * scale)));
+    }
+#endif
 
     private static void InitializeAds(IServiceProvider services)
     {
