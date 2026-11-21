@@ -39,4 +39,13 @@
         <PackageReference Include="MZikmund.Uno.AdMob" />
     </ItemGroup>
 
+    <!--
+      .NET 11 precompiles the whole app into one composite ReadyToRun image on Android (+19 MB per ABI download).
+      MAUI apps get partial R2R by default; this opts in the same way: the app assembly and the runtime's
+      profiled hot paths stay precompiled, the rest is JIT-ed.
+    -->
+    <PropertyGroup Condition="'$(IsAndroid)' == 'true'">
+        <PublishReadyToRunCrossgen2ExtraArgs>$(PublishReadyToRunCrossgen2ExtraArgs);--partial</PublishReadyToRunCrossgen2ExtraArgs>
+    </PropertyGroup>
+
 </Project>
