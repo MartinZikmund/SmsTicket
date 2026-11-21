@@ -55,4 +55,17 @@ public static class DataSource
         var language = new LocalizationService()[key];
         return language == key ? CultureInfo.CurrentUICulture.Name : language;
     }
+
+    public static CityTicket? FindTicket(string? ticketId)
+    {
+        foreach (var city in Cities)
+        {
+            if (city.TicketTypes.FirstOrDefault(t => t.Id == ticketId) is { } ticket)
+            {
+                return new CityTicket(city, ticket);
+            }
+        }
+
+        return null;
+    }
 }
