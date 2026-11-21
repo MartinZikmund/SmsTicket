@@ -89,4 +89,10 @@ public class LocalizationService : ILocalizerService
     public string OperatorWebsite => this[nameof(OperatorWebsite)];
     public string SmsTicketInfo => this[nameof(SmsTicketInfo)];
     public string JourneyPlanner => this[nameof(JourneyPlanner)];
+    public string UseMyLocation => this[nameof(UseMyLocation)];
+    public string AutoSelectNearestCity => this[nameof(AutoSelectNearestCity)];
+    public string NearestCityFound => this[nameof(NearestCityFound)];
+    public string NearestCityNoneNearby => this[nameof(NearestCityNoneNearby)];
+    public string NearestCityDenied => this[nameof(NearestCityDenied)];
+    public string NearestCityUnavailable => this[nameof(NearestCityUnavailable)];
 }
