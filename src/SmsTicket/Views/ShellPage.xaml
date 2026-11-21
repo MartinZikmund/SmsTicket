@@ -17,8 +17,9 @@
             x:Name="NavView"
             AutomationProperties.AutomationId="ShellNavigationView"
             IsBackButtonVisible="Collapsed"
-            IsSettingsVisible="False"
+            IsSettingsVisible="True"
             ItemInvoked="OnItemInvoked"
+            Loaded="OnNavViewLoaded"
             PaneDisplayMode="Top">
             <NavigationView.MenuItems>
                 <NavigationViewItem
