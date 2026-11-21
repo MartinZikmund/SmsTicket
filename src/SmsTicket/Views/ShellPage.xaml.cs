@@ -1,4 +1,5 @@
 using SmsTicket.Services.Localizer;
+using Uno.AdMob;
 
 namespace SmsTicket.Views;
 
@@ -15,6 +16,14 @@ public sealed partial class ShellPage : Page
         InitializeComponent();
         NavView.SelectedItem = TicketsItem;
         ContentFrame.Navigate(typeof(MainPage));
+
+        // Full window width, so the adaptive banner's size matches the space it gets
+        if (App.AreAdsEnabled)
+        {
+            BannerAd banner = new() { HorizontalAlignment = HorizontalAlignment.Center };
+            Grid.SetRow(banner, 1);
+            ShellRoot.Children.Add(banner);
+        }
     }
 
     public LocalizationService Localizer { get; } = (LocalizationService)Application.Current.Resources["Localizer"];

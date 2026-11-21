@@ -5,51 +5,59 @@
     xmlns:utu="using:Uno.Toolkit.UI"
     Background="{ThemeResource SolidBackgroundFillColorBaseBrush}">
 
-    <NavigationView
-        x:Name="NavView"
-        AutomationProperties.AutomationId="ShellNavigationView"
-        utu:SafeArea.Insets="Top,Left,Right"
-        IsBackButtonVisible="Collapsed"
-        IsSettingsVisible="False"
-        ItemInvoked="OnItemInvoked"
-        PaneDisplayMode="Top">
-        <NavigationView.MenuItems>
-            <NavigationViewItem
-                x:Name="TicketsItem"
-                AutomationProperties.AutomationId="NavTickets"
-                Content="{x:Bind Localizer.NavTickets}"
-                Tag="Tickets">
-                <NavigationViewItem.Icon>
-                    <FontIcon Glyph="&#xE8BD;" />
-                </NavigationViewItem.Icon>
-            </NavigationViewItem>
-        </NavigationView.MenuItems>
-        <NavigationView.FooterMenuItems>
-            <NavigationViewItem
-                x:Name="AboutItem"
-                AutomationProperties.AutomationId="NavAbout"
-                Content="{x:Bind Localizer.AboutApp}"
-                Tag="About">
-                <NavigationViewItem.Icon>
-                    <FontIcon Glyph="&#xE946;" />
-                </NavigationViewItem.Icon>
-            </NavigationViewItem>
-        </NavigationView.FooterMenuItems>
+    <!--  NavigationView ignores Padding, so the insets go on a wrapper  -->
+    <Grid x:Name="ShellRoot" utu:SafeArea.Insets="Left,Top,Right,Bottom">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <!--  Banner ad, added in code-behind  -->
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
 
-        <Frame x:Name="ContentFrame" />
-    </NavigationView>
+        <NavigationView
+            x:Name="NavView"
+            AutomationProperties.AutomationId="ShellNavigationView"
+            IsBackButtonVisible="Collapsed"
+            IsSettingsVisible="False"
+            ItemInvoked="OnItemInvoked"
+            PaneDisplayMode="Top">
+            <NavigationView.MenuItems>
+                <NavigationViewItem
+                    x:Name="TicketsItem"
+                    AutomationProperties.AutomationId="NavTickets"
+                    Content="{x:Bind Localizer.NavTickets}"
+                    Tag="Tickets">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE8BD;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+            </NavigationView.MenuItems>
+            <NavigationView.FooterMenuItems>
+                <NavigationViewItem
+                    x:Name="AboutItem"
+                    AutomationProperties.AutomationId="NavAbout"
+                    Content="{x:Bind Localizer.AboutApp}"
+                    Tag="About">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE946;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+            </NavigationView.FooterMenuItems>
 
-    <VisualStateManager.VisualStateGroups>
-        <VisualStateGroup>
-            <VisualState x:Name="NarrowState" />
-            <VisualState x:Name="WideState">
-                <VisualState.StateTriggers>
-                    <AdaptiveTrigger MinWindowWidth="640" />
-                </VisualState.StateTriggers>
-                <VisualState.Setters>
-                    <Setter Target="NavView.PaneDisplayMode" Value="Auto" />
-                </VisualState.Setters>
-            </VisualState>
-        </VisualStateGroup>
-    </VisualStateManager.VisualStateGroups>
+            <Frame x:Name="ContentFrame" />
+        </NavigationView>
+
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="NarrowState" />
+                <VisualState x:Name="WideState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="640" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="NavView.PaneDisplayMode" Value="Auto" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+    </Grid>
 </Page>

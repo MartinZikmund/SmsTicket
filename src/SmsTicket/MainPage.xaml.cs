@@ -4,15 +4,12 @@ using SmsTicket.Services.Localizer;
 using SmsTicket.Services.Settings;
 using SmsTicket.Services.Sms;
 using SmsTicket.ViewModels;
-using Uno.AdMob;
 
 namespace SmsTicket;
 
 public sealed partial class MainPage : Page
 {
     private static readonly LocalizationService _localizer = new();
-
-    private bool _isAdLoaded;
 
     public MainPage()
     {
@@ -56,14 +53,6 @@ public sealed partial class MainPage : Page
     private async void OnLoaded(object sender, RoutedEventArgs e)
     {
         ViewModel.XamlRoot = XamlRoot;
-
-        if (!_isAdLoaded && App.AreAdsEnabled)
-        {
-            _isAdLoaded = true;
-            BannerAd banner = new() { HorizontalAlignment = HorizontalAlignment.Center };
-            Grid.SetRow(banner, 3);
-            ContentRoot.Children.Add(banner);
-        }
 
         SyncTicketSelection();
         await ViewModel.InitAsync();

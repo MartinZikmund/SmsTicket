@@ -13,7 +13,6 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <!--  Hero  -->
@@ -251,8 +250,6 @@
                 </Button>
             </Grid>
         </Border>
-
-        <!--  Grid.Row="3" hosts the banner ad, see code-behind  -->
 
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup>
