@@ -46,24 +46,24 @@
   {
     "cityId": "hk",
     "file": "hk.jpg",
-    "title": "File:Hradec Králové, de Bílá věž en het stadhuis Dm406206-368 IMG 6854 2018-08-06 09.46.jpg",
-    "author": "Michielverbeek",
+    "title": "File:Hradec Králové náměstí celek 1.jpg",
+    "author": "VitVit",
     "license": "CC BY-SA 4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
-    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Hradec_Kr%C3%A1lov%C3%A9,_de_B%C3%ADl%C3%A1_v%C4%9B%C5%BE_en_het_stadhuis_Dm406206-368_IMG_6854_2018-08-06_09.46.jpg",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Hradec_Kr%C3%A1lov%C3%A9_n%C3%A1m%C4%9Bst%C3%AD_celek_1.jpg",
     "modified": "Resized and recompressed",
-    "focusY": 0.42
+    "focusY": 0.35
   },
   {
     "cityId": "ol",
     "file": "ol.jpg",
-    "title": "File:Olomouc, Horní náměstí (2017).jpg",
-    "author": "Pudelek",
+    "title": "File:Olomouc city 2022 1.jpg",
+    "author": "Smiley.toerist",
     "license": "CC BY-SA 4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
-    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Olomouc,_Horn%C3%AD_n%C3%A1m%C4%9Bst%C3%AD_(2017).jpg",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Olomouc_city_2022_1.jpg",
     "modified": "Resized and recompressed",
-    "focusY": 0.3
+    "focusY": 0.45
   },
   {
     "cityId": "ost",
@@ -101,13 +101,13 @@
   {
     "cityId": "ul",
     "file": "ul.jpg",
-    "title": "File:Ústí nad Labem - Mariánský most, pohled z mostu E. Beneše obr02.jpg",
-    "author": "RomanM82",
-    "license": "CC BY-SA 4.0",
-    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
-    "sourceUrl": "https://commons.wikimedia.org/wiki/File:%C3%9Ast%C3%AD_nad_Labem_-_Mari%C3%A1nsk%C3%BD_most,_pohled_z_mostu_E._Bene%C5%A1e_obr02.jpg",
+    "title": "File:Ústí nad Labem 21.08.2011 16-41-10.jpg",
+    "author": "Rudko",
+    "license": "CC0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:%C3%9Ast%C3%AD_nad_Labem_21.08.2011_16-41-10.jpg",
     "modified": "Resized and recompressed",
-    "focusY": 0.35
+    "focusY": 0.4
   },
   {
     "cityId": "zl",
