@@ -34,6 +34,10 @@ public sealed partial class ActiveTicketsStrip : UserControl
 
     public LocalizationService Localizer => _localizer;
 
+    public static string PasteConfirmationText => _localizer.PasteConfirmationSms;
+
+    public static string ShowTicketSmsText => _localizer.ShowTicketSms;
+
     public static string AdjustStartText => _localizer.AdjustStartTime;
 
     public static string DismissText => _localizer.DismissActiveTicket;
@@ -76,6 +80,27 @@ public sealed partial class ActiveTicketsStrip : UserControl
         if (!_timer.IsRunning)
         {
             _timer.Start();
+        }
+    }
+
+    private async void OnPasteConfirmationClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is not FrameworkElement { Tag: ActiveTicketItem item } ||
+            XamlRoot is not { } root ||
+            await ConfirmationSmsDialogs.AskForSmsAsync(root, _service) is not { Length: > 0 } text)
+        {
+            return;
+        }
+
+        var result = await ViewModel.ApplyConfirmationAsync(item, text);
+        await ConfirmationSmsDialogs.ShowResultAsync(root, result, item.Ticket, announceSuccess: false);
+    }
+
+    private async void OnShowTicketSmsClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is FrameworkElement { Tag: ActiveTicketItem item } && XamlRoot is { } root)
+        {
+            await ConfirmationSmsDialogs.ShowStoredSmsAsync(root, item.Ticket, ViewModel.Zone);
         }
     }
 

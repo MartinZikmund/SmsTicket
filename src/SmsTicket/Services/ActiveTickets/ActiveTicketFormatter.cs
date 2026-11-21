@@ -29,4 +29,15 @@ public static class ActiveTicketFormatter
         var time = localUntil.ToString("t", culture);
         return localUntil.Date == localNow.Date ? time : $"{localUntil.ToString("ddd", culture)} {time}";
     }
+
+    /// <summary>"21.11.2026 14:22–14:52", or both dates when the range crosses midnight.</summary>
+    public static string FormatRange(DateTimeOffset from, DateTimeOffset until, TimeZoneInfo zone, CultureInfo culture)
+    {
+        var localFrom = TimeZoneInfo.ConvertTime(from, zone);
+        var localUntil = TimeZoneInfo.ConvertTime(until, zone);
+        var start = $"{localFrom.ToString("d", culture)} {localFrom.ToString("t", culture)}";
+        return localFrom.Date == localUntil.Date
+            ? $"{start}–{localUntil.ToString("t", culture)}"
+            : $"{start} – {localUntil.ToString("d", culture)} {localUntil.ToString("t", culture)}";
+    }
 }

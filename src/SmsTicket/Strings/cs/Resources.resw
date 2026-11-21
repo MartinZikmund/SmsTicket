@@ -415,4 +415,64 @@
   <data name="ExpiryReminderChannelDescription" xml:space="preserve">
     <value>Upozornění několik minut před koncem platnosti jízdenky.</value>
   </data>
+  <data name="PasteConfirmationSms" xml:space="preserve">
+    <value>Vložit potvrzující SMS</value>
+  </data>
+  <data name="ShowTicketSms" xml:space="preserve">
+    <value>Zobrazit SMS jízdenku</value>
+  </data>
+  <data name="PasteConfirmationSmsText" xml:space="preserve">
+    <value>Zkopírujte SMS s jízdenkou z aplikace Zprávy a vložte ji sem. Aplikace z ní přečte přesnou platnost.</value>
+  </data>
+  <data name="PasteConfirmationSmsPlaceholder" xml:space="preserve">
+    <value>Text SMS jízdenky</value>
+  </data>
+  <data name="ConfirmationUnrecognizedTitle" xml:space="preserve">
+    <value>Platnost se nepodařilo přečíst</value>
+  </data>
+  <data name="ConfirmationUnrecognizedText" xml:space="preserve">
+    <value>SMS jsme uložili, ale jejímu formátu zatím nerozumíme, takže platnost zůstává odhadnutá. Čas můžete upravit přes „Jízdenka přišla v…“.</value>
+  </data>
+  <data name="ConfirmationStaleTitle" xml:space="preserve">
+    <value>Tahle SMS patří ke starší jízdence</value>
+  </data>
+  <data name="ConfirmationStaleText" xml:space="preserve">
+    <value>Platnost v této SMS začala nebo skončila dřív, než jste jízdenku připravili. Nic jsme nezměnili.</value>
+  </data>
+  <data name="ConfirmationSavedTitle" xml:space="preserve">
+    <value>SMS jízdenka uložena</value>
+  </data>
+  <data name="ConfirmationSavedFormat" xml:space="preserve">
+    <value>{0} – platí {1}.</value>
+  </data>
+  <data name="ChooseTicketTitle" xml:space="preserve">
+    <value>Ke které jízdence SMS patří?</value>
+  </data>
+  <data name="ChooseTicketItemFormat" xml:space="preserve">
+    <value>{0} · {1} · připraveno {2}</value>
+  </data>
+  <data name="NoTicketForSmsTitle" xml:space="preserve">
+    <value>Není k čemu SMS přiřadit</value>
+  </data>
+  <data name="NoTicketForSmsText" xml:space="preserve">
+    <value>Nenašli jsme žádnou platnou jízdenku, ke které by tato SMS patřila. Jízdenka se tu objeví, jakmile ji připravíte k odeslání.</value>
+  </data>
+  <data name="TicketSmsTitle" xml:space="preserve">
+    <value>SMS jízdenka</value>
+  </data>
+  <data name="TicketSmsInspectionNote" xml:space="preserve">
+    <value>Při kontrole předložte originální SMS v aplikaci Zprávy. Kopie v aplikaci slouží jen pro přehled.</value>
+  </data>
+  <data name="TicketSmsValidityFormat" xml:space="preserve">
+    <value>Platnost: {0}</value>
+  </data>
+  <data name="TicketSmsValidityUnknown" xml:space="preserve">
+    <value>Platnost se z SMS nepodařilo přečíst.</value>
+  </data>
+  <data name="TicketSmsCodeFormat" xml:space="preserve">
+    <value>Kód: {0}</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Zavřít</value>
+  </data>
 </root>

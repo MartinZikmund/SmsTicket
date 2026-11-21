@@ -143,4 +143,24 @@ public class LocalizationService : ILocalizerService
     public string ExpiryReminderBodyFormat => this[nameof(ExpiryReminderBodyFormat)];
     public string ExpiryReminderChannelName => this[nameof(ExpiryReminderChannelName)];
     public string ExpiryReminderChannelDescription => this[nameof(ExpiryReminderChannelDescription)];
+    public string PasteConfirmationSms => this[nameof(PasteConfirmationSms)];
+    public string ShowTicketSms => this[nameof(ShowTicketSms)];
+    public string PasteConfirmationSmsText => this[nameof(PasteConfirmationSmsText)];
+    public string PasteConfirmationSmsPlaceholder => this[nameof(PasteConfirmationSmsPlaceholder)];
+    public string ConfirmationUnrecognizedTitle => this[nameof(ConfirmationUnrecognizedTitle)];
+    public string ConfirmationUnrecognizedText => this[nameof(ConfirmationUnrecognizedText)];
+    public string ConfirmationStaleTitle => this[nameof(ConfirmationStaleTitle)];
+    public string ConfirmationStaleText => this[nameof(ConfirmationStaleText)];
+    public string ConfirmationSavedTitle => this[nameof(ConfirmationSavedTitle)];
+    public string ConfirmationSavedFormat => this[nameof(ConfirmationSavedFormat)];
+    public string ChooseTicketTitle => this[nameof(ChooseTicketTitle)];
+    public string ChooseTicketItemFormat => this[nameof(ChooseTicketItemFormat)];
+    public string NoTicketForSmsTitle => this[nameof(NoTicketForSmsTitle)];
+    public string NoTicketForSmsText => this[nameof(NoTicketForSmsText)];
+    public string TicketSmsTitle => this[nameof(TicketSmsTitle)];
+    public string TicketSmsInspectionNote => this[nameof(TicketSmsInspectionNote)];
+    public string TicketSmsValidityFormat => this[nameof(TicketSmsValidityFormat)];
+    public string TicketSmsValidityUnknown => this[nameof(TicketSmsValidityUnknown)];
+    public string TicketSmsCodeFormat => this[nameof(TicketSmsCodeFormat)];
+    public string Close => this[nameof(Close)];
 }

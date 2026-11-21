@@ -415,4 +415,64 @@
   <data name="ExpiryReminderChannelDescription" xml:space="preserve">
     <value>A heads-up a few minutes before a ticket expires.</value>
   </data>
+  <data name="PasteConfirmationSms" xml:space="preserve">
+    <value>Paste ticket SMS</value>
+  </data>
+  <data name="ShowTicketSms" xml:space="preserve">
+    <value>Show ticket SMS</value>
+  </data>
+  <data name="PasteConfirmationSmsText" xml:space="preserve">
+    <value>Copy the ticket SMS from your messaging app and paste it here. The app reads the exact validity from it.</value>
+  </data>
+  <data name="PasteConfirmationSmsPlaceholder" xml:space="preserve">
+    <value>Ticket SMS text</value>
+  </data>
+  <data name="ConfirmationUnrecognizedTitle" xml:space="preserve">
+    <value>Couldn't read the validity</value>
+  </data>
+  <data name="ConfirmationUnrecognizedText" xml:space="preserve">
+    <value>The SMS is saved, but its format isn't known yet, so the validity stays estimated. You can still set the time with “Ticket arrived at…”.</value>
+  </data>
+  <data name="ConfirmationStaleTitle" xml:space="preserve">
+    <value>This SMS belongs to an earlier ticket</value>
+  </data>
+  <data name="ConfirmationStaleText" xml:space="preserve">
+    <value>The validity in this SMS started or ended before you prepared the ticket. Nothing was changed.</value>
+  </data>
+  <data name="ConfirmationSavedTitle" xml:space="preserve">
+    <value>Ticket SMS saved</value>
+  </data>
+  <data name="ConfirmationSavedFormat" xml:space="preserve">
+    <value>{0} – valid {1}.</value>
+  </data>
+  <data name="ChooseTicketTitle" xml:space="preserve">
+    <value>Which ticket is this SMS for?</value>
+  </data>
+  <data name="ChooseTicketItemFormat" xml:space="preserve">
+    <value>{0} · {1} · prepared {2}</value>
+  </data>
+  <data name="NoTicketForSmsTitle" xml:space="preserve">
+    <value>No ticket to attach the SMS to</value>
+  </data>
+  <data name="NoTicketForSmsText" xml:space="preserve">
+    <value>There's no active ticket this SMS could belong to. A ticket shows up here once you prepare it for sending.</value>
+  </data>
+  <data name="TicketSmsTitle" xml:space="preserve">
+    <value>Ticket SMS</value>
+  </data>
+  <data name="TicketSmsInspectionNote" xml:space="preserve">
+    <value>At an inspection, show the original SMS in your messaging app. This copy is for convenience only.</value>
+  </data>
+  <data name="TicketSmsValidityFormat" xml:space="preserve">
+    <value>Valid: {0}</value>
+  </data>
+  <data name="TicketSmsValidityUnknown" xml:space="preserve">
+    <value>The validity couldn't be read from the SMS.</value>
+  </data>
+  <data name="TicketSmsCodeFormat" xml:space="preserve">
+    <value>Code: {0}</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
 </root>
