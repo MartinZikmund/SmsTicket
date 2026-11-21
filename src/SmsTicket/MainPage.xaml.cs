@@ -49,6 +49,8 @@ public sealed partial class MainPage : Page
         _ => InfoBarSeverity.Informational,
     };
 
+    public static double PhotoFocusY(PhotoCredit? photo) => photo?.FocusY ?? 0.5;
+
     public static Visibility VisibleIfNotNull(object? value) => value is null ? Visibility.Collapsed : Visibility.Visible;
 
     public static string PhotoAuthorText(PhotoCredit? photo) => photo is null ? "" : $"{_localizer.PhotoBy}: {photo.Author}";

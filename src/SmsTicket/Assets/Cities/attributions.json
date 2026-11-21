@@ -7,7 +7,8 @@
     "license": "CC BY 4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
     "sourceUrl": "https://commons.wikimedia.org/wiki/File:Prague_2010_Tatra_T3_and_Hradschin.jpg",
-    "modified": "Resized and recompressed"
+    "modified": "Resized and recompressed",
+    "focusY": 0.46
   },
   {
     "cityId": "br",
@@ -17,7 +18,8 @@
     "license": "CC BY-SA 3.0",
     "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
     "sourceUrl": "https://commons.wikimedia.org/wiki/File:Brno-Tram-4.jpg",
-    "modified": "Resized and recompressed"
+    "modified": "Resized and recompressed",
+    "focusY": 0.4
   },
   {
     "cityId": "lbc",
@@ -27,7 +29,8 @@
     "license": "CC BY-SA 4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
     "sourceUrl": "https://commons.wikimedia.org/wiki/File:Liberec_n%C3%A1m%C4%9Bst%C3%AD_a_radnice_6.jpg",
-    "modified": "Resized and recompressed"
+    "modified": "Resized and recompressed",
+    "focusY": 0.5
   },
   {
     "cityId": "cb",
@@ -37,7 +40,8 @@
     "license": "CC BY 4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
     "sourceUrl": "https://commons.wikimedia.org/wiki/File:King_P%C5%99emysl_Otakar_II_Square_in_%C4%8Cesk%C3%A9_Bud%C4%9Bjovice,_20250504_1557_8938.jpg",
-    "modified": "Resized and recompressed"
+    "modified": "Resized and recompressed",
+    "focusY": 0.45
   },
   {
     "cityId": "hk",
@@ -47,7 +51,8 @@
     "license": "CC BY-SA 4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
     "sourceUrl": "https://commons.wikimedia.org/wiki/File:Hradec_Kr%C3%A1lov%C3%A9,_de_B%C3%ADl%C3%A1_v%C4%9B%C5%BE_en_het_stadhuis_Dm406206-368_IMG_6854_2018-08-06_09.46.jpg",
-    "modified": "Resized and recompressed"
+    "modified": "Resized and recompressed",
+    "focusY": 0.42
   },
   {
     "cityId": "ol",
@@ -57,7 +62,8 @@
     "license": "CC BY-SA 4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
     "sourceUrl": "https://commons.wikimedia.org/wiki/File:Olomouc,_Horn%C3%AD_n%C3%A1m%C4%9Bst%C3%AD_(2017).jpg",
-    "modified": "Resized and recompressed"
+    "modified": "Resized and recompressed",
+    "focusY": 0.3
   },
   {
     "cityId": "ost",
@@ -67,7 +73,8 @@
     "license": "CC BY-SA 3.0",
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
     "sourceUrl": "https://commons.wikimedia.org/wiki/File:Moravsk%C3%A1_Ostrava,_d%C5%AFl_Hlubina_od_%C5%BDelez%C3%A1rensk%C3%A9,_tramvaj_Vario_LF.jpg",
-    "modified": "Resized and recompressed"
+    "modified": "Resized and recompressed",
+    "focusY": 0.3
   },
   {
     "cityId": "par",
@@ -77,7 +84,8 @@
     "license": "CC BY-SA 4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
     "sourceUrl": "https://commons.wikimedia.org/wiki/File:Pardubice,_%C5%A0koda_32Tr_SOR_%C4%8D._464_Zelen%C3%A1_br%C3%A1na.jpg",
-    "modified": "Resized and recompressed"
+    "modified": "Resized and recompressed",
+    "focusY": 0.35
   },
   {
     "cityId": "pil",
@@ -87,7 +95,8 @@
     "license": "CC BY-SA 4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
     "sourceUrl": "https://commons.wikimedia.org/wiki/File:Pilsen_tram_2024_3.jpg",
-    "modified": "Resized and recompressed"
+    "modified": "Resized and recompressed",
+    "focusY": 0.4
   },
   {
     "cityId": "ul",
@@ -97,7 +106,8 @@
     "license": "CC BY-SA 4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
     "sourceUrl": "https://commons.wikimedia.org/wiki/File:%C3%9Ast%C3%AD_nad_Labem_-_Mari%C3%A1nsk%C3%BD_most,_pohled_z_mostu_E._Bene%C5%A1e_obr02.jpg",
-    "modified": "Resized and recompressed"
+    "modified": "Resized and recompressed",
+    "focusY": 0.35
   },
   {
     "cityId": "zl",
@@ -107,7 +117,8 @@
     "license": "CC BY-SA 3.0",
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
     "sourceUrl": "https://commons.wikimedia.org/wiki/File:21.budova.jpg",
-    "modified": "Resized and recompressed"
+    "modified": "Resized and recompressed",
+    "focusY": 0.4
   },
   {
     "cityId": "tb",
@@ -117,7 +128,8 @@
     "license": "CC BY-SA 4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
     "sourceUrl": "https://commons.wikimedia.org/wiki/File:T%C3%A1bor,_stadszicht_met_de_Jord%C3%A1n_op_de_voorgrond_IMG_6377_2018-08-02_09.30.jpg",
-    "modified": "Resized and recompressed"
+    "modified": "Resized and recompressed",
+    "focusY": 0.33
   },
   {
     "cityId": "cheb",
@@ -127,6 +139,7 @@
     "license": "CC BY 3.0",
     "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
     "sourceUrl": "https://commons.wikimedia.org/wiki/File:Cheb_-_%C5%A0pal%C3%AD%C4%8Dek_-_panoramio.jpg",
-    "modified": "Resized and recompressed"
+    "modified": "Resized and recompressed",
+    "focusY": 0.3
   }
 ]
