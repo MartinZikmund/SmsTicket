@@ -68,4 +68,7 @@ public static class DataSource
 
         return null;
     }
+
+    public static City? FindCityForTicket(string ticketId) =>
+        Cities.FirstOrDefault(c => c.TicketTypes.Any(t => t.Id == ticketId));
 }
