@@ -5,6 +5,7 @@
     xmlns:local="using:SmsTicket"
     xmlns:models="using:SmsTicket.Data.Models"
     xmlns:utu="using:Uno.Toolkit.UI"
+    xmlns:views="using:SmsTicket.Views"
     Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
     NavigationCacheMode="Required">
 
@@ -245,82 +246,87 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <!--  Favorites  -->
-            <StackPanel
-                x:Name="FavoritesSection"
-                Padding="0,0,0,8"
-                Spacing="8"
-                Visibility="{x:Bind ViewModel.HasFavorites, Mode=OneWay}">
-                <TextBlock
-                    AutomationProperties.HeadingLevel="Level2"
-                    Style="{StaticResource BodyStrongTextBlockStyle}"
-                    Text="{x:Bind Localizer.Favorites}" />
-                <ScrollViewer
-                    HorizontalScrollBarVisibility="Hidden"
-                    HorizontalScrollMode="Auto"
-                    VerticalScrollBarVisibility="Disabled"
-                    VerticalScrollMode="Disabled">
-                    <ItemsRepeater
-                        AutomationProperties.AutomationId="FavoritesList"
-                        AutomationProperties.Name="{x:Bind Localizer.Favorites}"
-                        ItemsSource="{x:Bind ViewModel.Favorites}">
-                        <ItemsRepeater.Layout>
-                            <StackLayout Orientation="Horizontal" Spacing="8" />
-                        </ItemsRepeater.Layout>
-                        <ItemsRepeater.ItemTemplate>
-                            <DataTemplate x:DataType="models:CityTicket">
-                                <Button
-                                    MinHeight="56"
-                                    Padding="8,8,16,8"
-                                    AutomationProperties.AutomationId="{x:Bind local:MainPage.FavoriteAutomationId(Ticket.Id)}"
-                                    AutomationProperties.Name="{x:Bind ToString()}"
-                                    Click="OnFavoriteClick"
-                                    ToolTipService.ToolTip="{x:Bind City.Name}">
-                                    <Button.ContextFlyout>
-                                        <MenuFlyout>
-                                            <MenuFlyoutItem
-                                                AutomationProperties.AutomationId="RemoveFavoriteMenuItem"
-                                                Click="OnRemoveFavoriteClick"
-                                                Tag="{x:Bind}"
-                                                Text="{x:Bind local:MainPage.RemoveFromFavoritesText}">
-                                                <MenuFlyoutItem.Icon>
-                                                    <FontIcon Glyph="&#xE74D;" />
-                                                </MenuFlyoutItem.Icon>
-                                            </MenuFlyoutItem>
-                                        </MenuFlyout>
-                                    </Button.ContextFlyout>
-                                    <Grid ColumnSpacing="12">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="Auto" />
-                                        </Grid.ColumnDefinitions>
-                                        <Border
-                                            MinWidth="40"
-                                            Height="40"
-                                            Padding="4,0"
-                                            Background="{ThemeResource AccentFillColorDefaultBrush}"
-                                            CornerRadius="{StaticResource ControlCornerRadius}">
-                                            <TextBlock
-                                                HorizontalAlignment="Center"
-                                                VerticalAlignment="Center"
-                                                FontWeight="SemiBold"
-                                                Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}"
-                                                Style="{StaticResource CaptionTextBlockStyle}"
-                                                Text="{x:Bind City.Abbreviation}" />
-                                        </Border>
-                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                            <TextBlock Style="{StaticResource BodyStrongTextBlockStyle}" Text="{x:Bind ValidityText}" />
-                                            <TextBlock
-                                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                                Style="{StaticResource CaptionTextBlockStyle}"
-                                                Text="{x:Bind PriceText}" />
-                                        </StackPanel>
-                                    </Grid>
-                                </Button>
-                            </DataTemplate>
-                        </ItemsRepeater.ItemTemplate>
-                    </ItemsRepeater>
-                </ScrollViewer>
+            <!--  Active tickets and favorites share the top row  -->
+            <StackPanel Spacing="8">
+                <views:ActiveTicketsStrip />
+
+                <!--  Favorites  -->
+                <StackPanel
+                    x:Name="FavoritesSection"
+                    Padding="0,0,0,8"
+                    Spacing="8"
+                    Visibility="{x:Bind ViewModel.HasFavorites, Mode=OneWay}">
+                    <TextBlock
+                        AutomationProperties.HeadingLevel="Level2"
+                        Style="{StaticResource BodyStrongTextBlockStyle}"
+                        Text="{x:Bind Localizer.Favorites}" />
+                    <ScrollViewer
+                        HorizontalScrollBarVisibility="Hidden"
+                        HorizontalScrollMode="Auto"
+                        VerticalScrollBarVisibility="Disabled"
+                        VerticalScrollMode="Disabled">
+                        <ItemsRepeater
+                            AutomationProperties.AutomationId="FavoritesList"
+                            AutomationProperties.Name="{x:Bind Localizer.Favorites}"
+                            ItemsSource="{x:Bind ViewModel.Favorites}">
+                            <ItemsRepeater.Layout>
+                                <StackLayout Orientation="Horizontal" Spacing="8" />
+                            </ItemsRepeater.Layout>
+                            <ItemsRepeater.ItemTemplate>
+                                <DataTemplate x:DataType="models:CityTicket">
+                                    <Button
+                                        MinHeight="56"
+                                        Padding="8,8,16,8"
+                                        AutomationProperties.AutomationId="{x:Bind local:MainPage.FavoriteAutomationId(Ticket.Id)}"
+                                        AutomationProperties.Name="{x:Bind ToString()}"
+                                        Click="OnFavoriteClick"
+                                        ToolTipService.ToolTip="{x:Bind City.Name}">
+                                        <Button.ContextFlyout>
+                                            <MenuFlyout>
+                                                <MenuFlyoutItem
+                                                    AutomationProperties.AutomationId="RemoveFavoriteMenuItem"
+                                                    Click="OnRemoveFavoriteClick"
+                                                    Tag="{x:Bind}"
+                                                    Text="{x:Bind local:MainPage.RemoveFromFavoritesText}">
+                                                    <MenuFlyoutItem.Icon>
+                                                        <FontIcon Glyph="&#xE74D;" />
+                                                    </MenuFlyoutItem.Icon>
+                                                </MenuFlyoutItem>
+                                            </MenuFlyout>
+                                        </Button.ContextFlyout>
+                                        <Grid ColumnSpacing="12">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <Border
+                                                MinWidth="40"
+                                                Height="40"
+                                                Padding="4,0"
+                                                Background="{ThemeResource AccentFillColorDefaultBrush}"
+                                                CornerRadius="{StaticResource ControlCornerRadius}">
+                                                <TextBlock
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center"
+                                                    FontWeight="SemiBold"
+                                                    Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}"
+                                                    Style="{StaticResource CaptionTextBlockStyle}"
+                                                    Text="{x:Bind City.Abbreviation}" />
+                                            </Border>
+                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                <TextBlock Style="{StaticResource BodyStrongTextBlockStyle}" Text="{x:Bind ValidityText}" />
+                                                <TextBlock
+                                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                    Style="{StaticResource CaptionTextBlockStyle}"
+                                                    Text="{x:Bind PriceText}" />
+                                            </StackPanel>
+                                        </Grid>
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsRepeater.ItemTemplate>
+                        </ItemsRepeater>
+                    </ScrollViewer>
+                </StackPanel>
             </StackPanel>
 
             <TextBlock
