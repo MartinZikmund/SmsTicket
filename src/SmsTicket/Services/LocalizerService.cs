@@ -79,4 +79,8 @@ public class LocalizationService : ILocalizerService
     public string PhotoCredits => this[nameof(PhotoCredits)];
     public string Version => this[nameof(Version)];
     public string MadeBy => this[nameof(MadeBy)];
+    public string FeedbackTitle => this[nameof(FeedbackTitle)];
+    public string ReportProblem => this[nameof(ReportProblem)];
+    public string SourceCode => this[nameof(SourceCode)];
+    public string OpenSourceCaption => this[nameof(OpenSourceCaption)];
 }

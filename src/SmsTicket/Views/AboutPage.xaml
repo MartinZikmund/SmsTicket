@@ -33,6 +33,34 @@
                     NavigateUri="https://mzikmund.dev" />
             </StackPanel>
 
+            <StackPanel
+                Padding="16"
+                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                BorderThickness="1"
+                CornerRadius="{StaticResource OverlayCornerRadius}"
+                Spacing="8">
+                <TextBlock
+                    AutomationProperties.HeadingLevel="Level2"
+                    Style="{StaticResource BodyStrongTextBlockStyle}"
+                    Text="{x:Bind Localizer.FeedbackTitle}" />
+                <TextBlock
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                    Style="{StaticResource CaptionTextBlockStyle}"
+                    Text="{x:Bind Localizer.OpenSourceCaption}"
+                    TextWrapping="Wrap" />
+                <HyperlinkButton
+                    Padding="0"
+                    AutomationProperties.AutomationId="AboutReportIssue"
+                    Content="{x:Bind Localizer.ReportProblem}"
+                    NavigateUri="https://github.com/MartinZikmund/SmsTicket/issues/new" />
+                <HyperlinkButton
+                    Padding="0"
+                    AutomationProperties.AutomationId="AboutSourceCode"
+                    Content="{x:Bind Localizer.SourceCode}"
+                    NavigateUri="https://github.com/MartinZikmund/SmsTicket" />
+            </StackPanel>
+
             <TextBlock
                 AutomationProperties.HeadingLevel="Level2"
                 Style="{StaticResource BodyStrongTextBlockStyle}"

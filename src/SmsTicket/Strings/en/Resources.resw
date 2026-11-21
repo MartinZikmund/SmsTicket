@@ -279,4 +279,16 @@
   <data name="MadeBy" xml:space="preserve">
     <value>Made by Martin Zikmund</value>
   </data>
+  <data name="FeedbackTitle" xml:space="preserve">
+    <value>Feedback &amp; contributing</value>
+  </data>
+  <data name="ReportProblem" xml:space="preserve">
+    <value>Report a problem</value>
+  </data>
+  <data name="SourceCode" xml:space="preserve">
+    <value>Source code on GitHub</value>
+  </data>
+  <data name="OpenSourceCaption" xml:space="preserve">
+    <value>The app is open source. You can report a wrong price or number, or fix it yourself.</value>
+  </data>
 </root>
