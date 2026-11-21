@@ -291,4 +291,19 @@
   <data name="OpenSourceCaption" xml:space="preserve">
     <value>The app is open source. You can report a wrong price or number, or fix it yourself.</value>
   </data>
+  <data name="CityInfo" xml:space="preserve">
+    <value>City info</value>
+  </data>
+  <data name="TransportOperator" xml:space="preserve">
+    <value>Transport operator</value>
+  </data>
+  <data name="OperatorWebsite" xml:space="preserve">
+    <value>Operator website</value>
+  </data>
+  <data name="SmsTicketInfo" xml:space="preserve">
+    <value>SMS ticket info</value>
+  </data>
+  <data name="JourneyPlanner" xml:space="preserve">
+    <value>Find a connection (IDOS)</value>
+  </data>
 </root>
