@@ -1,101 +1,97 @@
 name: Build Android Packages
 
+# Signed AAB uploaded to the Google Play internal track.
+
 on:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 env:
-  # App Configuration
-  APP_NAME: SmsTicket
-  DOTNET_VERSION: 10.0.x
   SOLUTION_FILE: src/SmsTicket.slnx
   PROJECT_PATH: src/SmsTicket
   PROJECT_FILE: src/SmsTicket/SmsTicket.csproj
-  ANDROID_TARGET_FRAMEWORK: net10.0-android
-  GOOGLE_PLAY_TRACK_STATUS: draft  # Options: completed, draft, halted, inProgress
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
+  TFM: net10.0-android
+  PACKAGE_NAME: com.sphereline.smsticketandroid
+  GOOGLE_PLAY_TRACK_STATUS: draft  # completed, draft, halted, inProgress
+  # versionCode must grow with every upload; the csproj value (500001) is the floor
+  VERSION_CODE_BASE: 500001
 
 jobs:
   build_android:
-    runs-on: ubuntu-latest
-
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
     env:
-      STEP_TIMEOUT_MINUTES: 60
-
-      # .NET niceties
       DOTNET_NOLOGO: 1
       DOTNET_CLI_TELEMETRY_OPTOUT: 1
       ContinuousIntegrationBuild: true
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+      - uses: actions/checkout@v7
 
-      # Cache NuGet to speed up restores
-      - name: NuGet cache
-        uses: actions/cache@v4
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
+
+      - uses: actions/cache@v6
         with:
           path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.sln*', '**/*.csproj', '**/Directory.Packages.props', '**/global.json') }}
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.slnx', '**/*.csproj', 'src/Directory.Packages.props', 'src/global.json') }}
           restore-keys: |
             ${{ runner.os }}-nuget-
 
-      - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: |
-            ${{ env.DOTNET_VERSION }}
-
       - name: Install .NET workloads
-        run:
-          dotnet workload restore "${{ env.SOLUTION_FILE }}"
+        run: dotnet workload restore "$SOLUTION_FILE"
 
-      - name: Restore solution
-        run: dotnet restore "${{ env.SOLUTION_FILE }}"
-
-      # --- Signing setup (requires your keystore + secrets) ---
-      # Create upload keystore file from a base64 secret
-      - name: Decode Android upload keystore
+      - name: Decode upload keystore
         run: |
-          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > "$GITHUB_WORKSPACE/android-upload.keystore"
+          set -euo pipefail
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > "$RUNNER_TEMP/upload.keystore"
+          test -s "$RUNNER_TEMP/upload.keystore"
 
       - name: Replace appsettings.json with production config
         env:
           APPSETTINGS_CONTENT: ${{ secrets.APPSETTINGSPROD }}
-        run: printenv APPSETTINGS_CONTENT > "${{ env.PROJECT_PATH }}/appsettings.json"
+        run: printenv APPSETTINGS_CONTENT > "$PROJECT_PATH/appsettings.json"
 
-      # --- Build Google Play bundle (AAB) ---
-      - name: Publish AAB (signed with Upload Key)
+      - name: Publish AAB (signed)
         run: |
-          dotnet publish "${{ env.PROJECT_FILE }}" -c Release -f ${{ env.ANDROID_TARGET_FRAMEWORK }} \
+          dotnet publish "$PROJECT_FILE" -c Release -f "$TFM" \
+            -p:ApplicationVersion=$((VERSION_CODE_BASE + GITHUB_RUN_NUMBER)) \
+            -p:AndroidPackageFormat=aab \
             -p:AndroidKeyStore=true \
-            -p:AndroidSigningKeyStore="$GITHUB_WORKSPACE/android-upload.keystore" \
+            -p:AndroidSigningKeyStore="$RUNNER_TEMP/upload.keystore" \
             -p:AndroidSigningKeyAlias='${{ secrets.ANDROID_KEY_ALIAS }}' \
             -p:AndroidSigningKeyPass='${{ secrets.ANDROID_KEY_PASSWORD }}' \
-            -p:AndroidSigningStorePass='${{ secrets.ANDROID_STORE_PASSWORD }}' \
-            -p:AndroidPackageFormat=aab -p:PackageFormat=aab
+            -p:AndroidSigningStorePass='${{ secrets.ANDROID_STORE_PASSWORD }}'
 
-      - name: Upload AAB artifact
-        uses: actions/upload-artifact@v4
+      - name: Assert exactly one signed AAB
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          signed=("$PROJECT_PATH/bin/Release/$TFM/publish/"*-Signed.aab)
+          [ "${#signed[@]}" -eq 1 ] || { echo "::error::expected exactly 1 *-Signed.aab, found ${#signed[@]}"; exit 1; }
+
+      - uses: actions/upload-artifact@v7
         with:
           name: Android_AAB
-          path: |
-            ${{ env.PROJECT_PATH }}/bin/Release/${{ env.ANDROID_TARGET_FRAMEWORK }}/publish/*.aab
+          path: ${{ env.PROJECT_PATH }}/bin/Release/${{ env.TFM }}/publish/*-Signed.aab
+          if-no-files-found: error
 
       - name: Upload to Google Play Console
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
-          packageName: com.sphereline.smsticketandroid
-          releaseFiles: ${{ env.PROJECT_PATH }}/bin/Release/${{ env.ANDROID_TARGET_FRAMEWORK }}/publish/*-Signed.aab
+          packageName: ${{ env.PACKAGE_NAME }}
+          releaseFiles: ${{ env.PROJECT_PATH }}/bin/Release/${{ env.TFM }}/publish/*-Signed.aab
           track: internal
           status: ${{ env.GOOGLE_PLAY_TRACK_STATUS }}
 
-      # Clean up keystore
-      - name: Remove keystore
+      - name: Remove keystore and production settings
         if: ${{ always() }}
-        run: rm -f "$GITHUB_WORKSPACE/android-upload.keystore"
+        run: rm -f "$RUNNER_TEMP/upload.keystore" "$PROJECT_PATH/appsettings.json"
