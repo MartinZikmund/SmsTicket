@@ -9,6 +9,8 @@
         <ApplicationTitle>SmsTicket</ApplicationTitle>
         <!-- App Identifier -->
         <ApplicationId>com.sphereline.smsticketandroid</ApplicationId>
+        <!-- Google Play package names can't change; iOS follows the dev.mzikmund.* convention of the other apps -->
+        <ApplicationId Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">dev.mzikmund.smsticket</ApplicationId>
         <!-- Package Publisher -->
         <ApplicationPublisher>Martin Zikmund</ApplicationPublisher>
         <!-- Package Description -->
