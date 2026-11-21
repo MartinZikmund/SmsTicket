@@ -1,0 +1,61 @@
+name: Forward merge
+
+# Keeps exactly one open `release/vX.Y -> main` pull request so a fix made on a release
+# branch is never lost when the next minor ships.
+
+on:
+  push:
+    branches: [ "release/v**" ]
+  workflow_dispatch:
+
+concurrency:
+  # Two pushes in quick succession would otherwise both find "no open PR" and both create
+  # one.
+  group: forward-merge-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  open_pr:
+    if: github.event.repository.private == false || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      # Triggered on PUSH, not on tag: a fix made directly on the release branch is
+      # exactly the case back-merge exists for, and also the case where the publish or
+      # tag chain is most likely to have failed.
+      - name: Keep one open release -> main PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          head="${GITHUB_REF_NAME}"
+
+          if [ -z "$(git log --oneline "origin/main..origin/$head")" ]; then
+            echo "::notice::$head has no commits ahead of main."
+            exit 0
+          fi
+
+          existing="$(gh pr list --base main --head "$head" --state open --limit 1 --json number --jq '.[0].number // empty')"
+          if [ -n "$existing" ]; then
+            echo "::notice::PR #$existing already open for $head -> main; it updates itself."
+            exit 0
+          fi
+
+          {
+            echo "Opened automatically so a release-branch fix is never lost in the next minor."
+            echo ""
+            echo "**Merge this.** Resolve the \`version.json\` conflict by keeping **main's** version -"
+            echo "the release branch's stable version must not travel back to \`main\`."
+          } > "$RUNNER_TEMP/body.md"
+
+          gh pr create --base main --head "$head" \
+            --title "chore: forward-merge $head into main" \
+            --body-file "$RUNNER_TEMP/body.md"

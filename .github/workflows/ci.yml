@@ -4,6 +4,7 @@ on:
   push:
     branches: [ "main" ]
   pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -20,27 +21,36 @@ env:
   PROJECT_FILE: src/SmsTicket/SmsTicket.csproj
   TEST_PROJECT: src/SmsTicket.Tests/SmsTicket.Tests.csproj
 
+# Every checkout needs full history: Nerdbank.GitVersioning computes the version from it.
 jobs:
+  guards:
+    name: Version sanity
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - uses: ./.github/actions/setup-dotnet-build
+
+      - name: Version sanity
+        uses: ./.github/actions/app-version
+        with:
+          version-code-offset: ${{ vars.VERSION_CODE_OFFSET }}
+
   test:
     name: Unit tests
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v7
-
-      - uses: actions/setup-dotnet@v6
         with:
-          global-json-file: src/global.json
+          fetch-depth: 0
 
-      - uses: actions/cache@v6
+      - uses: ./.github/actions/setup-dotnet-build
         with:
-          path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.slnx', '**/*.csproj', 'src/Directory.Packages.props', 'src/global.json') }}
-          restore-keys: |
-            ${{ runner.os }}-nuget-
-
-      - name: Install .NET workloads
-        run: dotnet workload restore "$SOLUTION_FILE"
+          workloads: ${{ env.SOLUTION_FILE }}
 
       - name: Run unit tests
         run: dotnet test "$TEST_PROJECT" -c Release --logger "trx;LogFileName=test-results.trx"
@@ -58,20 +68,12 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v7
-
-      - uses: actions/setup-dotnet@v6
         with:
-          global-json-file: src/global.json
+          fetch-depth: 0
 
-      - uses: actions/cache@v6
+      - uses: ./.github/actions/setup-dotnet-build
         with:
-          path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.slnx', '**/*.csproj', 'src/Directory.Packages.props', 'src/global.json') }}
-          restore-keys: |
-            ${{ runner.os }}-nuget-
-
-      - name: Install .NET workloads
-        run: dotnet workload restore "$SOLUTION_FILE"
+          workloads: ${{ env.SOLUTION_FILE }}
 
       - name: Build Android
         run: dotnet build "$PROJECT_FILE" -c Release -f net11.0-android
@@ -83,20 +85,12 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v7
-
-      - uses: actions/setup-dotnet@v6
         with:
-          global-json-file: src/global.json
+          fetch-depth: 0
 
-      - uses: actions/cache@v6
+      - uses: ./.github/actions/setup-dotnet-build
         with:
-          path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.slnx', '**/*.csproj', 'src/Directory.Packages.props', 'src/global.json') }}
-          restore-keys: |
-            ${{ runner.os }}-nuget-
-
-      - name: Install .NET workloads
-        run: dotnet workload restore "$SOLUTION_FILE"
+          workloads: ${{ env.SOLUTION_FILE }}
 
       - name: Select Xcode
         uses: maxim-lobanov/setup-xcode@v1
@@ -120,4 +114,4 @@ jobs:
         run: |
           app="$(find src/SmsTicket/bin/Release/net11.0-ios/iossimulator-arm64 -maxdepth 2 -name '*.app' | head -1)"
           echo "App: $app"
-          plutil -p "$app/Info.plist" | grep -E "GADApplicationIdentifier|NSUserTracking" || echo "No ad keys in Info.plist"
+          plutil -p "$app/Info.plist" | grep -E "CFBundleVersion|CFBundleShortVersionString|GADApplicationIdentifier|NSUserTracking" || echo "No version or ad keys in Info.plist"
