@@ -1,3 +1,4 @@
+using SmsTicket.Services.Ads;
 using SmsTicket.Services.AppSettings;
 using SmsTicket.ViewModels;
 
@@ -92,5 +93,68 @@ public class SettingsViewModelTests
 
         Assert.IsTrue(new AppSettings(_store).FirstTimeUse);
         Assert.IsFalse(viewModel.ResetTipsCommand.CanExecute(null));
+    }
+}
+
+[TestClass]
+public class SettingsViewModelAdPrivacyTests
+{
+    private sealed class FakeAdPrivacyOptions : IAdPrivacyOptions
+    {
+        public bool IsRequired { get; set; }
+
+        public int ShowCount { get; private set; }
+
+        public event EventHandler? Changed;
+
+        public void Show() => ShowCount++;
+
+        public void RaiseChanged() => Changed?.Invoke(this, EventArgs.Empty);
+    }
+
+    private static SettingsViewModel CreateViewModel(IAdPrivacyOptions? adPrivacyOptions) =>
+        new(new AppSettings(new FakeSettingsService()), LanguagePreference.System, _ => { }, _ => { }, adPrivacyOptions);
+
+    [TestMethod]
+    public void WithoutAds_PrivacyOptionsStayHidden()
+    {
+        var viewModel = CreateViewModel(null);
+
+        Assert.IsFalse(viewModel.IsAdPrivacyOptionsVisible);
+        viewModel.ShowAdPrivacyOptionsCommand.Execute(null);
+    }
+
+    [TestMethod]
+    public void PrivacyOptionsNotRequired_StayHidden()
+    {
+        var viewModel = CreateViewModel(new FakeAdPrivacyOptions { IsRequired = false });
+
+        Assert.IsFalse(viewModel.IsAdPrivacyOptionsVisible);
+    }
+
+    [TestMethod]
+    public void PrivacyOptionsBecomeRequired_ShowsRowAndNotifies()
+    {
+        FakeAdPrivacyOptions options = new();
+        var viewModel = CreateViewModel(options);
+        List<string?> changed = new();
+        viewModel.PropertyChanged += (_, e) => changed.Add(e.PropertyName);
+
+        options.IsRequired = true;
+        options.RaiseChanged();
+
+        Assert.IsTrue(viewModel.IsAdPrivacyOptionsVisible);
+        CollectionAssert.Contains(changed, nameof(SettingsViewModel.IsAdPrivacyOptionsVisible));
+    }
+
+    [TestMethod]
+    public void ShowCommand_OpensPrivacyOptionsForm()
+    {
+        FakeAdPrivacyOptions options = new() { IsRequired = true };
+        var viewModel = CreateViewModel(options);
+
+        viewModel.ShowAdPrivacyOptionsCommand.Execute(null);
+
+        Assert.AreEqual(1, options.ShowCount);
     }
 }
