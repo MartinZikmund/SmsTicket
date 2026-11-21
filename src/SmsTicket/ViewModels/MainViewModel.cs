@@ -4,6 +4,7 @@ using SmsTicket.Data.Models;
 using SmsTicket.Services.AppSettings;
 using SmsTicket.Services.Favorites;
 using SmsTicket.Services.Localizer;
+using SmsTicket.Services.Location;
 using SmsTicket.Services.Settings;
 using SmsTicket.Services.Sms;
 using Windows.UI.StartScreen;
@@ -25,7 +26,7 @@ public class MainViewModel : ObservableObject
     private City _selectedCity;
     private TicketType? _selectedTicketType;
 
-    public MainViewModel(ISettingsService settings, ISmsService smsService)
+    public MainViewModel(ISettingsService settings, ISmsService smsService, ILocationProvider? locationProvider = null)
     {
         _settings = settings;
         _smsService = smsService;
@@ -48,7 +49,16 @@ public class MainViewModel : ObservableObject
         BuyFavoriteCommand = new AsyncRelayCommand<CityTicket>(favorite => PrepareForSendAsync(favorite?.Ticket));
         RemoveFavoriteCommand = new AsyncRelayCommand<CityTicket>(RemoveFavoriteAsync);
         ToggleFavoriteCommand = new AsyncRelayCommand(ToggleFavoriteAsync);
+
+        NearestCity = new NearestCityViewModel(
+            locationProvider ?? new GeolocatorLocationProvider(),
+            _appSettings,
+            Cities,
+            () => SelectedCity,
+            city => SelectedCity = city);
     }
+
+    public NearestCityViewModel NearestCity { get; }
 
     public IReadOnlyList<City> Cities { get; }
 

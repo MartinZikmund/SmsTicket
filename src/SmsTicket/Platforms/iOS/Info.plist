@@ -49,6 +49,8 @@
 		<string>Assets.xcassets/icon.appiconset</string>
 		<key>UIApplicationSupportsIndirectInputEvents</key>
 		<true/>
+		<key>NSLocationWhenInUseUsageDescription</key>
+		<string>Poloha slouží jen k výběru nejbližšího města. / Your location is only used to pick the nearest city.</string>
 
 		<!-- AdMob. GADApplicationIdentifier is added at build time from the AdMobIosAppId property -->
 		<key>GADIsAdManagerApp</key>

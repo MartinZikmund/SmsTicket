@@ -250,4 +250,22 @@
     <value>en</value>
     <comment>Language code used to pick texts from data/tickets.json - do not translate</comment>
   </data>
+  <data name="UseMyLocation" xml:space="preserve">
+    <value>Use my location</value>
+  </data>
+  <data name="AutoSelectNearestCity" xml:space="preserve">
+    <value>Select the nearest city on launch</value>
+  </data>
+  <data name="NearestCityFound" xml:space="preserve">
+    <value>Nearest city selected: {0}</value>
+  </data>
+  <data name="NearestCityNoneNearby" xml:space="preserve">
+    <value>There is no supported city near you.</value>
+  </data>
+  <data name="NearestCityDenied" xml:space="preserve">
+    <value>Location access is not allowed. Enable it in your device settings.</value>
+  </data>
+  <data name="NearestCityUnavailable" xml:space="preserve">
+    <value>Couldn't get your location. Please try again.</value>
+  </data>
 </root>

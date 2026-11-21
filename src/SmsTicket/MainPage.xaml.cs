@@ -38,6 +38,15 @@ public sealed partial class MainPage : Page
 
     public static Visibility Collapsed(bool value) => value ? Visibility.Collapsed : Visibility.Visible;
 
+    public static bool Not(bool value) => !value;
+
+    public static InfoBarSeverity NearestCitySeverity(NearestCityStatus status) => status switch
+    {
+        NearestCityStatus.Found => InfoBarSeverity.Success,
+        NearestCityStatus.Denied or NearestCityStatus.Unavailable => InfoBarSeverity.Warning,
+        _ => InfoBarSeverity.Informational,
+    };
+
     public static Visibility VisibleIfNotNull(object? value) => value is null ? Visibility.Collapsed : Visibility.Visible;
 
     public static string PhotoAuthorText(PhotoCredit? photo) => photo is null ? "" : $"{_localizer.PhotoBy}: {photo.Author}";
@@ -59,6 +68,7 @@ public sealed partial class MainPage : Page
         ViewModel.XamlRoot = XamlRoot;
 
         SyncTicketSelection();
+        _ = ViewModel.NearestCity.AutoSelectOnLaunchAsync();
         await ViewModel.InitAsync();
     }
 
@@ -79,7 +89,11 @@ public sealed partial class MainPage : Page
         }
     }
 
-    private void OnCityFlyoutOpened(object? sender, object e) => CityList.ScrollIntoView(ViewModel.SelectedCity);
+    private void OnCityFlyoutOpened(object? sender, object e)
+    {
+        ViewModel.NearestCity.ClearStatus();
+        CityList.ScrollIntoView(ViewModel.SelectedCity);
+    }
 
     private void OnCityClick(object sender, ItemClickEventArgs e)
     {

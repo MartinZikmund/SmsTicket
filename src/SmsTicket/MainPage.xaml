@@ -91,6 +91,47 @@
                                 Placement="BottomEdgeAlignedLeft">
                                 <StackPanel Width="280" Spacing="8">
                                     <TextBlock Style="{StaticResource BodyStrongTextBlockStyle}" Text="{x:Bind Localizer.ChooseCity}" />
+                                    <!--  Nearest city (opt-in location)  -->
+                                    <Button
+                                        HorizontalAlignment="Stretch"
+                                        HorizontalContentAlignment="Left"
+                                        AutomationProperties.AutomationId="UseMyLocationButton"
+                                        AutomationProperties.Name="{x:Bind Localizer.UseMyLocation}"
+                                        Command="{x:Bind ViewModel.NearestCity.UseMyLocationCommand}"
+                                        IsEnabled="{x:Bind local:MainPage.Not(ViewModel.NearestCity.IsBusy), Mode=OneWay}"
+                                        Visibility="{x:Bind ViewModel.NearestCity.IsSupported, Mode=OneWay}">
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <Grid Width="16" Height="16">
+                                                <FontIcon
+                                                    FontSize="16"
+                                                    Glyph="&#xE81D;"
+                                                    Visibility="{x:Bind local:MainPage.Collapsed(ViewModel.NearestCity.IsBusy), Mode=OneWay}" />
+                                                <ProgressRing
+                                                    Width="16"
+                                                    Height="16"
+                                                    MinWidth="16"
+                                                    MinHeight="16"
+                                                    AutomationProperties.AutomationId="NearestCityProgress"
+                                                    IsActive="{x:Bind ViewModel.NearestCity.IsBusy, Mode=OneWay}" />
+                                            </Grid>
+                                            <TextBlock Text="{x:Bind Localizer.UseMyLocation}" />
+                                        </StackPanel>
+                                    </Button>
+                                    <InfoBar
+                                        AutomationProperties.AutomationId="NearestCityInfoBar"
+                                        IsClosable="False"
+                                        IsOpen="{x:Bind ViewModel.NearestCity.HasStatusMessage, Mode=OneWay}"
+                                        Message="{x:Bind ViewModel.NearestCity.StatusMessage, Mode=OneWay}"
+                                        Severity="{x:Bind local:MainPage.NearestCitySeverity(ViewModel.NearestCity.Status), Mode=OneWay}" />
+                                    <ToggleSwitch
+                                        AutomationProperties.AutomationId="AutoSelectNearestCityToggle"
+                                        AutomationProperties.Name="{x:Bind Localizer.AutoSelectNearestCity}"
+                                        IsOn="{x:Bind ViewModel.NearestCity.AutoSelectOnLaunch, Mode=TwoWay}"
+                                        Visibility="{x:Bind ViewModel.NearestCity.CanOfferAutoSelect, Mode=OneWay}">
+                                        <ToggleSwitch.Header>
+                                            <TextBlock Text="{x:Bind Localizer.AutoSelectNearestCity}" TextWrapping="Wrap" />
+                                        </ToggleSwitch.Header>
+                                    </ToggleSwitch>
                                     <ListView
                                         x:Name="CityList"
                                         MaxHeight="400"
