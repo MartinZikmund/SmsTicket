@@ -1,6 +1,8 @@
+using System.Collections.ObjectModel;
 using SmsTicket.Data;
 using SmsTicket.Data.Models;
 using SmsTicket.Services.AppSettings;
+using SmsTicket.Services.Favorites;
 using SmsTicket.Services.Localizer;
 using SmsTicket.Services.Settings;
 using SmsTicket.Services.Sms;
@@ -11,10 +13,12 @@ namespace SmsTicket.ViewModels;
 public class MainViewModel : ObservableObject
 {
     private const string DefaultCityId = "PHA";
+    private const string FavoriteHintShownKey = "FavoriteHintShown";
 
     private readonly ISettingsService _settings;
     private readonly ISmsService _smsService;
     private readonly IAppSettings _appSettings;
+    private readonly FavoritesStore _favorites;
     private readonly LocalizationService _localizer = new();
 
     private JumpList? _jumpList;
@@ -26,8 +30,11 @@ public class MainViewModel : ObservableObject
         _settings = settings;
         _smsService = smsService;
         _appSettings = new AppSettings(_settings);
+        _favorites = new FavoritesStore(_settings, id => DataSource.FindTicket(id) is not null);
+        _favorites.Changed += (_, _) => RefreshFavorites();
 
         Cities = DataSource.Cities;
+        RefreshFavorites();
 
         var lastCityId = _settings.GetSetting("LastCitySelected", () => DefaultCityId, false);
 
@@ -37,19 +44,25 @@ public class MainViewModel : ObservableObject
             ?? Cities[0];
         SelectDefaultTicket();
 
-        PrepareForSendCommand = new AsyncRelayCommand(PrepareForSendAsync);
-        TogglePinCommand = new AsyncRelayCommand(TogglePinAsync);
+        PrepareForSendCommand = new AsyncRelayCommand(() => PrepareForSendAsync(SelectedTicketType));
+        BuyFavoriteCommand = new AsyncRelayCommand<CityTicket>(favorite => PrepareForSendAsync(favorite?.Ticket));
+        RemoveFavoriteCommand = new AsyncRelayCommand<CityTicket>(RemoveFavoriteAsync);
+        ToggleFavoriteCommand = new AsyncRelayCommand(ToggleFavoriteAsync);
     }
 
     public IReadOnlyList<City> Cities { get; }
 
+    public ObservableCollection<CityTicket> Favorites { get; } = new();
+
     public IAsyncRelayCommand PrepareForSendCommand { get; }
 
-    public IAsyncRelayCommand TogglePinCommand { get; }
+    public IAsyncRelayCommand<CityTicket> BuyFavoriteCommand { get; }
+
+    public IAsyncRelayCommand<CityTicket> RemoveFavoriteCommand { get; }
+
+    public IAsyncRelayCommand ToggleFavoriteCommand { get; }
 
     public XamlRoot? XamlRoot { get; set; }
-
-    public bool IsPinningSupported { get; private set; }
 
     public City SelectedCity
     {
@@ -78,7 +91,7 @@ public class MainViewModel : ObservableObject
             }
 
             _settings.SetSetting("CityTicket" + SelectedCity.Id, value.Id, false);
-            OnPropertyChanged(nameof(IsPinned));
+            OnPropertyChanged(nameof(IsFavorite));
             OnPropertyChanged(nameof(SendButtonText));
         }
     }
@@ -87,10 +100,9 @@ public class MainViewModel : ObservableObject
         ? $"{_localizer.PrepareToSend} · {ticket.Price} {_localizer["CzechPriceTag"]}"
         : _localizer.PrepareToSend;
 
-    public bool IsPinned =>
-        _jumpList is not null &&
-        SelectedTicketType is not null &&
-        _jumpList.Items.Any(item => item.Arguments == SelectedTicketType.Id);
+    public bool IsFavorite => SelectedTicketType is { } ticket && _favorites.Contains(ticket.Id);
+
+    public bool HasFavorites => Favorites.Count > 0;
 
     public async Task InitAsync()
     {
@@ -101,9 +113,30 @@ public class MainViewModel : ObservableObject
 
         _jumpList = await JumpList.LoadCurrentAsync();
         _jumpList.SystemGroupKind = JumpListSystemGroupKind.None;
-        IsPinningSupported = true;
-        OnPropertyChanged(nameof(IsPinningSupported));
-        OnPropertyChanged(nameof(IsPinned));
+
+        // Tickets pinned before favorites existed live only in the JumpList
+        if (!_settings.GetSetting(FavoritesMigration.MigratedSettingKey, () => false))
+        {
+            _favorites.ReplaceAll(FavoritesMigration.Merge(_favorites.Ids, _jumpList.Items.Select(i => i.Arguments)));
+            _settings.SetSetting(FavoritesMigration.MigratedSettingKey, true);
+        }
+
+        await SyncJumpListAsync();
+    }
+
+    private void RefreshFavorites()
+    {
+        Favorites.Clear();
+        foreach (var id in _favorites.Ids)
+        {
+            if (DataSource.FindTicket(id) is { } favorite)
+            {
+                Favorites.Add(favorite);
+            }
+        }
+
+        OnPropertyChanged(nameof(HasFavorites));
+        OnPropertyChanged(nameof(IsFavorite));
     }
 
     private void SelectDefaultTicket()
@@ -116,66 +149,85 @@ public class MainViewModel : ObservableObject
         SelectedTicketType = ticket;
     }
 
-    private async Task PrepareForSendAsync()
+    private async Task PrepareForSendAsync(TicketType? ticket)
     {
-        if (SelectedTicketType is null)
+        if (ticket is null)
         {
             return;
         }
 
         if (_appSettings.FirstTimeUse)
         {
-            ContentDialog dialog = new()
-            {
-                Title = _localizer.PrepareSmsNoteTitle,
-                Content = _localizer.PrepareSmsNote,
-                CloseButtonText = "OK",
-                DefaultButton = ContentDialogButton.Close,
-                XamlRoot = XamlRoot,
-            };
-            await dialog.ShowAsync();
+            await ShowInfoAsync(_localizer.PrepareSmsNoteTitle, _localizer.PrepareSmsNote);
             _appSettings.FirstTimeUse = false;
         }
 
-        await _smsService.PrepareSmsAsync(SelectedTicketType.PhoneNumber, SelectedTicketType.SmsText);
+        await _smsService.PrepareSmsAsync(ticket.PhoneNumber, ticket.SmsText);
     }
 
-    private async Task TogglePinAsync()
+    private async Task ToggleFavoriteAsync()
     {
-        if (_jumpList is null || SelectedTicketType is not { } ticket)
+        if (SelectedTicketType is not { } ticket)
         {
             return;
         }
 
-        if (!IsPinned)
+        var isFavorite = _favorites.Toggle(ticket.Id);
+        await SyncJumpListAsync();
+
+        if (isFavorite && _jumpList is not null && !_settings.GetSetting(FavoriteHintShownKey, () => false))
         {
-            var isDuplicate = ticket.IsDuplicate;
-            var item = JumpListItem.CreateWithArguments(
-                ticket.Id,
-                $"{SelectedCity.Name} - {(isDuplicate ? _localizer.Duplicate : ticket.TimeText)}");
-            item.Logo = new Uri(isDuplicate ? "ms-appx:///Assets/ticket_dupe.png" : "ms-appx:///Assets/ticket.png");
-            item.Description = string.Format(_localizer.QuickActionDescriptionFormatString, ticket.Price);
+            _settings.SetSetting(FavoriteHintShownKey, true);
+            await ShowInfoAsync(_localizer.FavoriteAddedTitle, _localizer.FavoriteAddedDescription);
+        }
+    }
+
+    private async Task RemoveFavoriteAsync(CityTicket? favorite)
+    {
+        if (favorite is not null && _favorites.Remove(favorite.Ticket.Id))
+        {
+            await SyncJumpListAsync();
+        }
+    }
+
+    private async Task SyncJumpListAsync()
+    {
+        if (_jumpList is null)
+        {
+            return;
+        }
+
+        JumpListTexts texts = new(_localizer.Duplicate, _localizer.QuickActionDescriptionFormatString);
+        _jumpList.Items.Clear();
+        foreach (var spec in FavoriteJumpListMapper.ToSpecs(Favorites, texts))
+        {
+            var item = JumpListItem.CreateWithArguments(spec.Arguments, spec.DisplayName);
+            item.Description = spec.Description;
+            item.Logo = new Uri(spec.Logo);
             _jumpList.Items.Add(item);
         }
-        else if (_jumpList.Items.FirstOrDefault(i => i.Arguments == ticket.Id) is { } existing)
-        {
-            _jumpList.Items.Remove(existing);
-        }
 
-        await _jumpList.SaveAsync();
-        OnPropertyChanged(nameof(IsPinned));
-
-        if (IsPinned)
+        try
         {
-            ContentDialog dialog = new()
-            {
-                Title = _localizer.PinnedTitle,
-                Content = _localizer.PinnedDescription,
-                CloseButtonText = "OK",
-                DefaultButton = ContentDialogButton.Close,
-                XamlRoot = XamlRoot,
-            };
-            await dialog.ShowAsync();
+            await _jumpList.SaveAsync();
         }
+        catch (Exception ex)
+        {
+            // Home screen shortcuts are a bonus, favorites still work in-app
+            System.Diagnostics.Debug.WriteLine($"Failed to sync favorites to the JumpList: {ex}");
+        }
+    }
+
+    private async Task ShowInfoAsync(string title, string content)
+    {
+        ContentDialog dialog = new()
+        {
+            Title = title,
+            Content = content,
+            CloseButtonText = "OK",
+            DefaultButton = ContentDialogButton.Close,
+            XamlRoot = XamlRoot,
+        };
+        await dialog.ShowAsync();
     }
 }

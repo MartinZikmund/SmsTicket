@@ -145,10 +145,9 @@ public partial class App : Application
         }
 
         // Arguments are untrusted input - only act on known ticket ids
-        var ticket = DataSource.Cities.SelectMany(c => c.TicketTypes).FirstOrDefault(tt => tt.Id == arguments);
-        if (ticket != null)
+        if (DataSource.FindTicket(arguments) is { Ticket: var ticket })
         {
-            var smsService = new SmsService();
+            SmsService smsService = new();
             await smsService.PrepareSmsAsync(ticket.PhoneNumber, ticket.SmsText);
         }
     }

@@ -168,11 +168,11 @@
   <data name="QuickActionDescriptionFormatString" xml:space="preserve">
     <value>Price {0} CZK</value>
   </data>
-  <data name="PinnedDescription" xml:space="preserve">
-    <value>You can find pinned tickets in the app icon menu on supported devices (long press the icon)</value>
+  <data name="FavoriteAddedDescription" xml:space="preserve">
+    <value>Buy favorite tickets with a single tap at the top of the page. You can also find them in the app icon menu (long press the icon).</value>
   </data>
-  <data name="PinnedTitle" xml:space="preserve">
-    <value>Ticket was pinned</value>
+  <data name="FavoriteAddedTitle" xml:space="preserve">
+    <value>Added to favorites</value>
   </data>
   <data name="PrepareSmsNote" xml:space="preserve">
     <value>The SMS ticket will now be prepared in your SMS messaging application. Please send the SMS message to purchase the ticket.</value>
@@ -198,11 +198,14 @@
   <data name="Duplicate" xml:space="preserve">
     <value>Duplicate</value>
   </data>
-  <data name="Pin" xml:space="preserve">
-    <value>Pin</value>
+  <data name="Favorites" xml:space="preserve">
+    <value>Favorites</value>
   </data>
-  <data name="Unpin" xml:space="preserve">
-    <value>Unpin</value>
+  <data name="AddToFavorites" xml:space="preserve">
+    <value>Add to favorites</value>
+  </data>
+  <data name="RemoveFromFavorites" xml:space="preserve">
+    <value>Remove from favorites</value>
   </data>
   <data name="NavTickets" xml:space="preserve">
     <value>Tickets</value>

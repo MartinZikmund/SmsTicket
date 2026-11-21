@@ -46,9 +46,13 @@ public sealed partial class MainPage : Page
 
     public static string SmsPriceSuffix(bool smsPriceAdditional) => smsPriceAdditional ? " " + _localizer.PlusPriceOfSms : "";
 
-    public static string PinGlyph(bool isPinned) => isPinned ? "" : "";
+    public static string FavoriteGlyph(bool isFavorite) => isFavorite ? "" : "";
 
-    public string PinLabel(bool isPinned) => isPinned ? _localizer.Unpin : _localizer.Pin;
+    public string FavoriteLabel(bool isFavorite) => isFavorite ? _localizer.RemoveFromFavorites : _localizer.AddToFavorites;
+
+    public static string RemoveFromFavoritesText => _localizer.RemoveFromFavorites;
+
+    public static string FavoriteAutomationId(string ticketId) => "Favorite_" + ticketId;
 
     private async void OnLoaded(object sender, RoutedEventArgs e)
     {
@@ -58,6 +62,22 @@ public sealed partial class MainPage : Page
         await ViewModel.InitAsync();
     }
 
+
+    private void OnFavoriteClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is FrameworkElement { DataContext: CityTicket favorite })
+        {
+            ViewModel.BuyFavoriteCommand.Execute(favorite);
+        }
+    }
+
+    private void OnRemoveFavoriteClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is FrameworkElement { Tag: CityTicket favorite })
+        {
+            ViewModel.RemoveFavoriteCommand.Execute(favorite);
+        }
+    }
 
     private void OnCityFlyoutOpened(object? sender, object e) => CityList.ScrollIntoView(ViewModel.SelectedCity);
 
