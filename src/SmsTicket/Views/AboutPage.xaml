@@ -59,6 +59,11 @@
                     AutomationProperties.AutomationId="AboutSourceCode"
                     Content="{x:Bind Localizer.SourceCode}"
                     NavigateUri="https://github.com/MartinZikmund/SmsTicket" />
+                <HyperlinkButton
+                    Padding="0"
+                    AutomationProperties.AutomationId="AboutPrivacyPolicy"
+                    Content="{x:Bind Localizer.PrivacyPolicy}"
+                    NavigateUri="https://mzikmund.dev/Apps/SmsTicket/PrivacyPolicy" />
             </StackPanel>
 
             <TextBlock

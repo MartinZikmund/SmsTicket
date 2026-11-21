@@ -84,6 +84,7 @@ public class LocalizationService : ILocalizerService
     public string FeedbackTitle => this[nameof(FeedbackTitle)];
     public string ReportProblem => this[nameof(ReportProblem)];
     public string SourceCode => this[nameof(SourceCode)];
+    public string PrivacyPolicy => this[nameof(PrivacyPolicy)];
     public string OpenSourceCaption => this[nameof(OpenSourceCaption)];
     public string CityInfo => this[nameof(CityInfo)];
     public string TransportOperator => this[nameof(TransportOperator)];

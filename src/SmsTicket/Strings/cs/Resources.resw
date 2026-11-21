@@ -231,6 +231,9 @@
   <data name="SourceCode" xml:space="preserve">
     <value>Zdrojový kód na GitHubu</value>
   </data>
+  <data name="PrivacyPolicy" xml:space="preserve">
+    <value>Zásady ochrany osobních údajů</value>
+  </data>
   <data name="OpenSourceCaption" xml:space="preserve">
     <value>Aplikace je open source. Chybnou cenu nebo číslo můžete nahlásit nebo rovnou opravit.</value>
   </data>
