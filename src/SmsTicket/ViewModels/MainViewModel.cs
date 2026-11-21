@@ -5,6 +5,7 @@ using SmsTicket.Services.AppSettings;
 using SmsTicket.Services.Favorites;
 using SmsTicket.Services.Localizer;
 using SmsTicket.Services.Location;
+using SmsTicket.Services.PurchaseHistory;
 using SmsTicket.Services.Settings;
 using SmsTicket.Services.Sms;
 using Windows.UI.StartScreen;
@@ -20,16 +21,18 @@ public class MainViewModel : ObservableObject
     private readonly ISmsService _smsService;
     private readonly IAppSettings _appSettings;
     private readonly FavoritesStore _favorites;
+    private readonly IPurchaseHistoryService _purchaseHistory;
     private readonly LocalizationService _localizer = new();
 
     private JumpList? _jumpList;
     private City _selectedCity;
     private TicketType? _selectedTicketType;
 
-    public MainViewModel(ISettingsService settings, ISmsService smsService, ILocationProvider? locationProvider = null)
+    public MainViewModel(ISettingsService settings, ISmsService smsService, IPurchaseHistoryService purchaseHistory, ILocationProvider? locationProvider = null)
     {
         _settings = settings;
         _smsService = smsService;
+        _purchaseHistory = purchaseHistory;
         _appSettings = new AppSettings(_settings);
         _favorites = new FavoritesStore(_settings, id => DataSource.FindTicket(id) is not null);
         _favorites.Changed += (_, _) => RefreshFavorites();
@@ -173,6 +176,7 @@ public class MainViewModel : ObservableObject
         }
 
         await _smsService.PrepareSmsAsync(ticket.PhoneNumber, ticket.SmsText);
+        await _purchaseHistory.AddAsync(PurchaseRecord.FromTicket(DataSource.FindCityForTicket(ticket.Id) ?? SelectedCity, ticket, DateTimeOffset.Now));
     }
 
     private async Task ToggleFavoriteAsync()
