@@ -1,6 +1,6 @@
 <Project Sdk="Uno.Sdk">
     <PropertyGroup>
-        <TargetFrameworks>net10.0-android;net10.0-ios;net10.0-windows10.0.26100;net10.0-browserwasm;net10.0-desktop</TargetFrameworks>
+        <TargetFrameworks>net10.0-android;net10.0-ios;net10.0-windows10.0.26100;net10.0-browserwasm;net10.0-desktop;net10.0</TargetFrameworks>
 
         <OutputType>Exe</OutputType>
         <UnoSingleProject>true</UnoSingleProject>
@@ -26,6 +26,14 @@
 
         <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) =='android'">24</SupportedOSPlatformVersion>
     </PropertyGroup>
+
+    <!-- The plain net10.0 target exists for unit tests, which have no native ICU to load -->
+    <PropertyGroup Condition="'$(TargetFramework)' == 'net10.0'">
+        <SkipIcuDataInitializerGenerator>true</SkipIcuDataInitializerGenerator>
+    </PropertyGroup>
+    <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+        <CompilerVisibleProperty Include="SkipIcuDataInitializerGenerator" />
+    </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="MZikmund.Uno.AdMob" />
