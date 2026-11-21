@@ -138,6 +138,28 @@
                     Command="{x:Bind ViewModel.ResetTipsCommand}"
                     Content="{x:Bind Localizer.ShowTipsAgain}" />
             </Grid>
+
+            <!--  Ad privacy  -->
+            <Grid
+                Style="{StaticResource SettingsCardStyle}"
+                Visibility="{x:Bind ViewModel.IsAdPrivacyOptionsVisible, Mode=OneWay}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <FontIcon VerticalAlignment="Center" Glyph="&#xE72E;" />
+                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <TextBlock Text="{x:Bind Localizer.AdPrivacyOptionsTitle}" />
+                    <TextBlock Style="{StaticResource SettingsDescriptionStyle}" Text="{x:Bind Localizer.AdPrivacyOptionsDescription}" />
+                </StackPanel>
+                <Button
+                    Grid.Column="2"
+                    VerticalAlignment="Center"
+                    AutomationProperties.AutomationId="AdPrivacyOptionsButton"
+                    Command="{x:Bind ViewModel.ShowAdPrivacyOptionsCommand}"
+                    Content="{x:Bind Localizer.AdPrivacyOptions}" />
+            </Grid>
         </StackPanel>
     </ScrollViewer>
 </Page>

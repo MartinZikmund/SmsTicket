@@ -1,3 +1,4 @@
+using SmsTicket.Services.Ads;
 using SmsTicket.Services.AppSettings;
 using SmsTicket.Services.Localizer;
 using SmsTicket.Services.Settings;
@@ -16,7 +17,8 @@ public sealed partial class SettingsPage : Page
         new AppSettings(new SettingsService()),
         App.StartupLanguage,
         App.ApplyTheme,
-        App.ApplyLanguage);
+        App.ApplyLanguage,
+        AdPrivacyOptions.TryCreate());
 
     public LocalizationService Localizer { get; } = (LocalizationService)Application.Current.Resources["Localizer"];
 }

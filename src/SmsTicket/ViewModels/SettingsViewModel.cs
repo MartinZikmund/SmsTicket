@@ -1,3 +1,4 @@
+using SmsTicket.Services.Ads;
 using SmsTicket.Services.AppSettings;
 
 namespace SmsTicket.ViewModels;
@@ -8,22 +9,34 @@ public class SettingsViewModel : ObservableObject
     private readonly LanguagePreference _startupLanguage;
     private readonly Action<ThemePreference> _applyTheme;
     private readonly Action<string> _applyLanguage;
+    private readonly IAdPrivacyOptions? _adPrivacyOptions;
 
     public SettingsViewModel(
         IAppSettings appSettings,
         LanguagePreference startupLanguage,
         Action<ThemePreference> applyTheme,
-        Action<string> applyLanguage)
+        Action<string> applyLanguage,
+        IAdPrivacyOptions? adPrivacyOptions = null)
     {
         _appSettings = appSettings;
         _startupLanguage = startupLanguage;
         _applyTheme = applyTheme;
         _applyLanguage = applyLanguage;
+        _adPrivacyOptions = adPrivacyOptions;
+        if (_adPrivacyOptions is not null)
+        {
+            _adPrivacyOptions.Changed += (_, _) => OnPropertyChanged(nameof(IsAdPrivacyOptionsVisible));
+        }
 
         ResetTipsCommand = new RelayCommand(ResetTips, () => !_appSettings.FirstTimeUse);
+        ShowAdPrivacyOptionsCommand = new RelayCommand(() => _adPrivacyOptions?.Show());
     }
 
     public IRelayCommand ResetTipsCommand { get; }
+
+    public IRelayCommand ShowAdPrivacyOptionsCommand { get; }
+
+    public bool IsAdPrivacyOptionsVisible => _adPrivacyOptions?.IsRequired == true;
 
     public int ThemeIndex
     {
