@@ -349,4 +349,70 @@
   <data name="MonthTotal" xml:space="preserve">
     <value>Celkem</value>
   </data>
+  <data name="ActiveTicketsTitle" xml:space="preserve">
+    <value>Platné jízdenky</value>
+  </data>
+  <data name="ActiveTicketEstimate" xml:space="preserve">
+    <value>odhad</value>
+  </data>
+  <data name="ActiveTicketUntilFormat" xml:space="preserve">
+    <value>do {0}</value>
+  </data>
+  <data name="ActiveTicketStartsFormat" xml:space="preserve">
+    <value>platí od {0}</value>
+  </data>
+  <data name="ActiveTicketAwaitingConfirmation" xml:space="preserve">
+    <value>Potvrďte SMS „Ano“</value>
+  </data>
+  <data name="ActiveTicketEstimateHint" xml:space="preserve">
+    <value>Čas je odhad podle přípravy SMS. Až jízdenka přijde, upravte čas.</value>
+  </data>
+  <data name="ActiveTicketOptionsFormat" xml:space="preserve">
+    <value>Možnosti jízdenky: {0}</value>
+  </data>
+  <data name="ActiveTicketAutomationFormat" xml:space="preserve">
+    <value>{0}, {1}, zbývá {2}, {3}</value>
+  </data>
+  <data name="ActiveTicketEstimatedAutomation" xml:space="preserve">
+    <value>odhad</value>
+  </data>
+  <data name="AdjustStartTime" xml:space="preserve">
+    <value>Jízdenka přišla v…</value>
+  </data>
+  <data name="AdjustStartTimeTitle" xml:space="preserve">
+    <value>Kdy jízdenka přišla?</value>
+  </data>
+  <data name="AdjustStartTimeText" xml:space="preserve">
+    <value>Zadejte čas, kdy přišla SMS s jízdenkou. Platnost se podle něj přepočítá.</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Uložit</value>
+  </data>
+  <data name="MarkNotSent" xml:space="preserve">
+    <value>SMS jsem neodeslal(a)</value>
+  </data>
+  <data name="DismissActiveTicket" xml:space="preserve">
+    <value>Skrýt</value>
+  </data>
+  <data name="RemainingMinutesFormat" xml:space="preserve">
+    <value>{0} min</value>
+  </data>
+  <data name="RemainingHoursFormat" xml:space="preserve">
+    <value>{0} h {1} min</value>
+  </data>
+  <data name="RemainingDaysFormat" xml:space="preserve">
+    <value>{0} d {1} h</value>
+  </data>
+  <data name="ExpiryReminderTitle" xml:space="preserve">
+    <value>Jízdenka brzy vyprší</value>
+  </data>
+  <data name="ExpiryReminderBodyFormat" xml:space="preserve">
+    <value>{0} · {1} – platí do {2}</value>
+  </data>
+  <data name="ExpiryReminderChannelName" xml:space="preserve">
+    <value>Konec platnosti jízdenek</value>
+  </data>
+  <data name="ExpiryReminderChannelDescription" xml:space="preserve">
+    <value>Upozornění několik minut před koncem platnosti jízdenky.</value>
+  </data>
 </root>

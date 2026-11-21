@@ -121,4 +121,26 @@ public class LocalizationService : ILocalizerService
     public string ClearHistoryConfirmText => this[nameof(ClearHistoryConfirmText)];
     public string Cancel => this[nameof(Cancel)];
     public string MonthTotal => this[nameof(MonthTotal)];
+    public string ActiveTicketsTitle => this[nameof(ActiveTicketsTitle)];
+    public string ActiveTicketEstimate => this[nameof(ActiveTicketEstimate)];
+    public string ActiveTicketUntilFormat => this[nameof(ActiveTicketUntilFormat)];
+    public string ActiveTicketStartsFormat => this[nameof(ActiveTicketStartsFormat)];
+    public string ActiveTicketAwaitingConfirmation => this[nameof(ActiveTicketAwaitingConfirmation)];
+    public string ActiveTicketEstimateHint => this[nameof(ActiveTicketEstimateHint)];
+    public string ActiveTicketOptionsFormat => this[nameof(ActiveTicketOptionsFormat)];
+    public string ActiveTicketAutomationFormat => this[nameof(ActiveTicketAutomationFormat)];
+    public string ActiveTicketEstimatedAutomation => this[nameof(ActiveTicketEstimatedAutomation)];
+    public string AdjustStartTime => this[nameof(AdjustStartTime)];
+    public string AdjustStartTimeTitle => this[nameof(AdjustStartTimeTitle)];
+    public string AdjustStartTimeText => this[nameof(AdjustStartTimeText)];
+    public string Save => this[nameof(Save)];
+    public string MarkNotSent => this[nameof(MarkNotSent)];
+    public string DismissActiveTicket => this[nameof(DismissActiveTicket)];
+    public string RemainingMinutesFormat => this[nameof(RemainingMinutesFormat)];
+    public string RemainingHoursFormat => this[nameof(RemainingHoursFormat)];
+    public string RemainingDaysFormat => this[nameof(RemainingDaysFormat)];
+    public string ExpiryReminderTitle => this[nameof(ExpiryReminderTitle)];
+    public string ExpiryReminderBodyFormat => this[nameof(ExpiryReminderBodyFormat)];
+    public string ExpiryReminderChannelName => this[nameof(ExpiryReminderChannelName)];
+    public string ExpiryReminderChannelDescription => this[nameof(ExpiryReminderChannelDescription)];
 }
