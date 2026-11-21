@@ -25,6 +25,15 @@ public class City
 
     public PhotoCredit? Photo => PhotoCredits.ForCity(Id);
 
+    // Defaults to CityLocations; settable so tests can place cities anywhere
+    public IReadOnlyList<GeoCoordinate> Centers
+    {
+        get => _centers ?? CityLocations.ForCity(Id);
+        init => _centers = value;
+    }
+
+    private readonly IReadOnlyList<GeoCoordinate>? _centers;
+
     // Used by ListView as the item's automation name
     public override string ToString() => Name;
 }
