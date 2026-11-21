@@ -291,4 +291,19 @@
   <data name="OpenSourceCaption" xml:space="preserve">
     <value>Aplikace je open source. Chybnou cenu nebo číslo můžete nahlásit nebo rovnou opravit.</value>
   </data>
+  <data name="CityInfo" xml:space="preserve">
+    <value>Informace o městě</value>
+  </data>
+  <data name="TransportOperator" xml:space="preserve">
+    <value>Dopravce</value>
+  </data>
+  <data name="OperatorWebsite" xml:space="preserve">
+    <value>Web dopravce</value>
+  </data>
+  <data name="SmsTicketInfo" xml:space="preserve">
+    <value>Informace o SMS jízdence</value>
+  </data>
+  <data name="JourneyPlanner" xml:space="preserve">
+    <value>Vyhledat spojení (IDOS)</value>
+  </data>
 </root>

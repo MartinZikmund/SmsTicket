@@ -15,6 +15,10 @@ public static class DataSource
                 new City
                 {
                     Id = "PHA",
+                    OperatorName = "Dopravní podnik hl. m. Prahy",
+                    OperatorUrl = "https://www.dpp.cz/",
+                    SmsInfoUrl = "https://www.dpp.cz/jizdne/sms-jizdenka",
+                    JourneyPlannerUrl = "https://idos.cz/pid/spojeni/",
                     Abbreviation = localizerService["PragueAbbreviation"],
                     Name = localizerService["PragueName"],
                     DefaultTicketId = "PHA30min",
@@ -32,6 +36,10 @@ public static class DataSource
                 new City
                 {
                     Id = "LBC",
+                    OperatorName = "Dopravní podnik měst Liberce a Jablonce nad Nisou",
+                    OperatorUrl = "https://www.dpmlj.cz/",
+                    SmsInfoUrl = "https://www.dpmlj.cz/mhd-liberec/informace/sms-jizdenka",
+                    JourneyPlannerUrl = "https://idos.cz/liberec/spojeni/",
                     Abbreviation = "LBC",
                     Name = "Liberec",
                     DefaultTicketId = "LIB",
@@ -45,6 +53,10 @@ public static class DataSource
                 new City
                 {
                     Id = "CB",
+                    OperatorName = "Dopravní podnik města České Budějovice",
+                    OperatorUrl = "https://www.dpmcb.cz/",
+                    SmsInfoUrl = "https://www.dpmcb.cz/cestovani-mhd/koupit-jizdenky/sms-jizdenka.html",
+                    JourneyPlannerUrl = "https://idos.cz/ceskebudejovice/spojeni/",
                     Abbreviation = "ČB",
                     Name = "České Budějovice",
                     DefaultTicketId = "BUD25",
@@ -59,6 +71,10 @@ public static class DataSource
                 new City
                 {
                     Id = "HK",
+                    OperatorName = "Dopravní podnik města Hradce Králové",
+                    OperatorUrl = "https://www.dpmhk.cz/",
+                    SmsInfoUrl = "https://www.dpmhk.cz/cz/jizdenky/zpusob-nakupu-jizdenky/sms-jizdenky/",
+                    JourneyPlannerUrl = "https://idos.cz/hradeckralove/spojeni/",
                     Abbreviation = "HK",
                     Name = "Hradec Králové",
                     DefaultTicketId = "HK",
@@ -74,6 +90,10 @@ public static class DataSource
                 new City
                 {
                     Id = "OL",
+                    OperatorName = "Dopravní podnik města Olomouce",
+                    OperatorUrl = "https://www.dpmo.cz/",
+                    SmsInfoUrl = "https://www.dpmo.cz/informace-pro-cestujici/sms-jizdenka/",
+                    JourneyPlannerUrl = "https://idos.cz/olomouc/spojeni/",
                     Abbreviation = "OL",
                     Name = "Olomouc",
                     DefaultTicketId = "DPMO",
@@ -86,6 +106,10 @@ public static class DataSource
                 new City
                 {
                     Id = "OST",
+                    OperatorName = "Dopravní podnik Ostrava",
+                    OperatorUrl = "https://www.dpo.cz/",
+                    SmsInfoUrl = "https://www.dpo.cz/jizdne/sms-jizdenky.html",
+                    JourneyPlannerUrl = "https://idos.cz/ostrava/spojeni/",
                     Abbreviation = "OST",
                     Name = "Ostrava",
                     DefaultTicketId = "DPO70",
@@ -102,6 +126,10 @@ public static class DataSource
                 new City
                 {
                     Id = "PAR",
+                    OperatorName = "Dopravní podnik města Pardubic",
+                    OperatorUrl = "https://www.dpmp.cz/",
+                    SmsInfoUrl = "https://www.dpmp.cz/cestovani-mhd/koupit-jizdenky/sms-jizdenka.html",
+                    JourneyPlannerUrl = "https://idos.cz/pardubice/spojeni/",
                     Abbreviation = "PAR",
                     Name = "Pardubice",
                     DefaultTicketId = "DPMP",
@@ -115,6 +143,10 @@ public static class DataSource
                 new City
                 {
                     Id = "PIL",
+                    OperatorName = "Plzeňské městské dopravní podniky",
+                    OperatorUrl = "https://www.pmdp.cz/",
+                    SmsInfoUrl = "https://www.pmdp.cz/cz/jizdne/sms-jizdenka/",
+                    JourneyPlannerUrl = "https://idos.cz/plzen/spojeni/",
                     Abbreviation = localizerService["PILAbbreviation"],
                     Name = localizerService["PILName"],
                     DefaultTicketId = "PMDP35M",
@@ -128,6 +160,10 @@ public static class DataSource
                 new City
                 {
                     Id = "UL",
+                    OperatorName = "Dopravní podnik města Ústí nad Labem",
+                    OperatorUrl = "https://www.dpmul.cz/",
+                    SmsInfoUrl = "https://www.dpmul.cz/cestovani-mhd/koupit-jizdenku/sms",
+                    JourneyPlannerUrl = "https://idos.cz/ustinadlabem/spojeni/",
                     Abbreviation = "ÚnL",
                     Name = "Ústí nad Labem",
                     DefaultTicketId = "MDJ",
@@ -143,6 +179,10 @@ public static class DataSource
                 new City
                 {
                     Id = "ZL",
+                    OperatorName = "Dopravní společnost Zlín-Otrokovice",
+                    OperatorUrl = "https://www.dszo.cz/",
+                    SmsInfoUrl = "https://www.dszo.cz/sms-jizdenka/",
+                    JourneyPlannerUrl = "https://idos.cz/zlin/spojeni/",
                     Abbreviation = "ZL,O",
                     Name = "Zlín a Otrokovice",
                     DefaultTicketId = "DSZO",
@@ -158,6 +198,10 @@ public static class DataSource
                 new City
                 {
                     Id = "BR",
+                    OperatorName = "Dopravní podnik města Brna",
+                    OperatorUrl = "https://www.dpmb.cz/",
+                    SmsInfoUrl = "https://www.dpmb.cz/jizdenky-v-mobilu",
+                    JourneyPlannerUrl = "https://idos.cz/idsjmk/spojeni/",
                     Abbreviation = "BR",
                     Name = "Brno",
                     DefaultTicketId = "BR29",
@@ -172,6 +216,10 @@ public static class DataSource
                 new City
                 {
                     Id = "CHEB",
+                    OperatorName = "Dopravní podnik Cheb",
+                    OperatorUrl = "https://www.dpch.cz/",
+                    SmsInfoUrl = "https://www.dpch.cz/cz/jizdne/tarif-mhd/",
+                    JourneyPlannerUrl = "https://idos.cz/cheb/spojeni/",
                     Abbreviation = "CH",
                     Name = "Cheb",
                     DefaultTicketId = "CHD",
@@ -184,6 +232,10 @@ public static class DataSource
                 new City
                 {
                     Id = "TB",
+                    OperatorName = "COMETT PLUS",
+                    OperatorUrl = "https://www.comettplus.cz/",
+                    SmsInfoUrl = "https://www.comettplus.cz/cz/cestujici/",
+                    JourneyPlannerUrl = "https://idos.cz/tabor/spojeni/",
                     Abbreviation = "TB",
                     Name = "Tábor",
                     DefaultTicketId = "COM",

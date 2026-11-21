@@ -71,65 +71,124 @@
                     Style="{StaticResource TitleLargeTextBlockStyle}"
                     Text="{x:Bind ViewModel.SelectedCity.Name, Mode=OneWay}"
                     TextTrimming="CharacterEllipsis" />
-                <Button
-                    x:Name="CitySwitcherButton"
+                <StackPanel
                     Margin="0,4,0,0"
-                    AutomationProperties.AutomationId="CitySwitcherButton"
-                    AutomationProperties.Name="{x:Bind Localizer.ChangeCity}">
-                    <StackPanel Orientation="Horizontal" Spacing="8">
-                        <FontIcon FontSize="16" Glyph="&#xE707;" />
-                        <TextBlock Text="{x:Bind Localizer.ChangeCity}" />
-                        <FontIcon FontSize="12" Glyph="&#xE70D;" />
-                    </StackPanel>
-                    <Button.Flyout>
-                        <Flyout
-                            x:Name="CityFlyout"
-                            Opened="OnCityFlyoutOpened"
-                            Placement="BottomEdgeAlignedLeft">
-                            <StackPanel Width="280" Spacing="8">
-                                <TextBlock Style="{StaticResource BodyStrongTextBlockStyle}" Text="{x:Bind Localizer.ChooseCity}" />
-                                <ListView
-                                    x:Name="CityList"
-                                    MaxHeight="400"
-                                    Margin="-12,0"
-                                    AutomationProperties.AutomationId="CityList"
-                                    AutomationProperties.Name="{x:Bind Localizer.ChooseCity}"
-                                    IsItemClickEnabled="True"
-                                    ItemClick="OnCityClick"
-                                    ItemsSource="{x:Bind ViewModel.Cities}"
-                                    SelectedItem="{x:Bind ViewModel.SelectedCity, Mode=OneWay}"
-                                    SelectionMode="Single">
-                                    <ListView.ItemTemplate>
-                                        <DataTemplate x:DataType="models:City">
-                                            <Grid Padding="0,8" ColumnSpacing="12">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="48" />
-                                                    <ColumnDefinition Width="*" />
-                                                </Grid.ColumnDefinitions>
-                                                <Border
-                                                    Height="32"
-                                                    Background="{ThemeResource AccentFillColorDefaultBrush}"
-                                                    CornerRadius="{StaticResource ControlCornerRadius}">
+                    Orientation="Horizontal"
+                    Spacing="8">
+                    <Button
+                        x:Name="CitySwitcherButton"
+                        AutomationProperties.AutomationId="CitySwitcherButton"
+                        AutomationProperties.Name="{x:Bind Localizer.ChangeCity}">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon FontSize="16" Glyph="&#xE707;" />
+                            <TextBlock Text="{x:Bind Localizer.ChangeCity}" />
+                            <FontIcon FontSize="12" Glyph="&#xE70D;" />
+                        </StackPanel>
+                        <Button.Flyout>
+                            <Flyout
+                                x:Name="CityFlyout"
+                                Opened="OnCityFlyoutOpened"
+                                Placement="BottomEdgeAlignedLeft">
+                                <StackPanel Width="280" Spacing="8">
+                                    <TextBlock Style="{StaticResource BodyStrongTextBlockStyle}" Text="{x:Bind Localizer.ChooseCity}" />
+                                    <ListView
+                                        x:Name="CityList"
+                                        MaxHeight="400"
+                                        Margin="-12,0"
+                                        AutomationProperties.AutomationId="CityList"
+                                        AutomationProperties.Name="{x:Bind Localizer.ChooseCity}"
+                                        IsItemClickEnabled="True"
+                                        ItemClick="OnCityClick"
+                                        ItemsSource="{x:Bind ViewModel.Cities}"
+                                        SelectedItem="{x:Bind ViewModel.SelectedCity, Mode=OneWay}"
+                                        SelectionMode="Single">
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate x:DataType="models:City">
+                                                <Grid Padding="0,8" ColumnSpacing="12">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="48" />
+                                                        <ColumnDefinition Width="*" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <Border
+                                                        Height="32"
+                                                        Background="{ThemeResource AccentFillColorDefaultBrush}"
+                                                        CornerRadius="{StaticResource ControlCornerRadius}">
+                                                        <TextBlock
+                                                            HorizontalAlignment="Center"
+                                                            VerticalAlignment="Center"
+                                                            Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}"
+                                                            Style="{StaticResource CaptionTextBlockStyle}"
+                                                            FontWeight="SemiBold"
+                                                            Text="{x:Bind Abbreviation}" />
+                                                    </Border>
                                                     <TextBlock
-                                                        HorizontalAlignment="Center"
+                                                        Grid.Column="1"
                                                         VerticalAlignment="Center"
-                                                        Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}"
-                                                        Style="{StaticResource CaptionTextBlockStyle}"
-                                                        FontWeight="SemiBold"
-                                                        Text="{x:Bind Abbreviation}" />
-                                                </Border>
-                                                <TextBlock
-                                                    Grid.Column="1"
-                                                    VerticalAlignment="Center"
-                                                    Text="{x:Bind Name}" />
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ListView.ItemTemplate>
-                                </ListView>
-                            </StackPanel>
-                        </Flyout>
-                    </Button.Flyout>
-                </Button>
+                                                        Text="{x:Bind Name}" />
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ListView.ItemTemplate>
+                                    </ListView>
+                                </StackPanel>
+                            </Flyout>
+                        </Button.Flyout>
+                    </Button>
+                    <Button
+                        x:Name="CityInfoButton"
+                        VerticalAlignment="Stretch"
+                        AutomationProperties.AutomationId="CityInfoButton"
+                        AutomationProperties.Name="{x:Bind Localizer.CityInfo}"
+                        ToolTipService.ToolTip="{x:Bind Localizer.CityInfo}">
+                        <FontIcon FontSize="16" Glyph="&#xE946;" />
+                        <Button.Flyout>
+                            <Flyout Placement="BottomEdgeAlignedLeft">
+                                <StackPanel MaxWidth="320" Spacing="4">
+                                    <TextBlock
+                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                        Style="{StaticResource CaptionTextBlockStyle}"
+                                        Text="{x:Bind Localizer.TransportOperator}" />
+                                    <TextBlock
+                                        AutomationProperties.AutomationId="OperatorNameText"
+                                        Style="{StaticResource BodyStrongTextBlockStyle}"
+                                        Text="{x:Bind ViewModel.SelectedCity.OperatorName, Mode=OneWay}"
+                                        TextWrapping="Wrap" />
+                                    <StackPanel Margin="0,4,0,0">
+                                        <HyperlinkButton
+                                            Padding="0,8"
+                                            AutomationProperties.AutomationId="OperatorWebsiteLink"
+                                            AutomationProperties.Name="{x:Bind Localizer.OperatorWebsite}"
+                                            NavigateUri="{x:Bind local:MainPage.ToUri(ViewModel.SelectedCity.OperatorUrl), Mode=OneWay}">
+                                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                                <FontIcon FontSize="16" Glyph="&#xE774;" />
+                                                <TextBlock Text="{x:Bind Localizer.OperatorWebsite}" />
+                                            </StackPanel>
+                                        </HyperlinkButton>
+                                        <HyperlinkButton
+                                            Padding="0,8"
+                                            AutomationProperties.AutomationId="SmsTicketInfoLink"
+                                            AutomationProperties.Name="{x:Bind Localizer.SmsTicketInfo}"
+                                            NavigateUri="{x:Bind local:MainPage.ToUri(ViewModel.SelectedCity.SmsInfoUrl), Mode=OneWay}">
+                                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                                <FontIcon FontSize="16" Glyph="&#xE8BD;" />
+                                                <TextBlock Text="{x:Bind Localizer.SmsTicketInfo}" />
+                                            </StackPanel>
+                                        </HyperlinkButton>
+                                        <HyperlinkButton
+                                            Padding="0,8"
+                                            AutomationProperties.AutomationId="JourneyPlannerLink"
+                                            AutomationProperties.Name="{x:Bind Localizer.JourneyPlanner}"
+                                            NavigateUri="{x:Bind local:MainPage.ToUri(ViewModel.SelectedCity.JourneyPlannerUrl), Mode=OneWay}">
+                                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                                <FontIcon FontSize="16" Glyph="&#xE806;" />
+                                                <TextBlock Text="{x:Bind Localizer.JourneyPlanner}" />
+                                            </StackPanel>
+                                        </HyperlinkButton>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Flyout>
+                        </Button.Flyout>
+                    </Button>
+                </StackPanel>
             </StackPanel>
         </Grid>
 
