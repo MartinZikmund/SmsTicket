@@ -109,4 +109,16 @@ public class LocalizationService : ILocalizerService
     public string ShowTipsAgainTitle => this[nameof(ShowTipsAgainTitle)];
     public string ShowTipsAgainDescription => this[nameof(ShowTipsAgainDescription)];
     public string ShowTipsAgain => this[nameof(ShowTipsAgain)];
+    public string NavHistory => this[nameof(NavHistory)];
+    public string HistoryTitle => this[nameof(HistoryTitle)];
+    public string HistoryEmptyTitle => this[nameof(HistoryEmptyTitle)];
+    public string HistoryEmptyText => this[nameof(HistoryEmptyText)];
+    public string HistoryDisclaimer => this[nameof(HistoryDisclaimer)];
+    public string Delete => this[nameof(Delete)];
+    public string DeleteEntryFormat => this[nameof(DeleteEntryFormat)];
+    public string ClearHistory => this[nameof(ClearHistory)];
+    public string ClearHistoryConfirmTitle => this[nameof(ClearHistoryConfirmTitle)];
+    public string ClearHistoryConfirmText => this[nameof(ClearHistoryConfirmText)];
+    public string Cancel => this[nameof(Cancel)];
+    public string MonthTotal => this[nameof(MonthTotal)];
 }

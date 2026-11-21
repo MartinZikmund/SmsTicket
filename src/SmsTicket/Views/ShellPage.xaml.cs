@@ -9,6 +9,7 @@ public sealed partial class ShellPage : Page
     private static readonly Dictionary<string, Type> _pages = new()
     {
         ["Tickets"] = typeof(MainPage),
+        ["History"] = typeof(HistoryPage),
         ["About"] = typeof(AboutPage),
     };
 
