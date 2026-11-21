@@ -35,7 +35,7 @@ The app is built with [Uno Platform](https://platform.uno) and .NET, from a sing
 2. Open `src/SmsTicket.slnx`, or build from the command line:
 
    ```bash
-   dotnet build src/SmsTicket/SmsTicket.csproj -f net10.0-desktop
+   dotnet build src/SmsTicket/SmsTicket.csproj -f net11.0-desktop
    dotnet test src/SmsTicket.Tests
    ```
 

@@ -16,7 +16,7 @@ env:
   SOLUTION_FILE: src/SmsTicket.slnx
   PROJECT_PATH: src/SmsTicket
   PROJECT_FILE: src/SmsTicket/SmsTicket.csproj
-  TFM: net10.0-android
+  TFM: net11.0-android
   PACKAGE_NAME: com.sphereline.smsticketandroid
   GOOGLE_PLAY_TRACK_STATUS: draft  # completed, draft, halted, inProgress
   # versionCode must grow with every upload; the csproj value (500001) is the floor
@@ -36,7 +36,7 @@ jobs:
 
       - uses: actions/setup-dotnet@v6
         with:
-          dotnet-version: 11.0.x
+          global-json-file: src/global.json
 
       - uses: actions/cache@v6
         with:

@@ -30,7 +30,7 @@ jobs:
 
       - uses: actions/setup-dotnet@v6
         with:
-          dotnet-version: 11.0.x
+          global-json-file: src/global.json
 
       - uses: actions/cache@v6
         with:
@@ -61,7 +61,7 @@ jobs:
 
       - uses: actions/setup-dotnet@v6
         with:
-          dotnet-version: 11.0.x
+          global-json-file: src/global.json
 
       - uses: actions/cache@v6
         with:
@@ -74,7 +74,7 @@ jobs:
         run: dotnet workload restore "$SOLUTION_FILE"
 
       - name: Build Android
-        run: dotnet build "$PROJECT_FILE" -c Release -f net10.0-android
+        run: dotnet build "$PROJECT_FILE" -c Release -f net11.0-android
 
   ios:
     name: iOS (Release, simulator)
@@ -86,7 +86,7 @@ jobs:
 
       - uses: actions/setup-dotnet@v6
         with:
-          dotnet-version: 10.0.x
+          global-json-file: src/global.json
 
       - uses: actions/cache@v6
         with:
@@ -112,12 +112,12 @@ jobs:
 
       - name: Build iOS simulator app (no signing)
         run: |
-          dotnet build "$PROJECT_FILE" -c Release -f net10.0-ios \
+          dotnet build "$PROJECT_FILE" -c Release -f net11.0-ios \
             -p:RuntimeIdentifier=iossimulator-arm64 \
-            -p:TargetFrameworks=net10.0-ios
+            -p:TargetFrameworks=net11.0-ios
 
       - name: Inspect built Info.plist
         run: |
-          app="$(find src/SmsTicket/bin/Release/net10.0-ios/iossimulator-arm64 -maxdepth 2 -name '*.app' | head -1)"
+          app="$(find src/SmsTicket/bin/Release/net11.0-ios/iossimulator-arm64 -maxdepth 2 -name '*.app' | head -1)"
           echo "App: $app"
           plutil -p "$app/Info.plist" | grep -E "GADApplicationIdentifier|NSUserTracking" || echo "No ad keys in Info.plist"
