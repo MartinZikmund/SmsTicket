@@ -7,6 +7,7 @@ using SmsTicket.Services.Confirmation;
 using SmsTicket.Services.Localizer;
 using SmsTicket.Services.Location;
 using SmsTicket.Services.PurchaseHistory;
+using SmsTicket.Services.Reminders;
 using SmsTicket.Services.Settings;
 using SmsTicket.Services.Sms;
 using Windows.UI.StartScreen;
@@ -24,6 +25,7 @@ public class MainViewModel : ObservableObject
     private readonly FavoritesStore _favorites;
     private readonly IPurchaseHistoryService _purchaseHistory;
     private readonly IConfirmationSmsListener _confirmationListener;
+    private readonly ReminderPermissionGate _reminderPermission;
     private readonly LocalizationService _localizer = new();
 
     private JumpList? _jumpList;
@@ -35,13 +37,15 @@ public class MainViewModel : ObservableObject
         ISmsService smsService,
         IPurchaseHistoryService purchaseHistory,
         IConfirmationSmsListener? confirmationListener = null,
-        ILocationProvider? locationProvider = null)
+        ILocationProvider? locationProvider = null,
+        IReminderPermission? reminderPermission = null)
     {
         _confirmationListener = confirmationListener ?? new NoOpConfirmationSmsListener();
         _settings = settings;
         _smsService = smsService;
         _purchaseHistory = purchaseHistory;
         _appSettings = new AppSettings(_settings);
+        _reminderPermission = new ReminderPermissionGate(_appSettings, reminderPermission ?? ReminderPermissions.Create());
         _favorites = new FavoritesStore(_settings, id => DataSource.FindTicket(id) is not null);
         _favorites.Changed += (_, _) => RefreshFavorites();
 
@@ -184,6 +188,9 @@ public class MainViewModel : ObservableObject
         }
 
         var record = PurchaseRecord.FromTicket(DataSource.FindCityForTicket(ticket.Id) ?? SelectedCity, ticket, DateTimeOffset.Now);
+
+        // Before the messaging app opens: a prompt shown after it would cover it and the SMS would never appear
+        await _reminderPermission.EnsureAskedAsync();
 
         // Listen before the SMS goes out: only messages arriving later are offered
         _confirmationListener.Start(record.Id);

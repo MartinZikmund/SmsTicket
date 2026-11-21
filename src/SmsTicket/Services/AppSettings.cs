@@ -17,6 +17,12 @@ public class AppSettings : IAppSettings
         set => _settings.SetSetting(nameof(FirstTimeUse), value);
     }
 
+    public bool ReminderPermissionAsked
+    {
+        get => _settings.GetSetting(nameof(ReminderPermissionAsked), () => false);
+        set => _settings.SetSetting(nameof(ReminderPermissionAsked), value);
+    }
+
     public bool AutoSelectNearestCity
     {
         get => _settings.GetSetting(nameof(AutoSelectNearestCity), () => false);

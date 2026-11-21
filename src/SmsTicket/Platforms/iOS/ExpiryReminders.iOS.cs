@@ -4,6 +4,15 @@ using UserNotifications;
 namespace SmsTicket.iOS;
 
 /// <summary>Schedules expiry reminders as local notifications with a time-interval trigger.</summary>
+public sealed class IosReminderPermission : IReminderPermission
+{
+    public async Task<bool> RequestAsync()
+    {
+        var (granted, _) = await UNUserNotificationCenter.Current.RequestAuthorizationAsync(UNAuthorizationOptions.Alert | UNAuthorizationOptions.Sound);
+        return granted;
+    }
+}
+
 public sealed class IosExpiryReminderScheduler : IExpiryReminderScheduler
 {
     private const string IdentifierPrefix = "expiry-";

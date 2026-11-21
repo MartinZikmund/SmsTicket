@@ -4,6 +4,8 @@ public interface IAppSettings
 {
     bool FirstTimeUse { get; set; }
 
+    bool ReminderPermissionAsked { get; set; }
+
     bool AutoSelectNearestCity { get; set; }
 
     bool HasUsedNearestCity { get; set; }

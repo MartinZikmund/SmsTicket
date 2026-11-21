@@ -13,12 +13,9 @@ public sealed class AndroidExpiryReminderScheduler : IExpiryReminderScheduler
 {
     private const string PreferencesName = "expiry-reminders";
     private const string ScheduledKey = "scheduled";
-    private const int PermissionRequestCode = 4711;
 
     // Android 14 stretches shorter inexact windows to 10 minutes - at their end, which would make us late
     private static readonly TimeSpan InexactWindow = TimeSpan.FromMinutes(10);
-
-    private bool _permissionRequested;
 
     public Task ReplaceAllAsync(IReadOnlyList<ExpiryReminder> reminders)
     {
@@ -40,7 +37,6 @@ public sealed class AndroidExpiryReminderScheduler : IExpiryReminderScheduler
         if (reminders.Count > 0)
         {
             ExpiryReminderReceiver.EnsureChannel(context);
-            RequestNotificationPermissionOnce(context);
         }
 
         var now = DateTimeOffset.UtcNow;
@@ -61,22 +57,14 @@ public sealed class AndroidExpiryReminderScheduler : IExpiryReminderScheduler
         preferences.Edit()!.PutStringSet(ScheduledKey, wanted)!.Apply();
         return Task.CompletedTask;
     }
+}
 
-    private void RequestNotificationPermissionOnce(Context context)
-    {
-        if (_permissionRequested ||
-            !OperatingSystem.IsAndroidVersionAtLeast(33) ||
-            context.CheckSelfPermission(Manifest.Permission.PostNotifications) == Permission.Granted)
-        {
-            return;
-        }
-
-        if (Uno.UI.ContextHelper.Current is Activity activity)
-        {
-            _permissionRequested = true;
-            activity.RequestPermissions([Manifest.Permission.PostNotifications], PermissionRequestCode);
-        }
-    }
+/// <summary>Android 13+ needs POST_NOTIFICATIONS at runtime; earlier versions grant it at install.</summary>
+public sealed class AndroidReminderPermission : IReminderPermission
+{
+    public async Task<bool> RequestAsync() =>
+        !OperatingSystem.IsAndroidVersionAtLeast(33) ||
+        await Windows.Extensions.PermissionsHelper.TryGetPermission(CancellationToken.None, Manifest.Permission.PostNotifications);
 }
 
 [BroadcastReceiver(Enabled = true, Exported = false)]
