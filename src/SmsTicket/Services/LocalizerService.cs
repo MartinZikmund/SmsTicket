@@ -57,6 +57,7 @@ public class LocalizationService : ILocalizerService
     public string DarkTheme => this["DarkTheme"];
     public string LightTheme => this["LightTheme"];
     public string AboutApp => this["AboutApp"];
+    public string AboutAppDescription => this[nameof(AboutAppDescription)];
 
     public string PlusPriceOfSms => this["PlusPriceOfSms"];
 

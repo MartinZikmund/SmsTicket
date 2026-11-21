@@ -120,6 +120,9 @@
   <data name="AboutApp" xml:space="preserve">
     <value>About app</value>
   </data>
+  <data name="AboutAppDescription" xml:space="preserve">
+    <value>Version, feedback and photo credits</value>
+  </data>
   <data name="AppName" xml:space="preserve">
     <value>Czech Transport Ticket</value>
   </data>

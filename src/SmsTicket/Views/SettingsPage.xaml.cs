@@ -21,4 +21,6 @@ public sealed partial class SettingsPage : Page
         AdPrivacyOptions.TryCreate());
 
     public LocalizationService Localizer { get; } = (LocalizationService)Application.Current.Resources["Localizer"];
+
+    private void OnAboutClick(object sender, RoutedEventArgs e) => Frame.Navigate(typeof(AboutPage));
 }
