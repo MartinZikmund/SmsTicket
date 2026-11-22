@@ -12,398 +12,421 @@
 
     <Grid x:Name="ContentRoot">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <!--  Hero  -->
-        <Grid x:Name="Hero" Height="260">
-            <controls:FocusedImage
-                AutomationProperties.AccessibilityView="Raw"
-                FocusY="{x:Bind local:MainPage.PhotoFocusY(ViewModel.SelectedCity.Photo), Mode=OneWay}"
-                Source="{x:Bind local:MainPage.ToImageSource(ViewModel.SelectedCity.HeroImage), Mode=OneWay}" />
-            <Border Background="{ThemeResource HeroScrimBrush}" />
+        <!--  One scroller for everything above the action bar, so active tickets never squeeze the ticket grid away  -->
+        <ScrollViewer
+            x:Name="PageScroller"
+            AutomationProperties.AutomationId="TicketsPageScroller"
+            HorizontalScrollBarVisibility="Disabled"
+            HorizontalScrollMode="Disabled"
+            VerticalScrollBarVisibility="Auto"
+            VerticalScrollMode="Auto"
+            ViewChanged="OnPageScrolled">
+            <StackPanel>
 
-            <Button
-                x:Name="PhotoInfoButton"
-                Width="32"
-                Height="32"
-                Margin="12"
-                Padding="0"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Top"
-                AutomationProperties.AutomationId="PhotoInfoButton"
-                AutomationProperties.Name="{x:Bind Localizer.PhotoInfo}"
-                Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
-                ToolTipService.ToolTip="{x:Bind Localizer.PhotoInfo}"
-                Visibility="{x:Bind local:MainPage.VisibleIfNotNull(ViewModel.SelectedCity.Photo), Mode=OneWay}">
-                <FontIcon FontSize="14" Glyph="&#xE722;" />
-                <Button.Flyout>
-                    <Flyout Placement="BottomEdgeAlignedRight">
-                        <StackPanel MaxWidth="280" Spacing="4">
-                            <TextBlock Style="{StaticResource BodyStrongTextBlockStyle}" Text="{x:Bind local:MainPage.PhotoAuthorText(ViewModel.SelectedCity.Photo), Mode=OneWay}" TextWrapping="Wrap" />
-                            <HyperlinkButton
-                                Padding="0"
-                                AutomationProperties.AutomationId="PhotoLicenseLink"
-                                Content="{x:Bind ViewModel.SelectedCity.Photo.License, Mode=OneWay, FallbackValue=''}"
-                                NavigateUri="{x:Bind local:MainPage.ToUri(ViewModel.SelectedCity.Photo.LicenseUrl), Mode=OneWay}" />
-                            <HyperlinkButton
-                                Padding="0"
-                                AutomationProperties.AutomationId="PhotoSourceLink"
-                                Content="{x:Bind Localizer.ViewSource}"
-                                NavigateUri="{x:Bind local:MainPage.ToUri(ViewModel.SelectedCity.Photo.SourceUrl), Mode=OneWay}" />
+                <!--  Hero: the photo runs under the status bar, its content stays below it  -->
+                <Grid x:Name="Hero">
+                    <controls:FocusedImage
+                        AutomationProperties.AccessibilityView="Raw"
+                        FocusY="{x:Bind local:MainPage.PhotoFocusY(ViewModel.SelectedCity.Photo), Mode=OneWay}"
+                        Source="{x:Bind local:MainPage.ToImageSource(ViewModel.SelectedCity.HeroImage), Mode=OneWay}" />
+                    <Border Background="{ThemeResource HeroScrimBrush}" />
+
+                    <Grid
+                        x:Name="HeroContent"
+                        Height="260"
+                        utu:SafeArea.Insets="Top"
+                        utu:SafeArea.Mode="Margin">
+                        <Button
+                            x:Name="PhotoInfoButton"
+                            Width="32"
+                            Height="32"
+                            Margin="12"
+                            Padding="0"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            AutomationProperties.AutomationId="PhotoInfoButton"
+                            AutomationProperties.Name="{x:Bind Localizer.PhotoInfo}"
+                            Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
+                            ToolTipService.ToolTip="{x:Bind Localizer.PhotoInfo}"
+                            Visibility="{x:Bind local:MainPage.VisibleIfNotNull(ViewModel.SelectedCity.Photo), Mode=OneWay}">
+                            <FontIcon FontSize="14" Glyph="&#xE722;" />
+                            <Button.Flyout>
+                                <Flyout Placement="BottomEdgeAlignedRight">
+                                    <StackPanel MaxWidth="280" Spacing="4">
+                                        <TextBlock Style="{StaticResource BodyStrongTextBlockStyle}" Text="{x:Bind local:MainPage.PhotoAuthorText(ViewModel.SelectedCity.Photo), Mode=OneWay}" TextWrapping="Wrap" />
+                                        <HyperlinkButton
+                                            Padding="0"
+                                            AutomationProperties.AutomationId="PhotoLicenseLink"
+                                            Content="{x:Bind ViewModel.SelectedCity.Photo.License, Mode=OneWay, FallbackValue=''}"
+                                            NavigateUri="{x:Bind local:MainPage.ToUri(ViewModel.SelectedCity.Photo.LicenseUrl), Mode=OneWay}" />
+                                        <HyperlinkButton
+                                            Padding="0"
+                                            AutomationProperties.AutomationId="PhotoSourceLink"
+                                            Content="{x:Bind Localizer.ViewSource}"
+                                            NavigateUri="{x:Bind local:MainPage.ToUri(ViewModel.SelectedCity.Photo.SourceUrl), Mode=OneWay}" />
+                                    </StackPanel>
+                                </Flyout>
+                            </Button.Flyout>
+                        </Button>
+
+                        <StackPanel
+                            MaxWidth="720"
+                            Padding="16,0,16,12"
+                            VerticalAlignment="Bottom"
+                            Spacing="4">
+                            <TextBlock
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                Style="{StaticResource CaptionTextBlockStyle}"
+                                Text="{x:Bind Localizer.SMSTicket}" />
+                            <TextBlock
+                                AutomationProperties.AutomationId="CityNameText"
+                                AutomationProperties.HeadingLevel="Level1"
+                                Style="{StaticResource TitleLargeTextBlockStyle}"
+                                Text="{x:Bind ViewModel.SelectedCity.Name, Mode=OneWay}"
+                                TextTrimming="CharacterEllipsis" />
+                            <StackPanel
+                                Margin="0,4,0,0"
+                                Orientation="Horizontal"
+                                Spacing="8">
+                                <Button
+                                    x:Name="CitySwitcherButton"
+                                    AutomationProperties.AutomationId="CitySwitcherButton"
+                                    AutomationProperties.Name="{x:Bind Localizer.ChangeCity}">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <FontIcon FontSize="16" Glyph="&#xE707;" />
+                                        <TextBlock Text="{x:Bind Localizer.ChangeCity}" />
+                                        <FontIcon FontSize="12" Glyph="&#xE70D;" />
+                                    </StackPanel>
+                                    <Button.Flyout>
+                                        <Flyout
+                                            x:Name="CityFlyout"
+                                            Opened="OnCityFlyoutOpened"
+                                            Placement="BottomEdgeAlignedLeft">
+                                            <StackPanel Width="280" Spacing="8">
+                                                <TextBlock Style="{StaticResource BodyStrongTextBlockStyle}" Text="{x:Bind Localizer.ChooseCity}" />
+                                                <!--  Nearest city (opt-in location)  -->
+                                                <Button
+                                                    HorizontalAlignment="Stretch"
+                                                    HorizontalContentAlignment="Left"
+                                                    AutomationProperties.AutomationId="UseMyLocationButton"
+                                                    AutomationProperties.Name="{x:Bind Localizer.UseMyLocation}"
+                                                    Command="{x:Bind ViewModel.NearestCity.UseMyLocationCommand}"
+                                                    IsEnabled="{x:Bind local:MainPage.Not(ViewModel.NearestCity.IsBusy), Mode=OneWay}"
+                                                    Visibility="{x:Bind ViewModel.NearestCity.IsSupported, Mode=OneWay}">
+                                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                                        <Grid Width="16" Height="16">
+                                                            <FontIcon
+                                                                FontSize="16"
+                                                                Glyph="&#xE81D;"
+                                                                Visibility="{x:Bind local:MainPage.Collapsed(ViewModel.NearestCity.IsBusy), Mode=OneWay}" />
+                                                            <ProgressRing
+                                                                Width="16"
+                                                                Height="16"
+                                                                MinWidth="16"
+                                                                MinHeight="16"
+                                                                AutomationProperties.AutomationId="NearestCityProgress"
+                                                                IsActive="{x:Bind ViewModel.NearestCity.IsBusy, Mode=OneWay}" />
+                                                        </Grid>
+                                                        <TextBlock Text="{x:Bind Localizer.UseMyLocation}" />
+                                                    </StackPanel>
+                                                </Button>
+                                                <InfoBar
+                                                    AutomationProperties.AutomationId="NearestCityInfoBar"
+                                                    IsClosable="False"
+                                                    IsOpen="{x:Bind ViewModel.NearestCity.HasStatusMessage, Mode=OneWay}"
+                                                    Message="{x:Bind ViewModel.NearestCity.StatusMessage, Mode=OneWay}"
+                                                    Severity="{x:Bind local:MainPage.NearestCitySeverity(ViewModel.NearestCity.Status), Mode=OneWay}" />
+                                                <ToggleSwitch
+                                                    AutomationProperties.AutomationId="AutoSelectNearestCityToggle"
+                                                    AutomationProperties.Name="{x:Bind Localizer.AutoSelectNearestCity}"
+                                                    IsOn="{x:Bind ViewModel.NearestCity.AutoSelectOnLaunch, Mode=TwoWay}"
+                                                    Visibility="{x:Bind ViewModel.NearestCity.CanOfferAutoSelect, Mode=OneWay}">
+                                                    <ToggleSwitch.Header>
+                                                        <TextBlock Text="{x:Bind Localizer.AutoSelectNearestCity}" TextWrapping="Wrap" />
+                                                    </ToggleSwitch.Header>
+                                                </ToggleSwitch>
+                                                <ListView
+                                                    x:Name="CityList"
+                                                    MaxHeight="400"
+                                                    Margin="-12,0"
+                                                    AutomationProperties.AutomationId="CityList"
+                                                    AutomationProperties.Name="{x:Bind Localizer.ChooseCity}"
+                                                    IsItemClickEnabled="True"
+                                                    ItemClick="OnCityClick"
+                                                    ItemsSource="{x:Bind ViewModel.Cities}"
+                                                    SelectedItem="{x:Bind ViewModel.SelectedCity, Mode=OneWay}"
+                                                    SelectionMode="Single">
+                                                    <ListView.ItemTemplate>
+                                                        <DataTemplate x:DataType="models:City">
+                                                            <Grid Padding="0,8" ColumnSpacing="12">
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="48" />
+                                                                    <ColumnDefinition Width="*" />
+                                                                </Grid.ColumnDefinitions>
+                                                                <Border
+                                                                    Height="32"
+                                                                    Background="{ThemeResource AccentFillColorDefaultBrush}"
+                                                                    CornerRadius="{StaticResource ControlCornerRadius}">
+                                                                    <TextBlock
+                                                                        HorizontalAlignment="Center"
+                                                                        VerticalAlignment="Center"
+                                                                        Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}"
+                                                                        Style="{StaticResource CaptionTextBlockStyle}"
+                                                                        FontWeight="SemiBold"
+                                                                        Text="{x:Bind Abbreviation}" />
+                                                                </Border>
+                                                                <TextBlock
+                                                                    Grid.Column="1"
+                                                                    VerticalAlignment="Center"
+                                                                    Text="{x:Bind Name}" />
+                                                            </Grid>
+                                                        </DataTemplate>
+                                                    </ListView.ItemTemplate>
+                                                </ListView>
+                                            </StackPanel>
+                                        </Flyout>
+                                    </Button.Flyout>
+                                </Button>
+                                <Button
+                                    x:Name="CityInfoButton"
+                                    VerticalAlignment="Stretch"
+                                    AutomationProperties.AutomationId="CityInfoButton"
+                                    AutomationProperties.Name="{x:Bind Localizer.CityInfo}"
+                                    ToolTipService.ToolTip="{x:Bind Localizer.CityInfo}">
+                                    <FontIcon FontSize="16" Glyph="&#xE946;" />
+                                    <Button.Flyout>
+                                        <Flyout Placement="BottomEdgeAlignedLeft">
+                                            <StackPanel MaxWidth="320" Spacing="4">
+                                                <TextBlock
+                                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                    Style="{StaticResource CaptionTextBlockStyle}"
+                                                    Text="{x:Bind Localizer.TransportOperator}" />
+                                                <TextBlock
+                                                    AutomationProperties.AutomationId="OperatorNameText"
+                                                    Style="{StaticResource BodyStrongTextBlockStyle}"
+                                                    Text="{x:Bind ViewModel.SelectedCity.OperatorName, Mode=OneWay}"
+                                                    TextWrapping="Wrap" />
+                                                <StackPanel Margin="0,4,0,0">
+                                                    <HyperlinkButton
+                                                        Padding="0,8"
+                                                        AutomationProperties.AutomationId="OperatorWebsiteLink"
+                                                        AutomationProperties.Name="{x:Bind Localizer.OperatorWebsite}"
+                                                        NavigateUri="{x:Bind local:MainPage.ToUri(ViewModel.SelectedCity.OperatorUrl), Mode=OneWay}">
+                                                        <StackPanel Orientation="Horizontal" Spacing="12">
+                                                            <FontIcon FontSize="16" Glyph="&#xE774;" />
+                                                            <TextBlock Text="{x:Bind Localizer.OperatorWebsite}" />
+                                                        </StackPanel>
+                                                    </HyperlinkButton>
+                                                    <HyperlinkButton
+                                                        Padding="0,8"
+                                                        AutomationProperties.AutomationId="SmsTicketInfoLink"
+                                                        AutomationProperties.Name="{x:Bind Localizer.SmsTicketInfo}"
+                                                        NavigateUri="{x:Bind local:MainPage.ToUri(ViewModel.SelectedCity.SmsInfoUrl), Mode=OneWay}">
+                                                        <StackPanel Orientation="Horizontal" Spacing="12">
+                                                            <FontIcon FontSize="16" Glyph="&#xE8BD;" />
+                                                            <TextBlock Text="{x:Bind Localizer.SmsTicketInfo}" />
+                                                        </StackPanel>
+                                                    </HyperlinkButton>
+                                                    <HyperlinkButton
+                                                        Padding="0,8"
+                                                        AutomationProperties.AutomationId="JourneyPlannerLink"
+                                                        AutomationProperties.Name="{x:Bind Localizer.JourneyPlanner}"
+                                                        NavigateUri="{x:Bind local:MainPage.ToUri(ViewModel.SelectedCity.JourneyPlannerUrl), Mode=OneWay}">
+                                                        <StackPanel Orientation="Horizontal" Spacing="12">
+                                                            <FontIcon FontSize="16" Glyph="&#xE806;" />
+                                                            <TextBlock Text="{x:Bind Localizer.JourneyPlanner}" />
+                                                        </StackPanel>
+                                                    </HyperlinkButton>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </Flyout>
+                                    </Button.Flyout>
+                                </Button>
+                            </StackPanel>
                         </StackPanel>
-                    </Flyout>
-                </Button.Flyout>
-            </Button>
+                    </Grid>
+                </Grid>
 
-            <StackPanel
-                MaxWidth="720"
-                Padding="16,0,16,12"
-                VerticalAlignment="Bottom"
-                Spacing="4">
-                <TextBlock
-                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                    Style="{StaticResource CaptionTextBlockStyle}"
-                    Text="{x:Bind Localizer.SMSTicket}" />
-                <TextBlock
-                    AutomationProperties.AutomationId="CityNameText"
-                    AutomationProperties.HeadingLevel="Level1"
-                    Style="{StaticResource TitleLargeTextBlockStyle}"
-                    Text="{x:Bind ViewModel.SelectedCity.Name, Mode=OneWay}"
-                    TextTrimming="CharacterEllipsis" />
+                <!--  Ticket picker  -->
                 <StackPanel
-                    Margin="0,4,0,0"
-                    Orientation="Horizontal"
+                    MaxWidth="720"
+                    Padding="16,8,16,0"
                     Spacing="8">
-                    <Button
-                        x:Name="CitySwitcherButton"
-                        AutomationProperties.AutomationId="CitySwitcherButton"
-                        AutomationProperties.Name="{x:Bind Localizer.ChangeCity}">
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <FontIcon FontSize="16" Glyph="&#xE707;" />
-                            <TextBlock Text="{x:Bind Localizer.ChangeCity}" />
-                            <FontIcon FontSize="12" Glyph="&#xE70D;" />
-                        </StackPanel>
-                        <Button.Flyout>
-                            <Flyout
-                                x:Name="CityFlyout"
-                                Opened="OnCityFlyoutOpened"
-                                Placement="BottomEdgeAlignedLeft">
-                                <StackPanel Width="280" Spacing="8">
-                                    <TextBlock Style="{StaticResource BodyStrongTextBlockStyle}" Text="{x:Bind Localizer.ChooseCity}" />
-                                    <!--  Nearest city (opt-in location)  -->
-                                    <Button
-                                        HorizontalAlignment="Stretch"
-                                        HorizontalContentAlignment="Left"
-                                        AutomationProperties.AutomationId="UseMyLocationButton"
-                                        AutomationProperties.Name="{x:Bind Localizer.UseMyLocation}"
-                                        Command="{x:Bind ViewModel.NearestCity.UseMyLocationCommand}"
-                                        IsEnabled="{x:Bind local:MainPage.Not(ViewModel.NearestCity.IsBusy), Mode=OneWay}"
-                                        Visibility="{x:Bind ViewModel.NearestCity.IsSupported, Mode=OneWay}">
-                                        <StackPanel Orientation="Horizontal" Spacing="8">
-                                            <Grid Width="16" Height="16">
-                                                <FontIcon
-                                                    FontSize="16"
-                                                    Glyph="&#xE81D;"
-                                                    Visibility="{x:Bind local:MainPage.Collapsed(ViewModel.NearestCity.IsBusy), Mode=OneWay}" />
-                                                <ProgressRing
-                                                    Width="16"
-                                                    Height="16"
-                                                    MinWidth="16"
-                                                    MinHeight="16"
-                                                    AutomationProperties.AutomationId="NearestCityProgress"
-                                                    IsActive="{x:Bind ViewModel.NearestCity.IsBusy, Mode=OneWay}" />
-                                            </Grid>
-                                            <TextBlock Text="{x:Bind Localizer.UseMyLocation}" />
-                                        </StackPanel>
-                                    </Button>
-                                    <InfoBar
-                                        AutomationProperties.AutomationId="NearestCityInfoBar"
-                                        IsClosable="False"
-                                        IsOpen="{x:Bind ViewModel.NearestCity.HasStatusMessage, Mode=OneWay}"
-                                        Message="{x:Bind ViewModel.NearestCity.StatusMessage, Mode=OneWay}"
-                                        Severity="{x:Bind local:MainPage.NearestCitySeverity(ViewModel.NearestCity.Status), Mode=OneWay}" />
-                                    <ToggleSwitch
-                                        AutomationProperties.AutomationId="AutoSelectNearestCityToggle"
-                                        AutomationProperties.Name="{x:Bind Localizer.AutoSelectNearestCity}"
-                                        IsOn="{x:Bind ViewModel.NearestCity.AutoSelectOnLaunch, Mode=TwoWay}"
-                                        Visibility="{x:Bind ViewModel.NearestCity.CanOfferAutoSelect, Mode=OneWay}">
-                                        <ToggleSwitch.Header>
-                                            <TextBlock Text="{x:Bind Localizer.AutoSelectNearestCity}" TextWrapping="Wrap" />
-                                        </ToggleSwitch.Header>
-                                    </ToggleSwitch>
-                                    <ListView
-                                        x:Name="CityList"
-                                        MaxHeight="400"
-                                        Margin="-12,0"
-                                        AutomationProperties.AutomationId="CityList"
-                                        AutomationProperties.Name="{x:Bind Localizer.ChooseCity}"
-                                        IsItemClickEnabled="True"
-                                        ItemClick="OnCityClick"
-                                        ItemsSource="{x:Bind ViewModel.Cities}"
-                                        SelectedItem="{x:Bind ViewModel.SelectedCity, Mode=OneWay}"
-                                        SelectionMode="Single">
-                                        <ListView.ItemTemplate>
-                                            <DataTemplate x:DataType="models:City">
-                                                <Grid Padding="0,8" ColumnSpacing="12">
+                    <StackPanel Spacing="8">
+                        <views:ActiveTicketsStrip />
+
+                        <!--  Favorites  -->
+                        <StackPanel
+                            x:Name="FavoritesSection"
+                            Padding="0,0,0,8"
+                            Spacing="8"
+                            Visibility="{x:Bind ViewModel.HasFavorites, Mode=OneWay}">
+                            <TextBlock
+                                AutomationProperties.HeadingLevel="Level2"
+                                Style="{StaticResource BodyStrongTextBlockStyle}"
+                                Text="{x:Bind Localizer.Favorites}" />
+                            <ScrollViewer
+                                HorizontalScrollBarVisibility="Hidden"
+                                HorizontalScrollMode="Auto"
+                                VerticalScrollBarVisibility="Disabled"
+                                VerticalScrollMode="Disabled">
+                                <ItemsRepeater
+                                    AutomationProperties.AutomationId="FavoritesList"
+                                    AutomationProperties.Name="{x:Bind Localizer.Favorites}"
+                                    ItemsSource="{x:Bind ViewModel.Favorites}">
+                                    <ItemsRepeater.Layout>
+                                        <StackLayout Orientation="Horizontal" Spacing="8" />
+                                    </ItemsRepeater.Layout>
+                                    <ItemsRepeater.ItemTemplate>
+                                        <DataTemplate x:DataType="models:CityTicket">
+                                            <Button
+                                                MinHeight="56"
+                                                Padding="8,8,16,8"
+                                                AutomationProperties.AutomationId="{x:Bind local:MainPage.FavoriteAutomationId(Ticket.Id)}"
+                                                AutomationProperties.Name="{x:Bind ToString()}"
+                                                Click="OnFavoriteClick"
+                                                ToolTipService.ToolTip="{x:Bind City.Name}">
+                                                <Button.ContextFlyout>
+                                                    <MenuFlyout>
+                                                        <MenuFlyoutItem
+                                                            AutomationProperties.AutomationId="RemoveFavoriteMenuItem"
+                                                            Click="OnRemoveFavoriteClick"
+                                                            Tag="{x:Bind}"
+                                                            Text="{x:Bind local:MainPage.RemoveFromFavoritesText}">
+                                                            <MenuFlyoutItem.Icon>
+                                                                <FontIcon Glyph="&#xE74D;" />
+                                                            </MenuFlyoutItem.Icon>
+                                                        </MenuFlyoutItem>
+                                                    </MenuFlyout>
+                                                </Button.ContextFlyout>
+                                                <Grid ColumnSpacing="12">
                                                     <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="48" />
-                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="Auto" />
+                                                        <ColumnDefinition Width="Auto" />
                                                     </Grid.ColumnDefinitions>
                                                     <Border
-                                                        Height="32"
+                                                        MinWidth="40"
+                                                        Height="40"
+                                                        Padding="4,0"
                                                         Background="{ThemeResource AccentFillColorDefaultBrush}"
                                                         CornerRadius="{StaticResource ControlCornerRadius}">
                                                         <TextBlock
                                                             HorizontalAlignment="Center"
                                                             VerticalAlignment="Center"
+                                                            FontWeight="SemiBold"
                                                             Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}"
                                                             Style="{StaticResource CaptionTextBlockStyle}"
-                                                            FontWeight="SemiBold"
-                                                            Text="{x:Bind Abbreviation}" />
+                                                            Text="{x:Bind City.Abbreviation}" />
                                                     </Border>
-                                                    <TextBlock
-                                                        Grid.Column="1"
-                                                        VerticalAlignment="Center"
-                                                        Text="{x:Bind Name}" />
+                                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                        <TextBlock Style="{StaticResource BodyStrongTextBlockStyle}" Text="{x:Bind ValidityText}" />
+                                                        <TextBlock
+                                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                            Style="{StaticResource CaptionTextBlockStyle}"
+                                                            Text="{x:Bind PriceText}" />
+                                                    </StackPanel>
                                                 </Grid>
-                                            </DataTemplate>
-                                        </ListView.ItemTemplate>
-                                    </ListView>
-                                </StackPanel>
-                            </Flyout>
-                        </Button.Flyout>
-                    </Button>
-                    <Button
-                        x:Name="CityInfoButton"
-                        VerticalAlignment="Stretch"
-                        AutomationProperties.AutomationId="CityInfoButton"
-                        AutomationProperties.Name="{x:Bind Localizer.CityInfo}"
-                        ToolTipService.ToolTip="{x:Bind Localizer.CityInfo}">
-                        <FontIcon FontSize="16" Glyph="&#xE946;" />
-                        <Button.Flyout>
-                            <Flyout Placement="BottomEdgeAlignedLeft">
-                                <StackPanel MaxWidth="320" Spacing="4">
-                                    <TextBlock
-                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                        Style="{StaticResource CaptionTextBlockStyle}"
-                                        Text="{x:Bind Localizer.TransportOperator}" />
-                                    <TextBlock
-                                        AutomationProperties.AutomationId="OperatorNameText"
-                                        Style="{StaticResource BodyStrongTextBlockStyle}"
-                                        Text="{x:Bind ViewModel.SelectedCity.OperatorName, Mode=OneWay}"
-                                        TextWrapping="Wrap" />
-                                    <StackPanel Margin="0,4,0,0">
-                                        <HyperlinkButton
-                                            Padding="0,8"
-                                            AutomationProperties.AutomationId="OperatorWebsiteLink"
-                                            AutomationProperties.Name="{x:Bind Localizer.OperatorWebsite}"
-                                            NavigateUri="{x:Bind local:MainPage.ToUri(ViewModel.SelectedCity.OperatorUrl), Mode=OneWay}">
-                                            <StackPanel Orientation="Horizontal" Spacing="12">
-                                                <FontIcon FontSize="16" Glyph="&#xE774;" />
-                                                <TextBlock Text="{x:Bind Localizer.OperatorWebsite}" />
-                                            </StackPanel>
-                                        </HyperlinkButton>
-                                        <HyperlinkButton
-                                            Padding="0,8"
-                                            AutomationProperties.AutomationId="SmsTicketInfoLink"
-                                            AutomationProperties.Name="{x:Bind Localizer.SmsTicketInfo}"
-                                            NavigateUri="{x:Bind local:MainPage.ToUri(ViewModel.SelectedCity.SmsInfoUrl), Mode=OneWay}">
-                                            <StackPanel Orientation="Horizontal" Spacing="12">
-                                                <FontIcon FontSize="16" Glyph="&#xE8BD;" />
-                                                <TextBlock Text="{x:Bind Localizer.SmsTicketInfo}" />
-                                            </StackPanel>
-                                        </HyperlinkButton>
-                                        <HyperlinkButton
-                                            Padding="0,8"
-                                            AutomationProperties.AutomationId="JourneyPlannerLink"
-                                            AutomationProperties.Name="{x:Bind Localizer.JourneyPlanner}"
-                                            NavigateUri="{x:Bind local:MainPage.ToUri(ViewModel.SelectedCity.JourneyPlannerUrl), Mode=OneWay}">
-                                            <StackPanel Orientation="Horizontal" Spacing="12">
-                                                <FontIcon FontSize="16" Glyph="&#xE806;" />
-                                                <TextBlock Text="{x:Bind Localizer.JourneyPlanner}" />
-                                            </StackPanel>
-                                        </HyperlinkButton>
-                                    </StackPanel>
-                                </StackPanel>
-                            </Flyout>
-                        </Button.Flyout>
-                    </Button>
-                </StackPanel>
-            </StackPanel>
-        </Grid>
+                                            </Button>
+                                        </DataTemplate>
+                                    </ItemsRepeater.ItemTemplate>
+                                </ItemsRepeater>
+                            </ScrollViewer>
+                        </StackPanel>
+                    </StackPanel>
 
-        <!--  Ticket picker  -->
-        <Grid
-            Grid.Row="1"
-            MaxWidth="720"
-            Padding="16,8,16,0"
-            RowSpacing="8">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-
-            <!--  Active tickets and favorites share the top row  -->
-            <StackPanel Spacing="8">
-                <views:ActiveTicketsStrip />
-
-                <!--  Favorites  -->
-                <StackPanel
-                    x:Name="FavoritesSection"
-                    Padding="0,0,0,8"
-                    Spacing="8"
-                    Visibility="{x:Bind ViewModel.HasFavorites, Mode=OneWay}">
                     <TextBlock
                         AutomationProperties.HeadingLevel="Level2"
                         Style="{StaticResource BodyStrongTextBlockStyle}"
-                        Text="{x:Bind Localizer.Favorites}" />
-                    <ScrollViewer
-                        HorizontalScrollBarVisibility="Hidden"
-                        HorizontalScrollMode="Auto"
-                        VerticalScrollBarVisibility="Disabled"
-                        VerticalScrollMode="Disabled">
-                        <ItemsRepeater
-                            AutomationProperties.AutomationId="FavoritesList"
-                            AutomationProperties.Name="{x:Bind Localizer.Favorites}"
-                            ItemsSource="{x:Bind ViewModel.Favorites}">
-                            <ItemsRepeater.Layout>
-                                <StackLayout Orientation="Horizontal" Spacing="8" />
-                            </ItemsRepeater.Layout>
-                            <ItemsRepeater.ItemTemplate>
-                                <DataTemplate x:DataType="models:CityTicket">
-                                    <Button
-                                        MinHeight="56"
-                                        Padding="8,8,16,8"
-                                        AutomationProperties.AutomationId="{x:Bind local:MainPage.FavoriteAutomationId(Ticket.Id)}"
-                                        AutomationProperties.Name="{x:Bind ToString()}"
-                                        Click="OnFavoriteClick"
-                                        ToolTipService.ToolTip="{x:Bind City.Name}">
-                                        <Button.ContextFlyout>
-                                            <MenuFlyout>
-                                                <MenuFlyoutItem
-                                                    AutomationProperties.AutomationId="RemoveFavoriteMenuItem"
-                                                    Click="OnRemoveFavoriteClick"
-                                                    Tag="{x:Bind}"
-                                                    Text="{x:Bind local:MainPage.RemoveFromFavoritesText}">
-                                                    <MenuFlyoutItem.Icon>
-                                                        <FontIcon Glyph="&#xE74D;" />
-                                                    </MenuFlyoutItem.Icon>
-                                                </MenuFlyoutItem>
-                                            </MenuFlyout>
-                                        </Button.ContextFlyout>
-                                        <Grid ColumnSpacing="12">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto" />
-                                                <ColumnDefinition Width="Auto" />
-                                            </Grid.ColumnDefinitions>
-                                            <Border
-                                                MinWidth="40"
-                                                Height="40"
-                                                Padding="4,0"
-                                                Background="{ThemeResource AccentFillColorDefaultBrush}"
-                                                CornerRadius="{StaticResource ControlCornerRadius}">
-                                                <TextBlock
-                                                    HorizontalAlignment="Center"
-                                                    VerticalAlignment="Center"
-                                                    FontWeight="SemiBold"
-                                                    Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}"
-                                                    Style="{StaticResource CaptionTextBlockStyle}"
-                                                    Text="{x:Bind City.Abbreviation}" />
-                                            </Border>
-                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                                <TextBlock Style="{StaticResource BodyStrongTextBlockStyle}" Text="{x:Bind ValidityText}" />
-                                                <TextBlock
-                                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                                    Style="{StaticResource CaptionTextBlockStyle}"
-                                                    Text="{x:Bind PriceText}" />
-                                            </StackPanel>
-                                        </Grid>
-                                    </Button>
-                                </DataTemplate>
-                            </ItemsRepeater.ItemTemplate>
-                        </ItemsRepeater>
-                    </ScrollViewer>
+                        Text="{x:Bind Localizer.TicketType}" />
+                    <ItemsView
+                        x:Name="TicketsView"
+                        Padding="0,0,0,16"
+                        AutomationProperties.AutomationId="TicketsView"
+                        AutomationProperties.Name="{x:Bind Localizer.TicketType}"
+                        ItemsSource="{x:Bind ViewModel.SelectedCity.TicketTypes, Mode=OneWay}"
+                        SelectionChanged="OnTicketSelectionChanged"
+                        SelectionMode="Single">
+                        <ItemsView.Layout>
+                            <UniformGridLayout
+                                ItemsStretch="Fill"
+                                MaximumRowsOrColumns="3"
+                                MinColumnSpacing="8"
+                                MinItemHeight="140"
+                                MinItemWidth="148"
+                                MinRowSpacing="8" />
+                        </ItemsView.Layout>
+                        <ItemsView.ItemTemplate>
+                            <DataTemplate x:DataType="models:TicketType">
+                                <ItemContainer
+                                    AutomationProperties.Name="{x:Bind ToString()}"
+                                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                                    CornerRadius="{StaticResource OverlayCornerRadius}">
+                                <Grid
+                                    MinHeight="112"
+                                    Padding="12"
+                                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="{StaticResource OverlayCornerRadius}"
+                                    RowSpacing="4">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <TextBlock
+                                        Style="{StaticResource SubtitleTextBlockStyle}"
+                                        Text="{x:Bind TimeText}"
+                                        Visibility="{x:Bind local:MainPage.Collapsed(IsDuplicate)}" />
+                                    <StackPanel
+                                        Orientation="Horizontal"
+                                        Spacing="8"
+                                        Visibility="{x:Bind IsDuplicate}">
+                                        <FontIcon FontSize="20" Glyph="&#xE8C8;" />
+                                        <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="{x:Bind local:MainPage.DuplicateText}" />
+                                    </StackPanel>
+                                    <TextBlock Grid.Row="1" TextWrapping="Wrap">
+                                        <Run FontWeight="SemiBold" Text="{x:Bind local:MainPage.PriceText(Price)}" />
+                                        <Run Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="{x:Bind local:MainPage.SmsPriceSuffix(SmsPriceAdditional)}" />
+                                    </TextBlock>
+                                    <TextBlock
+                                        Grid.Row="2"
+                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                        MaxLines="3"
+                                        Style="{StaticResource CaptionTextBlockStyle}"
+                                        Text="{x:Bind Description}"
+                                        TextTrimming="CharacterEllipsis"
+                                        Visibility="{x:Bind HasDescription}" />
+                                </Grid>
+                                </ItemContainer>
+                            </DataTemplate>
+                        </ItemsView.ItemTemplate>
+                    </ItemsView>
                 </StackPanel>
             </StackPanel>
+        </ScrollViewer>
 
-            <TextBlock
-                Grid.Row="1"
-                AutomationProperties.HeadingLevel="Level2"
-                Style="{StaticResource BodyStrongTextBlockStyle}"
-                Text="{x:Bind Localizer.TicketType}" />
-            <ItemsView
-                x:Name="TicketsView"
-                Grid.Row="2"
-                Padding="0,0,0,16"
-                AutomationProperties.AutomationId="TicketsView"
-                AutomationProperties.Name="{x:Bind Localizer.TicketType}"
-                ItemsSource="{x:Bind ViewModel.SelectedCity.TicketTypes, Mode=OneWay}"
-                SelectionChanged="OnTicketSelectionChanged"
-                SelectionMode="Single">
-                <ItemsView.Layout>
-                    <UniformGridLayout
-                        ItemsStretch="Fill"
-                        MaximumRowsOrColumns="3"
-                        MinColumnSpacing="8"
-                        MinItemHeight="140"
-                        MinItemWidth="148"
-                        MinRowSpacing="8" />
-                </ItemsView.Layout>
-                <ItemsView.ItemTemplate>
-                    <DataTemplate x:DataType="models:TicketType">
-                        <ItemContainer
-                            AutomationProperties.Name="{x:Bind ToString()}"
-                            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                            CornerRadius="{StaticResource OverlayCornerRadius}">
-    <Grid
-                            MinHeight="112"
-                            Padding="12"
-                            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                            BorderThickness="1"
-                            CornerRadius="{StaticResource OverlayCornerRadius}"
-                            RowSpacing="4">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="*" />
-                            </Grid.RowDefinitions>
-                            <TextBlock
-                                Style="{StaticResource SubtitleTextBlockStyle}"
-                                Text="{x:Bind TimeText}"
-                                Visibility="{x:Bind local:MainPage.Collapsed(IsDuplicate)}" />
-                            <StackPanel
-                                Orientation="Horizontal"
-                                Spacing="8"
-                                Visibility="{x:Bind IsDuplicate}">
-                                <FontIcon FontSize="20" Glyph="&#xE8C8;" />
-                                <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="{x:Bind local:MainPage.DuplicateText}" />
-                            </StackPanel>
-                            <TextBlock Grid.Row="1" TextWrapping="Wrap">
-                                <Run FontWeight="SemiBold" Text="{x:Bind local:MainPage.PriceText(Price)}" />
-                                <Run Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="{x:Bind local:MainPage.SmsPriceSuffix(SmsPriceAdditional)}" />
-                            </TextBlock>
-                            <TextBlock
-                                Grid.Row="2"
-                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                MaxLines="3"
-                                Style="{StaticResource CaptionTextBlockStyle}"
-                                Text="{x:Bind Description}"
-                                TextTrimming="CharacterEllipsis"
-                                Visibility="{x:Bind HasDescription}" />
-                        </Grid>
-                        </ItemContainer>
-                    </DataTemplate>
-                </ItemsView.ItemTemplate>
-            </ItemsView>
-        </Grid>
+        <!--  Pinned behind the status bar and sized by its inset alone: keeps the icons readable over the photo  -->
+        <Border
+            VerticalAlignment="Top"
+            utu:SafeArea.Insets="Top"
+            Background="{ThemeResource HeroStatusBarScrimBrush}"
+            IsHitTestVisible="False" />
+        <!--  ...and over the content scrolling under it, fading in as the hero scrolls away  -->
+        <Border
+            x:Name="StatusBarBackground"
+            VerticalAlignment="Top"
+            utu:SafeArea.Insets="Top"
+            Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
+            IsHitTestVisible="False"
+            Opacity="0" />
 
         <!--  Action bar  -->
         <Border
-            Grid.Row="2"
+            Grid.Row="1"
             Padding="16,12"
             utu:SafeArea.Insets="Left,Right"
             BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
@@ -446,7 +469,7 @@
                         <AdaptiveTrigger MinWindowWidth="640" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="Hero.Height" Value="320" />
+                        <Setter Target="HeroContent.Height" Value="320" />
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>

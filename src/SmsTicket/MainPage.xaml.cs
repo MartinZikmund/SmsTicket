@@ -71,11 +71,23 @@ public sealed partial class MainPage : Page
     {
         ViewModel.XamlRoot = XamlRoot;
 
+        // The page scrolls as a whole; the grid's own scroller would otherwise rubber-band on touch in any direction
+        if (TicketsView.ScrollView is { } ticketsScroller)
+        {
+            ticketsScroller.HorizontalScrollMode = ScrollingScrollMode.Disabled;
+            ticketsScroller.VerticalScrollMode = ScrollingScrollMode.Disabled;
+        }
+
         SyncTicketSelection();
         _ = ViewModel.NearestCity.AutoSelectOnLaunchAsync();
         await ViewModel.InitAsync();
     }
 
+
+    private void OnPageScrolled(object? sender, ScrollViewerViewChangedEventArgs e) =>
+        StatusBarBackground.Opacity = HeroContent.ActualHeight > 0
+            ? Math.Clamp(PageScroller.VerticalOffset / HeroContent.ActualHeight, 0, 1)
+            : 0;
 
     private void OnFavoriteClick(object sender, RoutedEventArgs e)
     {

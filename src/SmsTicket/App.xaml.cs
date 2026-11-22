@@ -204,13 +204,23 @@ public partial class App : Application
         }
 
         // Arguments are untrusted input - only act on known ticket ids
-        if (DataSource.FindTicket(arguments) is { City: var city, Ticket: var ticket })
+        if (DataSource.FindTicket(arguments) is not { City: var city, Ticket: var ticket })
+        {
+            return;
+        }
+
+        // Runs from an async void dispatcher callback, where an exception would end the process
+        try
         {
             var record = PurchaseRecord.FromTicket(city, ticket, DateTimeOffset.Now);
             ConfirmationSmsListeners.Create().Start(record.Id);
             SmsService smsService = new();
             await smsService.PrepareSmsAsync(ticket.PhoneNumber, ticket.SmsText);
             await PurchaseHistoryService.Default.AddAsync(record);
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Trace.WriteLine($"Preparing the ticket from a shortcut failed: {ex}");
         }
     }
 

@@ -22,6 +22,9 @@ public sealed partial class ActiveTicketsStrip : UserControl
         {
             if (e.PropertyName == nameof(ActiveTicketsViewModel.HasItems))
             {
+                // Set here rather than x:Bound on the root: Uno stops updating that binding once a cached page is unloaded and reloaded
+                Visibility = ViewModel.HasItems ? Visibility.Visible : Visibility.Collapsed;
+
                 // The timer only needs to run while something counts down
                 UpdateTimer();
             }
