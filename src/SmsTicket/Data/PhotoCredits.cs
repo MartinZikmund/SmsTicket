@@ -12,7 +12,7 @@ public static class PhotoCredits
         ["HK"] = new("VitVit", "CC BY-SA 4.0", "https://creativecommons.org/licenses/by-sa/4.0", "https://commons.wikimedia.org/wiki/File:Hradec_Kr%C3%A1lov%C3%A9_n%C3%A1m%C4%9Bst%C3%AD_celek_1.jpg", 0.35),
         ["LBC"] = new("VitVit", "CC BY-SA 4.0", "https://creativecommons.org/licenses/by-sa/4.0", "https://commons.wikimedia.org/wiki/File:Liberec_n%C3%A1m%C4%9Bst%C3%AD_a_radnice_6.jpg", 0.5),
         ["OL"] = new("Smiley.toerist", "CC BY-SA 4.0", "https://creativecommons.org/licenses/by-sa/4.0", "https://commons.wikimedia.org/wiki/File:Olomouc_city_2022_1.jpg", 0.45),
-        ["OST"] = new("ŠJů", "CC BY-SA 3.0", "https://creativecommons.org/licenses/by-sa/3.0", "https://commons.wikimedia.org/wiki/File:Moravsk%C3%A1_Ostrava,_d%C5%AFl_Hlubina_od_%C5%BDelez%C3%A1rensk%C3%A9,_tramvaj_Vario_LF.jpg", 0.3),
+        ["OST"] = new("Oleksandr Dede", "CC BY-SA 4.0", "https://creativecommons.org/licenses/by-sa/4.0", "https://commons.wikimedia.org/wiki/File:Stadler_Tango_on_17._listopadu_street.jpg", 0.45),
         ["PAR"] = new("Oleksandr Dede", "CC BY-SA 4.0", "https://creativecommons.org/licenses/by-sa/4.0", "https://commons.wikimedia.org/wiki/File:Pardubice,_%C5%A0koda_32Tr_SOR_%C4%8D._464_Zelen%C3%A1_br%C3%A1na.jpg", 0.35),
         ["PIL"] = new("Smiley.toerist", "CC BY-SA 4.0", "https://creativecommons.org/licenses/by-sa/4.0", "https://commons.wikimedia.org/wiki/File:Pilsen_tram_2024_3.jpg", 0.4),
         ["PHA"] = new("hrs51", "CC BY 4.0", "https://creativecommons.org/licenses/by/4.0", "https://commons.wikimedia.org/wiki/File:Prague_2010_Tatra_T3_and_Hradschin.jpg", 0.46),
