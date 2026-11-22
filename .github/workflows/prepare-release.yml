@@ -51,6 +51,12 @@ jobs:
 
       - uses: ./.github/actions/setup-dotnet-build
 
+      # nbgv prepare-release refuses to run without an identity, even with --what-if
+      - name: Configure git identity
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
       - name: Preflight
         id: pre
         env:
@@ -106,8 +112,6 @@ jobs:
         if: ${{ !inputs.dry_run }}
         run: |
           set -euo pipefail
-          git config user.name  "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           dotnet nbgv prepare-release --format json | tee "$RUNNER_TEMP/cut.json"
 
       - name: Push the release branch
