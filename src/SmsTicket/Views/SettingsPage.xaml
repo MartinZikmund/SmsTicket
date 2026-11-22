@@ -2,6 +2,7 @@
     x:Class="SmsTicket.Views.SettingsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:utu="using:Uno.Toolkit.UI"
     Background="{ThemeResource SolidBackgroundFillColorBaseBrush}">
 
     <Page.Resources>
@@ -29,7 +30,8 @@
         </Style>
     </Page.Resources>
 
-    <ScrollViewer>
+    <!--  The shell leaves the top inset to the pages on narrow screens  -->
+    <ScrollViewer utu:SafeArea.Insets="Top" utu:SafeArea.Mode="Margin">
         <StackPanel
             MaxWidth="720"
             Padding="16,24"

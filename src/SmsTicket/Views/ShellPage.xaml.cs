@@ -50,7 +50,12 @@ public sealed partial class ShellPage : Page
     // NavigationView only lays out a display mode change correctly while its pane is visible
     private void OnLayoutStateChanged(object sender, VisualStateChangedEventArgs e)
     {
-        if (e.NewState == WideState)
+        var isWide = e.NewState == WideState;
+        SafeArea.SetInsets(ShellRoot, isWide
+            ? SafeArea.InsetMask.Left | SafeArea.InsetMask.Top | SafeArea.InsetMask.Right
+            : SafeArea.InsetMask.Left | SafeArea.InsetMask.Right);
+
+        if (isWide)
         {
             NavView.IsPaneVisible = true;
             NavView.PaneDisplayMode = NavigationViewPaneDisplayMode.Auto;
