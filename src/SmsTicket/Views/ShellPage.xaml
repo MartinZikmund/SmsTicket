@@ -151,8 +151,11 @@
         </ResourceDictionary>
     </Page.Resources>
 
-    <!--  NavigationView ignores Padding, so the insets go on a wrapper. The bottom one goes on whatever sits at the bottom.  -->
-    <Grid x:Name="ShellRoot" utu:SafeArea.Insets="Left,Top,Right">
+    <!--
+        NavigationView ignores Padding, so the insets go on a wrapper. The bottom one goes on whatever sits at the bottom.
+        The top one is left to the pages in the narrow layout, so the hero can run under the status bar; the wide layout adds it back for the pane.
+    -->
+    <Grid x:Name="ShellRoot" utu:SafeArea.Insets="Left,Right">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <!--  Banner ad, filled in code-behind  -->

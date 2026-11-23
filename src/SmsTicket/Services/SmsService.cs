@@ -1,5 +1,3 @@
-using Windows.UI.Popups;
-
 namespace SmsTicket.Services.Sms;
 
 public class SmsService : ISmsService
@@ -7,7 +5,7 @@ public class SmsService : ISmsService
     public async Task PrepareSmsAsync(string recipientNumber, string text)
     {
 #if __IOS__
-        if (!UIKit.UIApplication.SharedApplication.CanOpenUrl(new Foundation.NSUrl("tel://")))
+        if (!SmsComposer.CanSendText)
         {
             ContentDialog dlg = new ContentDialog();
             dlg.Title = "Not supported";
@@ -16,10 +14,13 @@ public class SmsService : ISmsService
             await dlg.ShowAsync();
             return;
         }
-#endif
+
+        await SmsComposer.ComposeAsync(recipientNumber, text);
+#else
         var chatMessage = new Windows.ApplicationModel.Chat.ChatMessage();
         chatMessage.Body = text;
         chatMessage.Recipients.Add(recipientNumber);
         await Windows.ApplicationModel.Chat.ChatMessageManager.ShowComposeSmsMessageAsync(chatMessage);
+#endif
     }
 }

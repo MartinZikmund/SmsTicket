@@ -19,6 +19,11 @@
                         <GradientStop Offset="0.55" Color="#B3F3F3F3" />
                         <GradientStop Offset="0.8" Color="#FFF3F3F3" />
                     </LinearGradientBrush>
+                    <!--  Behind the status bar, so its theme-colored icons stay readable on the photo  -->
+                    <LinearGradientBrush x:Key="HeroStatusBarScrimBrush" StartPoint="0,0" EndPoint="0,1">
+                        <GradientStop Offset="0" Color="#CCF3F3F3" />
+                        <GradientStop Offset="1" Color="#00F3F3F3" />
+                    </LinearGradientBrush>
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Dark">
                     <LinearGradientBrush x:Key="HeroScrimBrush" StartPoint="0,0" EndPoint="0,1">
@@ -26,9 +31,14 @@
                         <GradientStop Offset="0.55" Color="#B3202020" />
                         <GradientStop Offset="0.8" Color="#FF202020" />
                     </LinearGradientBrush>
+                    <LinearGradientBrush x:Key="HeroStatusBarScrimBrush" StartPoint="0,0" EndPoint="0,1">
+                        <GradientStop Offset="0" Color="#CC202020" />
+                        <GradientStop Offset="1" Color="#00202020" />
+                    </LinearGradientBrush>
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="HighContrast">
                     <StaticResource x:Key="HeroScrimBrush" ResourceKey="SystemColorWindowColorBrush" />
+                    <StaticResource x:Key="HeroStatusBarScrimBrush" ResourceKey="SystemColorWindowColorBrush" />
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
 

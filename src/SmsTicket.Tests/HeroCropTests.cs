@@ -101,6 +101,23 @@ public class HeroCropTests
         }
     }
 
+    [TestMethod]
+    public void AttributionsJson_LicenseAndSourceMatchPhotoCredits()
+    {
+        var json = System.Text.Json.JsonDocument.Parse(File.ReadAllText(FindAttributions()));
+
+        foreach (var entry in json.RootElement.EnumerateArray())
+        {
+            var id = entry.GetProperty("cityId").GetString()!;
+            var credit = PhotoCredits.ForCity(id);
+
+            Assert.IsNotNull(credit, $"{id}: missing from PhotoCredits");
+            Assert.AreEqual(entry.GetProperty("license").GetString(), credit.License, $"{id}: license differs");
+            Assert.AreEqual(entry.GetProperty("licenseUrl").GetString(), credit.LicenseUrl, $"{id}: license URL differs");
+            Assert.AreEqual(entry.GetProperty("sourceUrl").GetString(), credit.SourceUrl, $"{id}: source URL differs");
+        }
+    }
+
     private static string FindAttributions()
     {
         var dir = new DirectoryInfo(AppContext.BaseDirectory);
